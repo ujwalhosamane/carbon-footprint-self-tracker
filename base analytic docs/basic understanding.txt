@@ -1,0 +1,12 @@
+the data collected -
+
+1. user details
+2. day to day activities about energy consumption and waste generation
+	- transport
+	- electricity usage (monthly)
+	- waste generation - includes emissions from usual activities 
+
+the data sent - 
+
+1. carbon footprint levels for every activity (may be as a dashboard with graphs)
+2. remedy or suggestions to reduce the footprint (using public API)

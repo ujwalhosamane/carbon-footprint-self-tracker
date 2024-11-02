@@ -1,0 +1,48 @@
+Actor : User
+1. User information
+	- sign up
+	- sign in
+	- sign out
+
+2. carbon footprint calculator 
+	- inputs activity data
+	- calculate
+	- store it for insights 
+
+3. carbon footprint tracker
+	- gets the overall emissions(weekly or monthly)
+
+4. User goals
+	- sets the goals provided.
+	- rewarded on achievement.
+
+-----------------------------------------------------------
+
+Actor : Admin
+
+1. user information
+	- manages user data
+
+2. carbon footprint calculator
+	- responsible in setting the constants or factors(emission factor) 
+
+3. global insights 
+	- Access total users emission
+	- gives common insights to all users
+-----------------------------------------------------------
+
+Actor : system
+
+1. user information
+	- authorize and authenticate users
+2. carbon footprint calculator 
+	- calculates and stores the emission data of user
+3. carbon footprint tracker
+	- visualizes the user emission data(as graphs)
+4.user goals
+	- accepts and monitors the user goals
+	- rewards users on achievement
+5. global insights
+	- provides insights from admin/gemini AI
+6. weather/ climate (optional)
+	- provides daily weather
