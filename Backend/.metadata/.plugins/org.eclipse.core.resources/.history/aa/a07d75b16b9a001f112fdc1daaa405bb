@@ -1,0 +1,9 @@
+spring.application.name=CarbonFootprintService
+server.port = 5090
+spring.datasource.url=jdbc:mysql://localhost:3306/carbon_footprint
+spring.datasource.username=root
+spring.datasource.password=pass@word1
+spring.jpa.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
+spring.jpa.hibernate.naming-strategy=org.hibernate.cfg.ImproveNamingStrategy
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show-sql=true

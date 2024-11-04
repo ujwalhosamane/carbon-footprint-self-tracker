@@ -1,0 +1,8 @@
+package com.goal.service;
+
+import com.goal.model.Goal;
+
+public interface GoalServiceInterface {
+	Goal saveGoal(String userId);
+	void deleteByUserID(String UserId);
+}

@@ -1,0 +1,11 @@
+package com.carbon.footprint.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.carbon.footprint.model.CarbonFootprint;
+
+public interface CarbonFootprintRepository extends JpaRepository<CarbonFootprint, Integer> {
+	List<CarbonFootprint> getFootprintsByUserId(String userId);
+}

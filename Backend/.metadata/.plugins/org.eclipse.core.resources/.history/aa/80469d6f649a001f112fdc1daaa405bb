@@ -1,0 +1,5 @@
+package com.carbon.footprint.controller;
+
+public class CarbonFootprintController {
+
+}

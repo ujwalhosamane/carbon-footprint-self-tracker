@@ -1,0 +1,34 @@
+package com.carbon.footprint.model;
+
+import java.util.Date;
+
+import org.springframework.data.annotation.CreatedDate;
+
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "carbon_footprint", uniqueConstraints = {@UniqueConstraint(columnNames = {"footprintMonth", "footprintYear"})})
+public class CarbonFootprint {
+	@Id
+	private int carbonFootprintId;
+	private String userId;
+	
+	@CreatedDate
+	private Date creationDate;
+	
+	private String footprintMonth;
+	private int footprintYear;
+	private float transportation;
+	private float electricity;
+	private float lpg;
+	private float shipping;
+	private float airConditioner;
+	private float totalFootprint;
+}

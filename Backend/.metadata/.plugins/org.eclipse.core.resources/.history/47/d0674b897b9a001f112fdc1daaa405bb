@@ -1,0 +1,213 @@
+package com.carbon.footprint.service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.carbon.footprint.dto.CarbonFootprintDTO;
+import com.carbon.footprint.model.CarbonFootprint;
+import com.carbon.footprint.repository.CarbonFootprintRepository;
+
+@Service
+public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterface {
+
+	@Autowired
+	private CarbonFootprintRepository carbonFootprintRepository;
+	
+	@Override
+	public CarbonFootprint addFootprint(CarbonFootprintDTO footprintDto) {
+			
+		float totalFootprint = footprintDto.getTransportation() + footprintDto.getElectricity() +
+				footprintDto.getLpg() + footprintDto.getShipping() + footprintDto.getAirConditioner();
+
+		CarbonFootprint carbonFootprint = new CarbonFootprint();
+		carbonFootprint.setUserId(footprintDto.getUserId());
+		carbonFootprint.setFootprintMonth(footprintDto.getFootprintMonth());
+		carbonFootprint.setFootprintYear(footprintDto.getFootprintYear());
+		carbonFootprint.setTransportation(footprintDto.getTransportation());
+		carbonFootprint.setElectricity(footprintDto.getElectricity());
+		carbonFootprint.setLpg(footprintDto.getLpg());
+		carbonFootprint.setShipping(footprintDto.getShipping());
+		carbonFootprint.setAirConditioner(footprintDto.getAirConditioner());
+		
+		carbonFootprint.setTotalFootprint(totalFootprint);
+		carbonFootprint.setCreationDate(new Date());
+		
+		return carbonFootprintRepository.save(carbonFootprint);
+	}
+
+	@Override
+	public List<CarbonFootprint> getFootprintsByUserId(String userId) {
+		List<CarbonFootprint> listCarbonFootprint = carbonFootprintRepository.findFootprintsByUserId(userId);
+		
+		return listCarbonFootprint.size() > 0 ?  listCarbonFootprint : null;
+	}
+
+	@Override
+	public void deleteFootprint(Long footprintId) {
+		carbonFootprintRepository.deleteById(footprintId);
+	}
+
+	@Override
+	public List<CarbonFootprint> getAllFootprint() {
+		
+		return carbonFootprintRepository.findAll();
+	}
+
+	@Override
+	public CarbonFootprint updateFootprint(CarbonFootprintDTO footprintDto, Long footprintId) {
+		CarbonFootprint carbonFootprint = carbonFootprintRepository.findById(footprintId).orElse(null);
+		
+		if(carbonFootprint != null && carbonFootprint.getUserId().equals(footprintDto.getUserId())) {
+			float totalFootprint = footprintDto.getTransportation() + footprintDto.getElectricity() +
+					footprintDto.getLpg() + footprintDto.getShipping() + footprintDto.getAirConditioner();
+			
+			carbonFootprint.setFootprintMonth(footprintDto.getFootprintMonth());
+			carbonFootprint.setFootprintYear(footprintDto.getFootprintYear());
+			carbonFootprint.setTransportation(footprintDto.getTransportation());
+			carbonFootprint.setElectricity(footprintDto.getElectricity());
+			carbonFootprint.setLpg(footprintDto.getLpg());
+			carbonFootprint.setShipping(footprintDto.getShipping());
+			carbonFootprint.setAirConditioner(footprintDto.getAirConditioner());
+			
+			carbonFootprint.setTotalFootprint(totalFootprint);
+			carbonFootprint.setCreationDate(new Date());
+		}
+		
+		
+		return carbonFootprint != null ?
+				carbonFootprintRepository.save(carbonFootprint) :
+					null;
+	}
+
+	@Override
+	public CarbonFootprint findByUserIdAndMonthAndYear(String userId, String month, int year) {
+		Optional<CarbonFootprint> footprint = carbonFootprintRepository.findByUserIdAndMonthAndYear(userId, month, year);
+		return footprint.isPresent() ?
+				footprint.get() :
+					null;
+	}
+	
+	public CarbonFootprintDTO findByMonthAndYear(String month, int year) {
+		Optional<CarbonFootprint> carbonFootprint = carbonFootprintRepository.findSumsByMonthAndYear(month, year);
+		CarbonFootprintDTO carbonFootprintDto = carbonFootprint.isPresent() ? 
+													new CarbonFootprintDTO(carbonFootprint.get().getTransportation(),
+															carbonFootprint.get().getElectricity(),
+															carbonFootprint.get().getLpg(),
+															carbonFootprint.get().getShipping(),
+															carbonFootprint.get().getAirConditioner()) : 
+														null;
+		return carbonFootprintDto;
+    }
+
+	@Override
+	public List<CarbonFootprintDTO> findLastNMonthsSums(int n) {
+        List<CarbonFootprintDTO> nMonthsResult = new ArrayList<>();
+        
+        Calendar calendar = Calendar.getInstance();
+
+        for (int i = 0; i < n; i++) {
+            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
+            String month = getMonthName(calendar.get(Calendar.MONTH));
+            int year = calendar.get(Calendar.YEAR);
+            
+            CarbonFootprint carbonFootprint = carbonFootprintRepository.findSumsByMonthAndYear(month, year).orElse(null);
+            if(carbonFootprint != null) {
+            	CarbonFootprintDTO eachMonth = new CarbonFootprintDTO(
+            			carbonFootprint.getTransportation(),
+						carbonFootprint.getElectricity(),
+						carbonFootprint.getLpg(),
+						carbonFootprint.getShipping(),
+						carbonFootprint.getAirConditioner());
+            	eachMonth.setFootprintMonth(month);
+            	eachMonth.setFootprintYear(year);
+                nMonthsResult.add(eachMonth);
+            } else {
+            	nMonthsResult.add(null);
+            }
+        }
+
+        return nMonthsResult;
+    }
+	
+
+    private String getMonthName(int monthIndex) {
+        String[] months = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        };
+        return months[monthIndex];
+    }
+
+	@Override
+	public List<CarbonFootprintDTO> findLastNmonthsSumsByUserId(String userId, int n) {
+		List<CarbonFootprintDTO> nMonthsResult = new ArrayList<>();
+        
+        Calendar calendar = Calendar.getInstance();
+
+        for (int i = 0; i < n; i++) {
+            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
+            String month = getMonthName(calendar.get(Calendar.MONTH));
+            int year = calendar.get(Calendar.YEAR);
+            
+            CarbonFootprint carbonFootprint = carbonFootprintRepository.findByUserIdAndMonthAndYear(userId, month, year).orElse(null);
+            if(carbonFootprint != null) {
+            	CarbonFootprintDTO eachMonth = new CarbonFootprintDTO(
+            			carbonFootprint.getTransportation(),
+						carbonFootprint.getElectricity(),
+						carbonFootprint.getLpg(),
+						carbonFootprint.getShipping(),
+						carbonFootprint.getAirConditioner());
+            	eachMonth.setFootprintMonth(month);
+            	eachMonth.setFootprintYear(year);
+            	eachMonth.setUserId(userId);
+                nMonthsResult.add(eachMonth);
+            } else {
+            	nMonthsResult.add(null);
+            }
+        }
+
+        return nMonthsResult;
+	}
+
+	@Override
+	public CarbonFootprintDTO findAllSumsByUserId(String userId) {
+		List<CarbonFootprint> carbonFootprint = carbonFootprintRepository.findFootprintsByUserId(userId);
+		CarbonFootprintDTO carbonFootprintDto = null;
+		if(carbonFootprint.size() > 0) {
+			float totalTransportation = 0;
+			float totalElectricity = 0;
+			float totalLpg = 0;
+			float totalShipping = 0;
+			float totalAirConditioner = 0;
+			for(CarbonFootprint footprint: carbonFootprint) {
+				totalTransportation += footprint.getTransportation();
+				totalElectricity += footprint.getElectricity();
+				totalLpg += footprint.getLpg();
+				totalShipping += footprint.getShipping();
+				totalAirConditioner += footprint.getAirConditioner();
+			}
+			
+			carbonFootprintDto = new CarbonFootprintDTO(totalTransportation, 
+					totalElectricity,
+					totalLpg,
+					totalShipping,
+					totalAirConditioner);
+		}
+		
+		return carbonFootprintDto;
+	}
+
+	@Override
+	public void deleteByUserId(String UserId) {
+		carbonFootprintRepository.deleteByUserId(UserId);
+	}
+	
+	
+
+}

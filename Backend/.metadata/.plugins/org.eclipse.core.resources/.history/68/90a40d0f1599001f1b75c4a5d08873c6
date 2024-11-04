@@ -1,0 +1,19 @@
+package com.carbon.footprint.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.carbon.footprint.dto.CarbonFootprintDTO;
+import com.carbon.footprint.model.CarbonFootprint;
+
+public interface CarbonFootprintServiceInterface {
+	
+	CarbonFootprint addFootprint(CarbonFootprintDTO footprintDto);
+	List<CarbonFootprint> getFootprintsByUserId(String userId);
+	CarbonFootprint updateFootprint(CarbonFootprintDTO footprintDto, int footprintId);
+	void deleteFootprint(int footprintId);
+	List<CarbonFootprint> getAllFootprint();
+	Optional<CarbonFootprint> findByUserIdAndMonthAndYear(String userId, String month, int year);
+	Optional<CarbonFootprintDTO> getMonthlySums(String month, int year);
+	CarbonFootprintDTO findLastSixMonthsSums();
+}

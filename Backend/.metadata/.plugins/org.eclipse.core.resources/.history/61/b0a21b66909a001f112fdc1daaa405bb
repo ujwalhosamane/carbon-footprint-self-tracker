@@ -1,0 +1,13 @@
+package com.goal.service;
+
+import java.util.List;
+
+import com.goal.model.PredefinedGoal;
+
+public interface PredefinedGoalServiceInterface {
+	PredefinedGoal savePredefinedGoal(PredefinedGoal predefinedGoal);
+	PredefinedGoal getPredefinedGoal(Long predefinedGoalId);
+	List<PredefinedGoal> getAllPredefinedGoal();
+	PredefinedGoal updatePredefinedGoal(PredefinedGoal predefinedGoal);
+	void deletePredefinedGoal(Long PredefinedGoal);
+}

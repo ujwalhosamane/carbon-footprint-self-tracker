@@ -1,0 +1,12 @@
+package com.carbon.footprint.service;
+
+import java.util.List;
+
+import com.carbon.footprint.model.CarbonFootprint;
+
+public interface CarbonFootprintServiceInterface {
+	CarbonFootprint calculateFootprint(CarbonFootprint footprint);
+	List<CarbonFootprint> getFootprintsByUserId(String userId);
+	CarbonFootprint updateFootprint(CarbonFootprint footprint);
+	void deleteFootprint(int footprintId);
+}

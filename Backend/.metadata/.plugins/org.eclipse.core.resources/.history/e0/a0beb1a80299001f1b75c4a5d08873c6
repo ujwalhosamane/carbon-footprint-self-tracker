@@ -1,0 +1,5 @@
+package com.carbon.footprint.service;
+
+public interface CarbonFootprintServiceInterface {
+
+}
