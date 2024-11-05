@@ -22,8 +22,9 @@ public class Goal {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long goalId;
 	private String userId;
-	private Long currentScore;
+	private Double currentScore;
 	private Long count;
+	private boolean isAchieved;
 	
 	@ManyToOne
     @JoinColumn(name = "predefined_goal_id", nullable = false)

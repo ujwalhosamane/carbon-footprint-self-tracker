@@ -1,14 +1,12 @@
 package com.carbon.footprint.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,8 +26,7 @@ public class CarbonFootprint {
 	private Long carbonFootprintId;
 	private String userId;
 	
-	@Temporal(TemporalType.DATE)
-	private Date creationDate;
+	private LocalDate creationDate;
 	
 	private String footprintMonth;
 	private int footprintYear;

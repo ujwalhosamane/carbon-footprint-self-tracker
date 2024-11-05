@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 public class PredefinedGoalDTO {
 	@NotNull(message = "Title cannot be null")
     private String title;
+	
+	@NotNull(message = "Type cannot be null")
+	private String type;
 
     @NotNull(message = "Description cannot be null")
     private String description;

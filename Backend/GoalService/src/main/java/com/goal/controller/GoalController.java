@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,8 +34,21 @@ public class GoalController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@GetMapping("/get{userId}")
+	@GetMapping("/get/{userId}")
 	public ResponseEntity<List<Goal>> getAllGoal(@PathVariable String userId) {
 		return new ResponseEntity<>(goalService.getByUserId(userId), HttpStatus.OK);
 	}
+	
+	@PutMapping("/update/achievement")
+	public ResponseEntity<Void> updateAchievement() {
+		goalService.updateAchievement();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@PutMapping("/reset/score")
+	public ResponseEntity<Void> resetCurrentScore() {
+		goalService.resetCurrentScore();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 }

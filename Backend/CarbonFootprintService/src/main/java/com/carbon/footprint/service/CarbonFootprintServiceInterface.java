@@ -1,5 +1,6 @@
 package com.carbon.footprint.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.carbon.footprint.dto.CarbonFootprintDTO;
@@ -7,9 +8,9 @@ import com.carbon.footprint.model.CarbonFootprint;
 
 public interface CarbonFootprintServiceInterface {
 	
-	CarbonFootprint addFootprint(CarbonFootprintDTO footprintDto);
+	CarbonFootprint addFootprint(CarbonFootprintDTO footprintDto, LocalDate accountCreationDate);
 	List<CarbonFootprint> getFootprintsByUserId(String userId);
-	CarbonFootprint updateFootprint(CarbonFootprintDTO footprintDto, Long footprintId);
+	CarbonFootprint updateFootprint(CarbonFootprintDTO footprintDto, Long footprintId, LocalDate accountCreationDate);
 	void deleteFootprint(Long footprintId);
 	List<CarbonFootprint> getAllFootprint();
 	
@@ -23,4 +24,6 @@ public interface CarbonFootprintServiceInterface {
 	List<CarbonFootprintDTO> findByMonthAndYear(String month, int year);
 	List<CarbonFootprintDTO> findLastNMonthsSums(int n);
 	
+	// Goal
+	CarbonFootprintDTO findHalfYearlySumsByYear(String userId, int year);
 }

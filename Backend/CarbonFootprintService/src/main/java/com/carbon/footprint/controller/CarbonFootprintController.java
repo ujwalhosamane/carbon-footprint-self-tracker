@@ -1,10 +1,11 @@
 package com.carbon.footprint.controller;
 
-import org.springframework.http.HttpStatus;
-
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.carbon.footprint.dto.CarbonFootprintDTO;
@@ -26,8 +28,10 @@ public class CarbonFootprintController {
 	private CarbonFootprintServiceImpl carbonFootprintService;
 	
 	@PostMapping("/add")
-	public ResponseEntity<CarbonFootprint> addCarbonFootprint(@RequestBody CarbonFootprintDTO carbonFootprintDto) {
-		return new ResponseEntity<>(carbonFootprintService.addFootprint(carbonFootprintDto), HttpStatus.OK);
+	public ResponseEntity<CarbonFootprint> addCarbonFootprint(
+			@RequestBody CarbonFootprintDTO carbonFootprintDto,
+			@RequestParam("accountCreationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate accountCreationDate) {
+		return new ResponseEntity<>(carbonFootprintService.addFootprint(carbonFootprintDto, accountCreationDate), HttpStatus.OK);
 	}
 	
 	@GetMapping("/getAll")
@@ -36,8 +40,11 @@ public class CarbonFootprintController {
 	}
 	
 	@PutMapping("/update/{footprintId}")
-	public ResponseEntity<CarbonFootprint> updateCarbonFootprint(@RequestBody CarbonFootprintDTO carbonFootprintDto, @PathVariable Long footprintId) {
-		return new ResponseEntity<>(carbonFootprintService.updateFootprint(carbonFootprintDto, footprintId), HttpStatus.OK);
+	public ResponseEntity<CarbonFootprint> updateCarbonFootprint(
+			@RequestBody CarbonFootprintDTO carbonFootprintDto, 
+			@PathVariable Long footprintId,
+			@RequestParam("accountCreationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate accountCreationDate) {
+		return new ResponseEntity<>(carbonFootprintService.updateFootprint(carbonFootprintDto, footprintId, accountCreationDate), HttpStatus.OK);
 	}
 	
 	@GetMapping("/get/{userId}")
@@ -82,5 +89,11 @@ public class CarbonFootprintController {
 	public ResponseEntity<Void> deleteFootprintByUserId(@PathVariable String userId) {
 		carbonFootprintService.deleteByUserId(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@GetMapping("/toGoal/getSums/{year}/{userId}")
+	public ResponseEntity<CarbonFootprintDTO> getHalfYearSums(@PathVariable String userId, @PathVariable int year) {
+		System.out.println("Called");		
+		return new ResponseEntity<>(carbonFootprintService.findHalfYearlySumsByYear(userId, year), HttpStatus.OK);
 	}
 }

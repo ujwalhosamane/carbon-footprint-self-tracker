@@ -25,6 +25,7 @@ public class PredefinedGoalServiceImpl implements PredefinedGoalServiceInterface
 	public PredefinedGoal savePredefinedGoal(PredefinedGoalDTO predefinedGoalDto) {
 		PredefinedGoal predefinedGoal = new PredefinedGoal(
 				predefinedGoalDto.getTitle(),
+				predefinedGoalDto.getType(),
 				predefinedGoalDto.getDescription(),
 				predefinedGoalDto.getTargetScore(),
 				predefinedGoalDto.getRewardPoint());

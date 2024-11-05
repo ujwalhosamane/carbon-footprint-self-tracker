@@ -3,6 +3,8 @@ package com.goal.model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -31,6 +33,9 @@ public class PredefinedGoal {
 	
 	@NotNull(message = "Title cannot be null")
     private String title;
+	
+	@NotNull(message = "Type cannot be null")
+	private String type;
 
     @NotNull(message = "Description cannot be null")
     private String description;
@@ -41,14 +46,17 @@ public class PredefinedGoal {
     @NotNull(message = "Reward point cannot be null")
     private Long rewardPoint;
 	
+    @JsonBackReference
 	@OneToMany(mappedBy = "predefinedGoal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Goal> goals;
 	
 	public PredefinedGoal(@NotNull(message = "Title cannot be null") String title,
+				@NotNull(message = "Type cannot be null") String type,
 	            @NotNull(message = "Description cannot be null") String description,
 	            @NotNull(message = "Target score cannot be null") Long targetScore,
 	            @NotNull(message = "Reward point cannot be null") Long rewardPoint) {
 		this.title = title;
+		this.type = type;
 		this.description = description;
 		this.targetScore = targetScore;
 		this.rewardPoint = rewardPoint;

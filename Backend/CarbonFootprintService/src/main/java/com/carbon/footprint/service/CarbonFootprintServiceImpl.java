@@ -1,15 +1,18 @@
 package com.carbon.footprint.service;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.carbon.footprint.dto.CarbonFootprintDTO;
+import com.carbon.footprint.exception.FootprintDateException;
 import com.carbon.footprint.model.CarbonFootprint;
 import com.carbon.footprint.repository.CarbonFootprintRepository;
 
@@ -22,8 +25,9 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 	private CarbonFootprintRepository carbonFootprintRepository;
 	
 	@Override
-	public CarbonFootprint addFootprint(CarbonFootprintDTO footprintDto) {
-			
+	public CarbonFootprint addFootprint(CarbonFootprintDTO footprintDto, LocalDate accountCreationDate) {
+		validateFootprintDate(footprintDto.getFootprintMonth(), footprintDto.getFootprintYear(), accountCreationDate);
+		
 		float totalFootprint = footprintDto.getTransportation() + footprintDto.getElectricity() +
 				footprintDto.getLpg() + footprintDto.getShipping() + footprintDto.getAirConditioner();
 
@@ -38,7 +42,7 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 		carbonFootprint.setAirConditioner(footprintDto.getAirConditioner());
 		
 		carbonFootprint.setTotalFootprint(totalFootprint);
-		carbonFootprint.setCreationDate(new Date());
+		carbonFootprint.setCreationDate(LocalDate.now());
 		
 		return carbonFootprintRepository.save(carbonFootprint);
 	}
@@ -62,17 +66,16 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 	}
 
 	@Override
-	public CarbonFootprint updateFootprint(CarbonFootprintDTO footprintDto, Long footprintId) {
-		System.out.println(footprintId);
+	public CarbonFootprint updateFootprint(CarbonFootprintDTO footprintDto, Long footprintId, LocalDate accountCreationDate) {
 		CarbonFootprint carbonFootprint = carbonFootprintRepository.findByCarbonFootprintId(footprintId);
 		
-		System.out.println(carbonFootprint.getUserId().getClass());
-		System.out.println(footprintDto.getUserId().getClass());
 		if(!carbonFootprint.getUserId().equals(footprintDto.getUserId())) {
 			carbonFootprint = null;
 		}
 		
 		if(carbonFootprint != null) {
+			validateFootprintDate(footprintDto.getFootprintMonth(), footprintDto.getFootprintYear(), accountCreationDate);
+			
 			float totalFootprint = footprintDto.getTransportation() + footprintDto.getElectricity() +
 					footprintDto.getLpg() + footprintDto.getShipping() + footprintDto.getAirConditioner();
 			
@@ -85,11 +88,8 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 			carbonFootprint.setAirConditioner(footprintDto.getAirConditioner());
 			
 			carbonFootprint.setTotalFootprint(totalFootprint);
-			carbonFootprint.setCreationDate(new Date());
+			carbonFootprint.setCreationDate(LocalDate.now());
 		}
-		//System.out.println(carbonFootprint.getUserId());
-		System.out.println(footprintDto.getUserId());
-		System.out.println(carbonFootprint);
 		
 		return carbonFootprint != null ?
 				carbonFootprintRepository.save(carbonFootprint) :
@@ -104,6 +104,7 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 					null;
 	}
 	
+	@Override
 	public List<CarbonFootprintDTO> findByMonthAndYear(String month, int year) {
 		List<CarbonFootprint> carbonFootprint = carbonFootprintRepository.findAllSumsByMonthAndYear(month, year).orElse(null);
 		List<CarbonFootprintDTO> carbonFootprintDto = new ArrayList<>();
@@ -165,6 +166,45 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 
         return nMonthsResult;
     }
+	
+	private void validateFootprintDate(String footprintMonth, int footprintYear, LocalDate creationDate) {
+	    int creationYear = creationDate.getYear();
+	    Month creationMonth = creationDate.getMonth();
+
+	    LocalDate currentDate = LocalDate.now();
+	    int currentYear = currentDate.getYear();
+	    Month currentMonth = currentDate.getMonth();
+
+	    Month footprintMonthEnum = Month.valueOf(footprintMonth.toUpperCase());
+
+	    if (footprintYear < creationYear || 
+	        (footprintYear == creationYear && footprintMonthEnum.compareTo(creationMonth) < 0)) {
+	        throw new FootprintDateException("Footprint month and year cannot be earlier than the account creation date.");
+	    }
+
+	    if (footprintYear > currentYear || 
+	        (footprintYear == currentYear && footprintMonthEnum.compareTo(currentMonth) > 0)) {
+	        throw new FootprintDateException("Footprint month and year cannot be later than the current date.");
+	    }
+	}
+
+//	private int getMonthIndex(String monthName) {
+//	    switch (monthName) {
+//	        case "January": return Calendar.JANUARY;
+//	        case "February": return Calendar.FEBRUARY;
+//	        case "March": return Calendar.MARCH;
+//	        case "April": return Calendar.APRIL;
+//	        case "May": return Calendar.MAY;
+//	        case "June": return Calendar.JUNE;
+//	        case "July": return Calendar.JULY;
+//	        case "August": return Calendar.AUGUST;
+//	        case "September": return Calendar.SEPTEMBER;
+//	        case "October": return Calendar.OCTOBER;
+//	        case "November": return Calendar.NOVEMBER;
+//	        case "December": return Calendar.DECEMBER;
+//	        default: throw new IllegalArgumentException("Invalid month name: " + monthName);
+//	    }
+//	}
 	
 
     private String getMonthName(int monthIndex) {
@@ -239,7 +279,62 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 	public void deleteByUserId(String UserId) {
 		carbonFootprintRepository.deleteByUserId(UserId);
 	}
+
+	@Override
+	public CarbonFootprintDTO findHalfYearlySumsByYear(String userId, int year) {
+	    CarbonFootprintDTO halfYearlyFootprints = null;
+
+	    List<String> firstHalf = Arrays.asList("January", "February", "March", "April", "May", "June");
+	    List<String> secondHalf = Arrays.asList("July", "August", "September", "October", "November", "December");
+
+	    LocalDate currentDate = LocalDate.now();
+	    Month currentMonth = currentDate.getMonth();
+
+	    if (currentMonth.getValue() <= Month.JUNE.getValue()) {
+	        List<String> firstHalfUpToCurrent = firstHalf.subList(0, currentMonth.getValue());
+	        halfYearlyFootprints = calculateTotalForHalfYear(firstHalfUpToCurrent, year, "January-" + currentMonth, userId);
+	    } else {
+	        List<String> secondHalfUpToCurrent = secondHalf.subList(0, currentMonth.getValue() - Month.JUNE.getValue());
+	        halfYearlyFootprints = calculateTotalForHalfYear(secondHalfUpToCurrent, year, "July-" + currentMonth, userId);
+	    }
+
+	    return halfYearlyFootprints;
+	}
 	
-	
+	private CarbonFootprintDTO calculateTotalForHalfYear(List<String> months, int year, String halfYearLabel, String userId) {
+	    List<CarbonFootprint> footprints = new ArrayList<>();
+	    for(String month: months) {
+	    	footprints.add(
+	    			carbonFootprintRepository
+	    			.findByUserIdAndMonthAndYear(userId, month, year)
+	    			.orElse(null));
+	    }
+	    float totalTransportation = 0;
+	    float totalElectricity = 0;
+	    float totalLpg = 0;
+	    float totalShipping = 0;
+	    float totalAirConditioner = 0;
+
+	    for (CarbonFootprint footprint : footprints) {
+	    	if(footprint == null) continue;
+	        totalTransportation += footprint.getTransportation();
+	        totalElectricity += footprint.getElectricity();
+	        totalLpg += footprint.getLpg();
+	        totalShipping += footprint.getShipping();
+	        totalAirConditioner += footprint.getAirConditioner();
+	    }
+
+	    CarbonFootprintDTO halfYearFootprintDTO = new CarbonFootprintDTO(
+	        totalTransportation,
+	        totalElectricity,
+	        totalLpg,
+	        totalShipping,
+	        totalAirConditioner
+	    );
+	    halfYearFootprintDTO.setFootprintMonth(halfYearLabel);
+	    halfYearFootprintDTO.setFootprintYear(year);
+
+	    return halfYearFootprintDTO;
+	}
 
 }
