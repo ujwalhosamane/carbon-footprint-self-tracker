@@ -19,4 +19,9 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(PredefinedGoalNotFoundException.class)
+    public ResponseEntity<String> handlePredefinedGoalNotFoundException(PredefinedGoalNotFoundException ex) {
+    	return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

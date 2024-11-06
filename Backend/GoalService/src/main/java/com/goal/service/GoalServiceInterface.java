@@ -7,6 +7,7 @@ import com.goal.model.Goal;
 
 public interface GoalServiceInterface {
 	void saveGoal(String userId);
+	void saveNewGoal(List<String> userId, Long predefinedGoalId);
 	List<Goal> getByUserId(String userId);
 	void deleteByUserId(String UserId);
 	

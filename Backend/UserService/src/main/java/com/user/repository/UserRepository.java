@@ -15,21 +15,18 @@ import feign.Param;
 
 public interface UserRepository extends JpaRepository<User, String> {
 	Optional<User> findByEmail(String email);
-	
-	
 	// For Predefined Goal
 	@Query("SELECT u.userId FROM User u "
-			+ "WHERE u.role = :role")
-	List<String> getAllNonAdminUserId(@Param("role") UserRole role);
+			+ "WHERE u.role = 'USER'")
+	List<String> getAllNonAdminUserId();
 	
 	// For Leader Board on Footprint
 	@Query("SELECT new com.user.dto.LeaderBoardOnFootprint("
 			+ "u.name, u.city, u.totalFootprint) "
 			+ "FROM User u "
-			+ "WHERE u.role = :role "
+			+ "WHERE u.role = 'USER' "
 			+ "AND u.userId <> :userId")
 	List<LeaderBoardOnFootprint> getAllLeaderBoardOnFootprint(
-			@Param("role") UserRole role,
 			@Param("userId") String userId);
 	
 	
@@ -37,9 +34,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 	@Query("SELECT new com.user.dto.LeaderBoardOnRewardPoints("
 			+ "u.name, u.city, u.totalRewardPoints) "
 			+ "FROM User u "
-			+ "WHERE u.role = :role "
+			+ "WHERE u.role = 'USER' "
 			+ "AND u.userId <> :userId")
 	List<LeaderBoardOnRewardPoints> getAllLeaderBoardOnRewardPoints(
-			@Param("role") UserRole role,
-			@Param("userId") String userId);
+			@Param("userId") String userId);	
 }

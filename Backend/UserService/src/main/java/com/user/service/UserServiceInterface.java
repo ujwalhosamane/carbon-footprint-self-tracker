@@ -8,5 +8,6 @@ import com.user.dto.LeaderBoardOnRewardPoints;
 public interface UserServiceInterface {
 	List<LeaderBoardOnFootprint> getBoardOnFootprints(String userId);
 	List<LeaderBoardOnRewardPoints> getBoardOnRewardPoints(String userId);
-//	List<String> getAllNonAdminUserId();
+	
+	void deleteUserAccount(String userId, String email);
 }

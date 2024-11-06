@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,6 +49,12 @@ public class GoalController {
 	@PutMapping("/reset/score")
 	public ResponseEntity<Void> resetCurrentScore() {
 		goalService.resetCurrentScore();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@PostMapping("/add/users/{predefinedId}")
+	public ResponseEntity<Void> addGoal(@RequestBody List<String> users, @PathVariable Long predefinedId) {
+		goalService.saveNewGoal(users, predefinedId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

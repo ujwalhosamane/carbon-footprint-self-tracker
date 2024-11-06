@@ -9,14 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.user.dto.LeaderBoardOnFootprint;
 import com.user.dto.LeaderBoardOnRewardPoints;
-import com.user.dto.UserCreationDTO;
-import com.user.dto.UserForgotPasswordDTO;
-import com.user.dto.UserPostCreationDTO;
-import com.user.exception.DuplicateUserException;
-import com.user.exception.InvalidPasswordException;
 import com.user.exception.UserNotFoundException;
 import com.user.model.User;
-import com.user.model.UserRole;
 import com.user.repository.UserRepository;
 
 @Service
@@ -28,7 +22,7 @@ public class UserServiceImpl implements UserServiceInterface {
 	@Override
 	public List<LeaderBoardOnFootprint> getBoardOnFootprints(String userId) {
 		List<LeaderBoardOnFootprint> boardOnFootprints = 
-				userRepository.getAllLeaderBoardOnFootprint(UserRole.USER, userId);
+				userRepository.getAllLeaderBoardOnFootprint(userId);
 		
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -48,7 +42,7 @@ public class UserServiceImpl implements UserServiceInterface {
 	@Override
 	public List<LeaderBoardOnRewardPoints> getBoardOnRewardPoints(String userId) {
 		List<LeaderBoardOnRewardPoints> boardOnRewardPoints = 
-				userRepository.getAllLeaderBoardOnRewardPoints(UserRole.USER, userId);
+				userRepository.getAllLeaderBoardOnRewardPoints(userId);
 		
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -65,9 +59,8 @@ public class UserServiceImpl implements UserServiceInterface {
 		return boardOnRewardPoints;
 	}
 
-//	@Override
-//	public List<String> getAllNonAdminUserId() {	
-//		return userRepository.getAllNonAdminUserId(UserRole.USER);
-//	}
-	
+	@Override
+	public void deleteUserAccount(String userId, String email) {
+		
+	}	
 }
