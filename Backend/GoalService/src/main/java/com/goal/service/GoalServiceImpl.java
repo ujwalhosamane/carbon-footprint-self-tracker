@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.goal.dto.CarbonFootprintDTO;
+import com.goal.exception.PredefinedGoalNotFoundException;
 import com.goal.model.Goal;
 import com.goal.model.PredefinedGoal;
 import com.goal.repository.GoalRepository;
@@ -121,6 +122,26 @@ public class GoalServiceImpl implements GoalServiceInterface {
 			goal.setAchieved(false);
 			goal.setCurrentScore(Double.valueOf(0));
 			goalRepo.save(goal);
+		}
+	}
+
+	@Override
+	public void saveNewGoal(List<String> userId, Long predefinedGoalId) {
+		PredefinedGoal predefinedGoal = 
+				predefinedGoalRepo.findByPredefinedGoalId(predefinedGoalId)
+				.orElseThrow(() -> new PredefinedGoalNotFoundException("Predefined Goal not found"));
+		
+		for(String user: userId) {
+			Goal userGoal = new Goal();
+			userGoal.setCurrentScore(Double.valueOf(0));
+			userGoal.setPredefinedGoal(predefinedGoal);
+			userGoal.setUserId(user);
+			userGoal.setCount(Long.valueOf(0));
+			userGoal.setAchieved(false);
+			userGoal = goalRepo.save(userGoal);
+			
+			predefinedGoal.getGoals().add(userGoal);
+			predefinedGoalRepo.save(predefinedGoal);
 		}
 	}
 
