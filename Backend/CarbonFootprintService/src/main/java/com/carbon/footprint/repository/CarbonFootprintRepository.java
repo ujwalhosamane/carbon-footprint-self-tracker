@@ -46,6 +46,33 @@ public interface CarbonFootprintRepository extends JpaRepository<CarbonFootprint
 	Optional<List<CarbonFootprint>> findAllSumsByMonthAndYear(
 	        @Param("month") String month,
 	        @Param("year") int year);
+	
+	
+	
+	@Query(value = """
+	        SELECT COUNT(*) 
+	        FROM carbon_footprint 
+	        WHERE user_id = :userId 
+	          AND (footprint_year * 12 + CASE 
+	                                        WHEN footprint_month = 'January' THEN 1
+	                                        WHEN footprint_month = 'February' THEN 2
+	                                        WHEN footprint_month = 'March' THEN 3
+	                                        WHEN footprint_month = 'April' THEN 4
+	                                        WHEN footprint_month = 'May' THEN 5
+	                                        WHEN footprint_month = 'June' THEN 6
+	                                        WHEN footprint_month = 'July' THEN 7
+	                                        WHEN footprint_month = 'August' THEN 8
+	                                        WHEN footprint_month = 'September' THEN 9
+	                                        WHEN footprint_month = 'October' THEN 10
+	                                        WHEN footprint_month = 'November' THEN 11
+	                                        WHEN footprint_month = 'December' THEN 12
+	                                    END) 
+	              BETWEEN (:year * 12 + :month - 5) AND (:year * 12 + :month)
+	        """, nativeQuery = true)
+	    int countFootprintsForLast6Months(@Param("userId") String userId, 
+	                                      @Param("year") int year, 
+	                                      @Param("month") int month);
+	
 //	@Query("SELECT new com.carbon.footprint.model.CarbonFootprint(" +
 //	       "cf.transportation, cf.electricity, cf.lpg, " +
 //	       "cf.shipping, cf.airConditioner) " +

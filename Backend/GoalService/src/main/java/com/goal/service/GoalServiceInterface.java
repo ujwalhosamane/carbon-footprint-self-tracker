@@ -1,6 +1,7 @@
 package com.goal.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.goal.dto.CarbonFootprintDTO;
 import com.goal.model.Goal;
@@ -12,7 +13,13 @@ public interface GoalServiceInterface {
 	void deleteByUserId(String UserId);
 	
 	void updateScoreByUserId(CarbonFootprintDTO carbonFootprintDto, String userId);
-	void updateAchievement();
 	
+	//Scheduler
+	void updateAchievement(List<String> users);
 	void resetCurrentScore();
+	
+	List<String> findAllDistinctUserIds();
+	
+	Map<String, Double> getUserIdsWithTotalRewardPoints();
+	Map<String, Double> getUserIdsWithSixMonthsRewardPoints();
 }

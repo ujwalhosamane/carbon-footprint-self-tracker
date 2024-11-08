@@ -44,6 +44,7 @@ public class User {
     
 	private LocalDate creationDate;
 	private Double totalFootprint;
+	private Double sixMonthRewardPoints;
 	private Double totalRewardPoints;
 	
 	@PrePersist

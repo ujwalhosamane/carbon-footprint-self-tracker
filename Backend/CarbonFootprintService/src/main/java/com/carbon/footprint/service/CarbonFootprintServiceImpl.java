@@ -336,5 +336,18 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 
 	    return halfYearFootprintDTO;
 	}
-
+	
+	@Override
+	public List<String> getLast6MonthsFootprintCount(List<String> userIds) {
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        int currentMonth = currentDate.getMonthValue(); 
+        
+        for(String userId: userIds) {
+        	if(carbonFootprintRepository.countFootprintsForLast6Months(userId, currentYear, currentMonth) != 6) {
+        		userIds.remove(userId);
+        	}
+        }
+        return userIds;
+    }
 }

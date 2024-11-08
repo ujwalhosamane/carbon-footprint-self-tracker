@@ -93,7 +93,11 @@ public class CarbonFootprintController {
 	
 	@GetMapping("/toGoal/getSums/{year}/{userId}")
 	public ResponseEntity<CarbonFootprintDTO> getHalfYearSums(@PathVariable String userId, @PathVariable int year) {
-		System.out.println("Called");		
 		return new ResponseEntity<>(carbonFootprintService.findHalfYearlySumsByYear(userId, year), HttpStatus.OK);
+	}
+	
+	@GetMapping("/count/forAllUserId")
+	public ResponseEntity<List<String>> getCountOfFootprint(@RequestBody List<String> userIds) {
+		return new ResponseEntity<List<String>>(carbonFootprintService.getLast6MonthsFootprintCount(userIds), HttpStatus.OK);
 	}
 }

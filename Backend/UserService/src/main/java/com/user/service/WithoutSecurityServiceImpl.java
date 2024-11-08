@@ -1,10 +1,13 @@
 package com.user.service;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.parsing.PassThroughSourceExtractor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import com.user.client.GoalClient;
 import com.user.dto.UserCreationDTO;
 import com.user.dto.UserForgotPasswordDTO;
 import com.user.dto.UserPostCreationDTO;
@@ -19,6 +22,9 @@ public class WithoutSecurityServiceImpl implements WithoutSecurityServiceInterfa
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private GoalClient goalClient;
+	
 	@Override
 	public UserPostCreationDTO addUser(UserCreationDTO userCreationDTO) 
 			throws DuplicateUserException {
@@ -30,6 +36,7 @@ public class WithoutSecurityServiceImpl implements WithoutSecurityServiceInterfa
 		user.setRole(UserRole.USER);
 		user.setCreationDate(LocalDate.now());
 		user.setTotalFootprint(Double.valueOf(0));
+		user.setSixMonthRewardPoints(Double.valueOf(0));
 		user.setTotalRewardPoints(Double.valueOf(0));
 		
 		try {
@@ -37,10 +44,15 @@ public class WithoutSecurityServiceImpl implements WithoutSecurityServiceInterfa
 		} catch (Exception e) {
 			throw new DuplicateUserException("Email Id alredy exists");
 		}
-		
+		// Adding goals to the user
+		if(!goalClient.addGoal(user.getUserId()).getStatusCode().equals(HttpStatus.OK)) {
+			userRepository.deleteById(user.getUserId());
+			throw new RuntimeException("Something went wrong while creating the user");
+		}
 		UserPostCreationDTO postCreationDTO = new UserPostCreationDTO(
 				user.getName(),
-				user.getEmail());
+				user.getEmail(),
+				user.getCity());
 		
 		return postCreationDTO;
 	}
@@ -69,6 +81,11 @@ public class WithoutSecurityServiceImpl implements WithoutSecurityServiceInterfa
 		postCreationDTO.setEmail(user.getEmail());
 		
 		return postCreationDTO;
+	}
+
+	@Override
+	public void updateRewardPoints(Map<String, String> userRewardPoints) {
+		
 	}
 
 }

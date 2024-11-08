@@ -1,6 +1,8 @@
 package com.goal.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,7 +52,6 @@ public class GoalServiceImpl implements GoalServiceInterface {
 
 	@Override
 	public List<Goal> getByUserId(String userId) {
-		
 		return goalRepo.findByUserId(userId);
 	}
 
@@ -103,9 +104,11 @@ public class GoalServiceImpl implements GoalServiceInterface {
 	}
 
 	@Override
-	public void updateAchievement() {
+	public void updateAchievement(List<String> users) {
 		List<Goal> userGoal = goalRepo.findAll();
+		
 		for(Goal goal: userGoal) {
+			if(!users.contains(goal.getUserId())) continue;
 			PredefinedGoal predefinedGoal = goal.getPredefinedGoal();
 			if(predefinedGoal.getTargetScore() > goal.getCurrentScore()) {
 				goal.setAchieved(true);
@@ -143,6 +146,33 @@ public class GoalServiceImpl implements GoalServiceInterface {
 			predefinedGoal.getGoals().add(userGoal);
 			predefinedGoalRepo.save(predefinedGoal);
 		}
+	}
+
+	@Override
+	public List<String> findAllDistinctUserIds() {
+		return goalRepo.findAllDistinctUserIds();
+	}
+	
+	@Override
+	public Map<String, Double> getUserIdsWithTotalRewardPoints() {
+        List<Object[]> results = goalRepo.findUserIdsWithTotalRewardPoints();
+        
+        return results.stream()
+                      .collect(Collectors.toMap(
+                          result -> (String) result[0],             
+                          result -> ((Number) result[1]).doubleValue() 
+                      ));
+    }
+
+	@Override
+	public Map<String, Double> getUserIdsWithSixMonthsRewardPoints() {
+		List<Object[]> results = goalRepo.findUserIdsWithSixMonthsRewardPoints();
+		        
+        return results.stream()
+                      .collect(Collectors.toMap(
+                          result -> (String) result[0],             
+                          result -> ((Number) result[1]).doubleValue() 
+                      ));
 	}
 
 }

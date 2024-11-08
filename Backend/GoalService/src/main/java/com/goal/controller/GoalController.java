@@ -1,6 +1,7 @@
 package com.goal.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,22 +41,30 @@ public class GoalController {
 		return new ResponseEntity<>(goalService.getByUserId(userId), HttpStatus.OK);
 	}
 	
-	@PutMapping("/update/achievement")
-	public ResponseEntity<Void> updateAchievement() {
-		goalService.updateAchievement();
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	
+	// Scheduler
 	@PutMapping("/reset/score")
 	public ResponseEntity<Void> resetCurrentScore() {
 		goalService.resetCurrentScore();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	// Admin
 	@PostMapping("/add/users/{predefinedId}")
 	public ResponseEntity<Void> addGoal(@RequestBody List<String> users, @PathVariable Long predefinedId) {
 		goalService.saveNewGoal(users, predefinedId);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	// User
+	@GetMapping("/get/user/rewardPoints")
+	public ResponseEntity<Map<String, Double>> getUserAndRewardPoints() {
+		return new ResponseEntity<Map<String,Double>>(goalService.getUserIdsWithTotalRewardPoints(), HttpStatus.OK);
+	}
+	
+	// User
+	@GetMapping("/get/user/rewardPoints/six")
+	public ResponseEntity<Map<String, Double>> getUserAndSixMonthsRewardPoints() {
+		return new ResponseEntity<Map<String,Double>>(goalService.getUserIdsWithSixMonthsRewardPoints(), HttpStatus.OK);
 	}
 	
 }

@@ -26,4 +26,7 @@ public interface CarbonFootprintServiceInterface {
 	
 	// Goal
 	CarbonFootprintDTO findHalfYearlySumsByYear(String userId, int year);
+	
+	// Goal validation
+	List<String> getLast6MonthsFootprintCount(List<String> userIds);
 }

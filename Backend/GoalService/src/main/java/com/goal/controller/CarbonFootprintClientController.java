@@ -13,7 +13,7 @@ import com.goal.dto.CarbonFootprintDTO;
 import com.goal.service.GoalServiceImpl;
 
 @RestController
-@RequestMapping("/footprint")
+@RequestMapping("/goal")
 public class CarbonFootprintClientController {
 	@Autowired
 	private GoalServiceImpl goalService;
@@ -21,10 +21,17 @@ public class CarbonFootprintClientController {
 	@Autowired
 	private CarbonFootprintClient footprintClient;
 	
-	@PutMapping("/update/score/{year}/{userId}")
+	@PutMapping("/footprint/update/score/{year}/{userId}")
 	public ResponseEntity<Void> updateCurrentScoreByUserId(@PathVariable String userId,@PathVariable int year) {
 		CarbonFootprintDTO carbonFootprintDto = footprintClient.getHalfYearSums(userId, year).getBody();
 		goalService.updateScoreByUserId(carbonFootprintDto, userId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	// Scheduler
+	@PutMapping("/update/achievement")
+	public ResponseEntity<Void> updateAchievement() {
+		goalService.updateAchievement(footprintClient.getCountOfFootprint(goalService.findAllDistinctUserIds()).getBody());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

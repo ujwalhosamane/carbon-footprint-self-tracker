@@ -1,5 +1,7 @@
 package com.user.service;
 
+import java.util.Map;
+
 import com.user.dto.UserCreationDTO;
 import com.user.dto.UserForgotPasswordDTO;
 import com.user.dto.UserPostCreationDTO;
@@ -12,4 +14,6 @@ public interface WithoutSecurityServiceInterface {
 	UserPostCreationDTO addUser(UserCreationDTO userCreationDTO) throws DuplicateUserException;
 	UserPostCreationDTO updatePassword(UserForgotPasswordDTO userForgotPasswordDTO, UserRole role) 
 			throws InvalidPasswordException, UserNotFoundException;
+	
+	void updateRewardPoints(Map<String, String> userRewardPoints);
 }
