@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 
-@FeignClient(name = "GoalService")
+@FeignClient(name = "GOALSERVICE")
 public interface GoalClient {
 	@PutMapping("/goal/reset/score")
 	public ResponseEntity<Void> resetCurrentScore();

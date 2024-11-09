@@ -16,7 +16,7 @@ import com.user.dto.Goal;
 import com.user.dto.PredefinedGoal;
 import com.user.dto.PredefinedGoalDTO;
 
-@FeignClient(name = "GoalService")
+@FeignClient(name = "GOALSERVICE")
 public interface GoalClient {
 	/**
 	 * ADMIN

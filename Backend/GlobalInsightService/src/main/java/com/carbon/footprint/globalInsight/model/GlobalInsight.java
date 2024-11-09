@@ -20,7 +20,7 @@ public class GlobalInsight {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long insightId;
-	private long userId;
+	private String userId;
 	private String description;
 	private LocalDate date;
 

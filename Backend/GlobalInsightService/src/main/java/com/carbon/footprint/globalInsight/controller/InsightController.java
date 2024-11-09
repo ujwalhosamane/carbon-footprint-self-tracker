@@ -71,7 +71,7 @@ public class InsightController {
 		return ResponseEntity.ok(description);
 	}
 	
-	@GetMapping(value="/recentdescriptions/{days}")
+	@GetMapping(value="/recentDescriptions/{days}")
 	public  ResponseEntity<List<InsightDTO>> fetchRecentDescriptions(@PathVariable("days") int days)
 	{
 		List<InsightDTO> recentdescriptions = service.getRecentDescriptions(days);
@@ -80,13 +80,18 @@ public class InsightController {
 	}
 	
 	@GetMapping(value="/userInsights/{userId}")
-	public ResponseEntity<List<GlobalInsight>> fetchInsightByUserId(@PathVariable("userId") long userId)
+	public ResponseEntity<List<GlobalInsight>> fetchInsightByUserId(@PathVariable("userId") String userId)
 	{
 		List<GlobalInsight> UserInsights = service.getInsightByUserId(userId);
 		if(UserInsights != null)
 			return ResponseEntity.ok(UserInsights);
 		else
 			return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/getNInsights/{n}")
+	public ResponseEntity<List<String>> getNInsights(@PathVariable int n) {
+		return new ResponseEntity<>(service.fetchTopNByDate(n), HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value="/deleteInsight/{insightId}")
@@ -97,7 +102,7 @@ public class InsightController {
 	}
 	
 	@DeleteMapping(value="/deletebyUser/{userId}")
-	public String removeInsightByUserId(@PathVariable("userId") long userId)
+	public String removeInsightByUserId(@PathVariable("userId") String userId)
 	{
 		service.deleteInsightByUserId(userId);
 		return "insights deleted since admin ("+userId+") no longer has access";
@@ -110,10 +115,10 @@ public class InsightController {
 	}
 	
 	@GetMapping(value="/descriptionbydate/{date}")
-	public ResponseEntity<List<String>> fetchDescriptionByDate(@PathVariable("date") LocalDate date)
+	public ResponseEntity<List<GlobalInsight>> fetchDescriptionByDate(@PathVariable("date") LocalDate date)
 	{
 		
-			List<String> descriptions = service.getDescriptionByDate(date);
+			List<GlobalInsight> descriptions = service.getDescriptionByDate(date);
 			if(!descriptions.isEmpty())
 			{
 				return ResponseEntity.ok(descriptions);	

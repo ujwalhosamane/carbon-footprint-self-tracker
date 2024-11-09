@@ -13,6 +13,7 @@
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
 			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\GlobalInsightService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\SuggestionService"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>

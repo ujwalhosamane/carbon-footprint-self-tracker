@@ -18,6 +18,4 @@ public class InsightDTO {
 	private String description;
     private LocalDate date;
     
-   
-    
 }

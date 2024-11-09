@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.user.client.GlobalInsightsClient;
 import com.user.dto.UserCreationDTO;
 import com.user.dto.UserPostCreationDTO;
 import com.user.service.AdminServiceImpl;
@@ -20,6 +21,9 @@ import com.user.service.AdminServiceImpl;
 public class AdminController {
 	@Autowired
 	private AdminServiceImpl adminService;
+	
+	@Autowired
+	private GlobalInsightsClient globalInsightsClient;
 	
 	@PostMapping("/addAdmin")
 	public ResponseEntity<UserPostCreationDTO> addAdmin(@RequestBody UserCreationDTO userCreationDTO) {
@@ -31,6 +35,7 @@ public class AdminController {
 			@PathVariable String userId,
 			@PathVariable String email) {
 		adminService.deleteAdminAccount(userId, email);
+		globalInsightsClient.removeInsightByUserId(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

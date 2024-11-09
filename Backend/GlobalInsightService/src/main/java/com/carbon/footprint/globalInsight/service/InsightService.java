@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +23,6 @@ public class InsightService {
 	
 	public GlobalInsight createInsight(GlobalInsight insight)
 	{
-		
 		return repository.save(insight);	
 	}
 	
@@ -30,7 +31,7 @@ public class InsightService {
 		return repository.findById(insightId);
 	}
 	
-	public List<GlobalInsight> getInsightByUserId(long userId)
+	public List<GlobalInsight> getInsightByUserId(String userId)
 	{
 		return repository.findByUserId(userId);
 	}
@@ -45,13 +46,10 @@ public class InsightService {
                 .map(GlobalInsight::getDescription)
                 .orElse(null);
     }
-	public List<String> getDescriptionByDate(LocalDate date)
+	public List<GlobalInsight> getDescriptionByDate(LocalDate date)
 	{
-	List<GlobalInsight> descriptionForDate= repository.findByDate(date);
-	return descriptionForDate
-				.stream()
-				.map(GlobalInsight::getDescription)
-				.toList();
+		List<GlobalInsight> descriptionForDate= repository.findByDate(date);
+		return descriptionForDate;
 	}
 	
 	public List<InsightDTO> getRecentDescriptions(int ndays)
@@ -77,9 +75,18 @@ public class InsightService {
 	{
 		repository.deleteById(insightId);
 	}
+	
 	 @Transactional
-	public void deleteInsightByUserId(long userId)
+	public void deleteInsightByUserId(String userId)
 	{
 		repository.deleteByUserId(userId);
+	}
+	 
+	public List<String> fetchTopNByDate(int n) {
+	    Pageable pageable = PageRequest.of(0, n); 
+	    return repository.findAllByOrderByDateDesc(pageable)
+	    		.stream()
+	            .map(GlobalInsight::getDescription)
+	            .collect(Collectors.toList());
 	}
 }

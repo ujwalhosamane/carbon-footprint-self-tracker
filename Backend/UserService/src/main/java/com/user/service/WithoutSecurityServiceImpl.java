@@ -1,7 +1,6 @@
 package com.user.service;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,11 +80,6 @@ public class WithoutSecurityServiceImpl implements WithoutSecurityServiceInterfa
 		postCreationDTO.setEmail(user.getEmail());
 		
 		return postCreationDTO;
-	}
-
-	@Override
-	public void updateRewardPoints(Map<String, String> userRewardPoints) {
-		
 	}
 
 }
