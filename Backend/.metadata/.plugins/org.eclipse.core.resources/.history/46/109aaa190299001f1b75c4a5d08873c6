@@ -1,5 +1,0 @@
-package com.carbon.footprint.repository;
-
-public interface CarbonFootprintRepository {
-
-}
