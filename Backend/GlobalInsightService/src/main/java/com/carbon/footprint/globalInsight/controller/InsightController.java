@@ -79,16 +79,6 @@ public class InsightController {
 		
 	}
 	
-	@GetMapping(value="/userInsights/{userId}")
-	public ResponseEntity<List<GlobalInsight>> fetchInsightByUserId(@PathVariable("userId") String userId)
-	{
-		List<GlobalInsight> UserInsights = service.getInsightByUserId(userId);
-		if(UserInsights != null)
-			return ResponseEntity.ok(UserInsights);
-		else
-			return ResponseEntity.notFound().build();
-	}
-	
 	@GetMapping("/getNInsights/{n}")
 	public ResponseEntity<List<String>> getNInsights(@PathVariable int n) {
 		return new ResponseEntity<>(service.fetchTopNByDate(n), HttpStatus.OK);
@@ -99,13 +89,6 @@ public class InsightController {
 	{
 		service.deleteInsightbyId(insightId);
 		return "insight deleted";
-	}
-	
-	@DeleteMapping(value="/deletebyUser/{userId}")
-	public String removeInsightByUserId(@PathVariable("userId") String userId)
-	{
-		service.deleteInsightByUserId(userId);
-		return "insights deleted since admin ("+userId+") no longer has access";
 	}
 	
 	@PutMapping(value="/updateInsight")

@@ -8,14 +8,14 @@ import com.carbon.footprint.model.CarbonFootprint;
 
 public interface CarbonFootprintServiceInterface {
 	
-	CarbonFootprint addFootprint(CarbonFootprintDTO footprintDto, LocalDate accountCreationDate);
-	List<CarbonFootprint> getFootprintsByUserId(String userId);
-	CarbonFootprint updateFootprint(CarbonFootprintDTO footprintDto, Long footprintId, LocalDate accountCreationDate);
-	void deleteFootprint(Long footprintId);
-	List<CarbonFootprint> getAllFootprint();
+	CarbonFootprintDTO addFootprint(String userId, CarbonFootprintDTO footprintDto, LocalDate accountCreationDate);
+	List<CarbonFootprintDTO> getFootprintsByUserId(String userId);
+	CarbonFootprintDTO updateFootprint(String userId, CarbonFootprintDTO footprintDto, LocalDate accountCreationDate);
+	void deleteFootprint(String userId, String month, int year);
+	List<CarbonFootprintDTO> getAllFootprint();
 	
 	// User
-	CarbonFootprint findByUserIdAndMonthAndYear(String userId, String month, int year);
+	CarbonFootprintDTO findByUserIdAndMonthAndYear(String userId, String month, int year);
 	CarbonFootprintDTO findAllSumsByUserId(String userId);
 	List<CarbonFootprintDTO> findLastNmonthsSumsByUserId(String userId, int n);
 	void deleteByUserId(String UserId);

@@ -1,0 +1,26 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: Admin-Service
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/admin/**
+          filters:
+            - AuthenticationFilter
+          
+        - id: Identity-Service
+          uri: lb://IDENTITY-SERVICE
+          predicates: 
+            - Path=/auth/**
+            
+        - id: User-Data-Service
+          uri: lb://USER-DATA-SERVICE
+          predicates:
+            - Path=/user/**
+          filters:
+            - AuthenticationFilter
+          
+server:
+  port: 8070
+  

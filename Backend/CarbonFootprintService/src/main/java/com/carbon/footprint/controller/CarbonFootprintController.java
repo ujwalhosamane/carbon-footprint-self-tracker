@@ -27,39 +27,47 @@ public class CarbonFootprintController {
 	@Autowired
 	private CarbonFootprintServiceImpl carbonFootprintService;
 	
-	@PostMapping("/add")
-	public ResponseEntity<CarbonFootprint> addCarbonFootprint(
+	//changed
+	@PostMapping("/add/{userId}")
+	public ResponseEntity<CarbonFootprintDTO> addCarbonFootprint(
+			@PathVariable String userId,
 			@RequestBody CarbonFootprintDTO carbonFootprintDto,
 			@RequestParam("accountCreationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate accountCreationDate) {
-		return new ResponseEntity<>(carbonFootprintService.addFootprint(carbonFootprintDto, accountCreationDate), HttpStatus.OK);
+		return new ResponseEntity<>(carbonFootprintService.addFootprint(userId, carbonFootprintDto, accountCreationDate), HttpStatus.OK);
 	}
 	
 	@GetMapping("/getAll")
-	public ResponseEntity<List<CarbonFootprint>> getAllFootprint() {
+	public ResponseEntity<List<CarbonFootprintDTO>> getAllFootprint() {
 		return new ResponseEntity<>(carbonFootprintService.getAllFootprint(), HttpStatus.OK);
 	}
 	
-	@PutMapping("/update/{footprintId}")
-	public ResponseEntity<CarbonFootprint> updateCarbonFootprint(
-			@RequestBody CarbonFootprintDTO carbonFootprintDto, 
-			@PathVariable Long footprintId,
+	//changed
+	@PutMapping("/update/{userId}")
+	public ResponseEntity<CarbonFootprintDTO> updateCarbonFootprint(
+			@PathVariable String userId,
+			@RequestBody CarbonFootprintDTO carbonFootprintDto,
 			@RequestParam("accountCreationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate accountCreationDate) {
-		return new ResponseEntity<>(carbonFootprintService.updateFootprint(carbonFootprintDto, footprintId, accountCreationDate), HttpStatus.OK);
+		return new ResponseEntity<>(carbonFootprintService.updateFootprint(userId, carbonFootprintDto, accountCreationDate), HttpStatus.OK);
 	}
 	
+	//changed
 	@GetMapping("/get/{userId}")
-	public ResponseEntity<List<CarbonFootprint>> getFootprintsByUserId(@PathVariable String userId) {
+	public ResponseEntity<List<CarbonFootprintDTO>> getFootprintsByUserId(@PathVariable String userId) {
 		return new ResponseEntity<>(carbonFootprintService.getFootprintsByUserId(userId), HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/delete/{footprintId}")
-	public ResponseEntity<Void> deleteFootprintById(@PathVariable Long footprintId) {
-		carbonFootprintService.deleteFootprint(footprintId);
+	//changed
+	@DeleteMapping("/delete/{month}/{year}/{userId}")
+	public ResponseEntity<Void> deleteFootprintById(@PathVariable String userId, 
+			@PathVariable String month, 
+			@PathVariable int year) {
+		carbonFootprintService.deleteFootprint(userId, month, year);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	//changed
 	@GetMapping("/get/{month}/{year}/{userId}")
-	public ResponseEntity<CarbonFootprint> getByUserIdAndMonthAndYear(@PathVariable String userId, 
+	public ResponseEntity<CarbonFootprintDTO> getByUserIdAndMonthAndYear(@PathVariable String userId, 
 			@PathVariable String month, 
 			@PathVariable int year) {
 		return new ResponseEntity<>(carbonFootprintService.findByUserIdAndMonthAndYear(userId, month, year), HttpStatus.OK);
@@ -92,7 +100,9 @@ public class CarbonFootprintController {
 	}
 	
 	@GetMapping("/toGoal/getSums/{year}/{userId}")
-	public ResponseEntity<CarbonFootprintDTO> getHalfYearSums(@PathVariable String userId, @PathVariable int year) {
+	public ResponseEntity<CarbonFootprintDTO> getHalfYearSums(
+			@PathVariable("userId") String userId, 
+			@PathVariable("year") int year) {
 		return new ResponseEntity<>(carbonFootprintService.findHalfYearlySumsByYear(userId, year), HttpStatus.OK);
 	}
 	

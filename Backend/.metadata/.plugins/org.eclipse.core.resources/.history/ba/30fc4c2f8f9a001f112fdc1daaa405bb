@@ -1,5 +1,0 @@
-package com.goal.repository;
-
-public interface GoalRepository {
-
-}

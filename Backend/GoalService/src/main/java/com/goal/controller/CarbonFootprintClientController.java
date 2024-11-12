@@ -21,7 +21,7 @@ public class CarbonFootprintClientController {
 	@Autowired
 	private CarbonFootprintClient footprintClient;
 	
-	@PutMapping("/footprint/update/score/{year}/{userId}")
+	@PutMapping("/update/score/{year}/{userId}")
 	public ResponseEntity<Void> updateCurrentScoreByUserId(@PathVariable String userId,@PathVariable int year) {
 		CarbonFootprintDTO carbonFootprintDto = footprintClient.getHalfYearSums(userId, year).getBody();
 		goalService.updateScoreByUserId(carbonFootprintDto, userId);

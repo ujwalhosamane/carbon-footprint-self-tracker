@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CarbonFootprintDTO {
-	private String userId;
 	private String footprintMonth;
 	private int footprintYear;
 	private float transportation;

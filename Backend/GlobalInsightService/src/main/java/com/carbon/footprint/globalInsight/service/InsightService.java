@@ -31,11 +31,6 @@ public class InsightService {
 		return repository.findById(insightId);
 	}
 	
-	public List<GlobalInsight> getInsightByUserId(String userId)
-	{
-		return repository.findByUserId(userId);
-	}
-	
 	public List<GlobalInsight> getAllInsights()
 	{
 		return repository.findAll();
@@ -74,12 +69,6 @@ public class InsightService {
 	public void deleteInsightbyId(long insightId)
 	{
 		repository.deleteById(insightId);
-	}
-	
-	 @Transactional
-	public void deleteInsightByUserId(String userId)
-	{
-		repository.deleteByUserId(userId);
 	}
 	 
 	public List<String> fetchTopNByDate(int n) {

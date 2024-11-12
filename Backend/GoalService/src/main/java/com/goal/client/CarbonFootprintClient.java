@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.goal.dto.CarbonFootprintDTO;
 
-@FeignClient(name = "CARBONFOOTPRINTSERVICE")
+@FeignClient(name = "CARBON-FOOTPRINT-SERVICE")
 public interface CarbonFootprintClient {
 	@GetMapping("/carbonFootprint/toGoal/getSums/{year}/{userId}")
 	public ResponseEntity<CarbonFootprintDTO> getHalfYearSums(@PathVariable String userId, @PathVariable int year);

@@ -9,14 +9,26 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.carbon.footprint.model.CarbonFootprint;
+import com.carbon.footprint.dto.CarbonFootprintDTO;
 
 @Repository
 public interface CarbonFootprintRepository extends JpaRepository<CarbonFootprint, Long> {
 	
 	CarbonFootprint findByCarbonFootprintId(Long carbonFootprintId);
-	List<CarbonFootprint> findByUserId(String userId);
-	
 	void deleteByUserId(String userId);
+	
+	@Query("SELECT new com.carbon.footprint.dto.CarbonFootprintDTO(" +
+		       "cf.footprintMonth, cf.footprintYear, cf.transportation, " +
+		       "cf.electricity, cf.lpg, cf.shipping, cf.airConditioner) " +
+		       "FROM CarbonFootprint cf")
+	List<CarbonFootprintDTO> findAllAsDTO();
+	
+	@Query("SELECT new com.carbon.footprint.dto.CarbonFootprintDTO(" +
+		       "cf.footprintMonth, cf.footprintYear, cf.transportation, " +
+		       "cf.electricity, cf.lpg, cf.shipping, cf.airConditioner) " +
+		       "FROM CarbonFootprint cf " +
+		       "WHERE cf.userId = :userId")
+	List<CarbonFootprintDTO> findByUserId(@Param("userId") String userId);
 	
 	// Check if a record exists for the given userId, footprintMonth, and footprintYear
 	@Query("SELECT cf FROM CarbonFootprint cf "
@@ -27,27 +39,26 @@ public interface CarbonFootprintRepository extends JpaRepository<CarbonFootprint
     		@Param("userId") String userId, 
     		@Param("month") String month, 
     		@Param("year") int year);
-	
-	
-	
-	@Query("SELECT new com.carbon.footprint.model.CarbonFootprint(" +
+
+	// Return CarbonFootprintDTOs for sums by month and year
+	@Query("SELECT new com.carbon.footprint.dto.CarbonFootprintDTO(" +
 	       "cf.transportation, cf.electricity, cf.lpg, " +
 	       "cf.shipping, cf.airConditioner) " +
 	       "FROM CarbonFootprint cf " +
 	       "WHERE cf.footprintMonth = :month AND cf.footprintYear = :year")
-	Optional<List<CarbonFootprint>> findSumsByMonthAndYear(
+	Optional<List<CarbonFootprintDTO>> findSumsByMonthAndYear(
 	        @Param("month") String month,
 	        @Param("year") int year);
 
-	
-	
-	@Query("SELECT cf FROM CarbonFootprint cf " +
-		       "WHERE cf.footprintMonth = :month AND cf.footprintYear = :year")
-	Optional<List<CarbonFootprint>> findAllSumsByMonthAndYear(
+	// Return all CarbonFootprintDTOs for a specific month and year
+	@Query("SELECT new com.carbon.footprint.dto.CarbonFootprintDTO(" +
+	       "cf.footprintMonth, cf.footprintYear, cf.transportation, " +
+	       "cf.electricity, cf.lpg, cf.shipping, cf.airConditioner) " +
+	       "FROM CarbonFootprint cf " +
+	       "WHERE cf.footprintMonth = :month AND cf.footprintYear = :year")
+	Optional<List<CarbonFootprintDTO>> findAllSumsByMonthAndYear(
 	        @Param("month") String month,
 	        @Param("year") int year);
-	
-	
 	
 	@Query(value = """
 	        SELECT COUNT(*) 
@@ -72,24 +83,4 @@ public interface CarbonFootprintRepository extends JpaRepository<CarbonFootprint
 	    int countFootprintsForLast6Months(@Param("userId") String userId, 
 	                                      @Param("year") int year, 
 	                                      @Param("month") int month);
-	
-//	@Query("SELECT new com.carbon.footprint.model.CarbonFootprint(" +
-//	       "cf.transportation, cf.electricity, cf.lpg, " +
-//	       "cf.shipping, cf.airConditioner) " +
-//	       "FROM CarbonFootprint cf " +
-//	       "WHERE cf.footprintMonth = :month AND cf.footprintYear = :year AND cf.userId = :userId")
-//	Optional<CarbonFootprint> findSumsByUserIdAndMonthAndYear(
-//	        @Param("userId") String userId,
-//	        @Param("month") String month,
-//	        @Param("year") int year);
-
-	
-//	
-//	@Query("SELECT new com.carbon.footprint.model.CarbonFootprint(" +
-//	       "SUM(cf.transportation), SUM(cf.electricity), SUM(cf.lpg), " +
-//	       "SUM(cf.shipping), SUM(cf.airConditioner)) " +
-//	       "FROM CarbonFootprint cf " +
-//	       "WHERE cf.userId = :userId")
-//	Optional<CarbonFootprint> findSumsByUserId(@Param("userId") String userId);
-
 }

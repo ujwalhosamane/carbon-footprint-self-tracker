@@ -1,5 +1,0 @@
-package com.goal.service;
-
-public interface GoalServiceInterface {
-
-}
