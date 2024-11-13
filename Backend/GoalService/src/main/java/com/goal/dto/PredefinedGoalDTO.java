@@ -23,4 +23,7 @@ public class PredefinedGoalDTO {
 
     @NotNull(message = "Reward point cannot be null")
     private Long rewardPoint;
+    
+    @NotNull(message = "Badge Url cannot be null")
+    private String badgeUrl;
 }

@@ -12,6 +12,7 @@
 	</section>
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend"/>
 			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\UserDataService"/>
 			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\SuggestionService"/>
 			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\QuartzSchedulerService"/>

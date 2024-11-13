@@ -45,6 +45,9 @@ public class PredefinedGoal {
 
     @NotNull(message = "Reward point cannot be null")
     private Long rewardPoint;
+    
+    @NotNull(message = "Badge Url cannot be null")
+    private String badgeUrl;
 	
     @JsonBackReference
 	@OneToMany(mappedBy = "predefinedGoal", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -54,11 +57,13 @@ public class PredefinedGoal {
 				@NotNull(message = "Type cannot be null") String type,
 	            @NotNull(message = "Description cannot be null") String description,
 	            @NotNull(message = "Target score cannot be null") Long targetScore,
-	            @NotNull(message = "Reward point cannot be null") Long rewardPoint) {
+	            @NotNull(message = "Reward point cannot be null") Long rewardPoint,
+	            @NotNull(message = "Badge Url cannot be null") String badgeUrl) {
 		this.title = title;
 		this.type = type;
 		this.description = description;
 		this.targetScore = targetScore;
 		this.rewardPoint = rewardPoint;
+		this.badgeUrl = badgeUrl;
 	}
 }

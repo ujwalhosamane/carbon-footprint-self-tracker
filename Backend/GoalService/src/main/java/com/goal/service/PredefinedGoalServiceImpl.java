@@ -28,7 +28,8 @@ public class PredefinedGoalServiceImpl implements PredefinedGoalServiceInterface
 				predefinedGoalDto.getType(),
 				predefinedGoalDto.getDescription(),
 				predefinedGoalDto.getTargetScore(),
-				predefinedGoalDto.getRewardPoint());
+				predefinedGoalDto.getRewardPoint(),
+				predefinedGoalDto.getBadgeUrl());
 		predefinedGoal.setCreationDate(new Date());
 		return predefinedGoalRepo.save(predefinedGoal);
 	}
@@ -52,6 +53,7 @@ public class PredefinedGoalServiceImpl implements PredefinedGoalServiceInterface
 			predefinedGoal.setTargetScore(predefinedGoalDto.getTargetScore());
 			predefinedGoal.setRewardPoint(predefinedGoalDto.getRewardPoint());
 			predefinedGoal.setCreationDate(new Date());
+			predefinedGoal.setBadgeUrl(predefinedGoalDto.getBadgeUrl());
 			predefinedGoal = predefinedGoalRepo.save(predefinedGoal);
 		}
 		return predefinedGoal;

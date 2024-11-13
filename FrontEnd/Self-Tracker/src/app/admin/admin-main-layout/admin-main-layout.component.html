@@ -1,1 +1,51 @@
-<p>admin-main-layout works!</p>
+<div class="flex flex-col w-full h-screen">
+    <!-- Header (full width) -->
+    <div class="w-full bg-black text-white flex justify-between items-center p-3 shadow-lg">
+        <div class="text-lg font-bold transition-transform duration-300 ease-out transform hover:scale-105">
+            <a class="flex items-center w-full px-3" href="#">
+                <svg class="w-12 h-12 fill-current" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"/>
+                </svg>
+                <span class="ml-2 text-4xl">Footprint <span class="bg-white text-green-500 rounded-lg p-1 text-3xl font-bold">Self-Tracker</span></span>
+            </a>
+        </div>
+
+        <div class="flex items-center space-x-4 relative">
+            <span class="text-xl font-bold">Hey!, User Name</span>
+            <button class="bg-white hover:bg-grey-700 text-black font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline transition-transform duration-300 ease-out transform hover:scale-105" title="Sign Out">
+                <svg width="34px" height="34px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(180)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 9.56757V14.4324C3.5 16.7258 3.5 17.8724 4.22161 18.5849C4.87719 19.2321 5.89578 19.2913 7.81846 19.2968C7.71686 18.6224 7.69563 17.8168 7.69029 16.8689C7.68802 16.4659 8.01709 16.1374 8.42529 16.1351C8.83348 16.1329 9.16624 16.4578 9.16851 16.8608C9.17451 17.9247 9.20249 18.6789 9.25415 19.2289H10V13V10V4.77109H9.25415C9.20249 5.32108 9.17451 6.07526 9.16851 7.13919C9.16624 7.54222 8.83348 7.86705 8.42529 7.86483C8.01709 7.8626 7.68802 7.5341 7.69029 7.13107C7.69563 6.18322 7.71686 5.37755 7.81846 4.70323C5.89578 4.70866 4.87719 4.76789 4.22161 5.41505C3.5 6.12757 3.5 7.27418 3.5 9.56757ZM15.294 8.2935C14.9025 7.902 14.2693 7.902 13.8778 8.2935C13.4862 8.685 13.4862 9.31817 13.8778 9.70968L15.1687 10.9973H10V13.0027H15.1687L13.8778 14.2903C13.4862 14.6818 13.4862 15.315 13.8778 15.7065C14.2693 16.098 14.9025 16.098 15.294 15.7065L18.7098 12.2935C19.1013 11.902 19.1013 11.2688 18.7098 10.8773L15.294 8.2935Z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Body Content Area (including Sidebar and Content) -->
+    <div class="flex w-full flex-1">
+        <!-- Sidebar (fixed height) -->
+        <div class="w-64 bg-black text-white p-3 overflow-y-auto" style="height: calc(100vh - 60px);">
+            <div class="flex flex-col items-center w-full mt-3">
+                <div class="flex items-center justify-center w-full h-12 px-3 mt-2 rounded">
+                    <svg class="w-8 h-8 fill-current text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <span class="ml-2 text-xl font-bold text-white">Menu</span>
+                </div>
+                <hr class="w-full border-t-2 border-gray-100 mt-1">
+                <!-- Sidebar links -->
+                <a class="flex items-center w-full h-12 px-3 mt-2 rounded hover:bg-blue-300 transition-transform duration-300 ease-out transform hover:scale-105" href="#" title="Go to Home">
+                    <svg class="w-6 h-6 fill-current text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                    <span class="ml-2 text-lg font-medium text-white">Home</span>
+                </a>
+                <!-- Other links here -->
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 p-4 overflow-y-auto">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

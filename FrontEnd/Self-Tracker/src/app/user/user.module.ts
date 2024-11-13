@@ -8,7 +8,18 @@ import { LeaderBoardComponent } from './leader-board/leader-board.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
 @NgModule({
-  declarations: [UserMainLayoutComponent, LeaderBoardComponent, DashboardComponent, HomeComponent],
-  imports: [CommonModule, BrowserAnimationsModule,RouterModule, LucideAngularModule.pick({File, Home, Menu, UserCheck,LogOut }) ],  // Include both here
+  declarations: [
+    UserMainLayoutComponent, 
+    LeaderBoardComponent, 
+    DashboardComponent, 
+    HomeComponent
+  ],
+  
+  imports: [
+    CommonModule, 
+    BrowserAnimationsModule,
+    RouterModule, 
+    LucideAngularModule.pick({File, Home, Menu, UserCheck,LogOut }) 
+  ],  // Include both here
 })
 export class UserModule {}

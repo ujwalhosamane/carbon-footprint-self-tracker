@@ -1,0 +1,92 @@
+<div class="container">
+    <h1>Predefined Goals</h1>
+  
+    <!-- Add New Goal Button -->
+    <button (click)="toggleView('add')">Add New Goal</button>
+  
+    <!-- View Existing Predefined Goals -->
+    <div class="goal-cards">
+      <div *ngFor="let goal of predefinedGoals" class="card" (click)="toggleView('edit', goal)">
+        <img class="goal-badge" [src]="goal.badgeUrl" alt="Goal Badge" />
+        <div class="text-container">
+          <h3><strong>{{ goal.title }}</strong></h3>
+          <p>{{ goal.description }}</p>
+          <p>Target Score: {{ goal.targetScore }}</p>
+          <p>Reward Points: {{ goal.rewardPoint }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Add/Edit Goal Modal -->
+<div class="modal" *ngIf="viewType === 'add' || viewType === 'edit'">
+    <div class="modal-content">
+      <span class="close-btn" (click)="toggleView('view')">&times;</span>
+      <h2>{{ viewType === 'edit' ? 'Edit' : 'Add' }} Predefined Goal</h2>
+  
+      <form [formGroup]="predefinedGoalForm" (ngSubmit)="onSubmit()">
+        <label for="title">Goal Title</label>
+        <input id="title" formControlName="title" type="text" />
+  
+        <label for="type">Goal Type</label>
+        <select id="type" formControlName="type">
+          <option *ngFor="let type of goalTypes" [value]="type">{{ type }}</option>
+        </select>
+  
+        <label for="description">Description</label>
+        <input id="description" formControlName="description" type="text" />
+  
+        <label for="targetScore">Target Score</label>
+        <input id="targetScore" formControlName="targetScore" type="number" />
+  
+        <label for="rewardPoint">Reward Points</label>
+        <input id="rewardPoint" formControlName="rewardPoint" type="number" />
+  
+        <label for="badgeUrl">Badge URL</label>
+        <input id="badgeUrl" formControlName="badgeUrl" type="text" />
+  
+        <div class="form-actions">
+          <button type="submit" [disabled]="!predefinedGoalForm.valid">Save</button>
+          <button type="button" (click)="toggleView('view')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  
+    <!-- Edit Goal Modal (only visible when isEditModalOpen is true) -->
+    <div *ngIf="isEditModalOpen" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" (click)="closeEditModal()">&#10005;</span>
+        <h2>Edit Goal</h2>
+        <form [formGroup]="predefinedGoalForm" (ngSubmit)="onSubmit()">
+          <label for="title">Title</label>
+          <input type="text" id="title" formControlName="title" required />
+  
+          <label for="type">Type</label>
+          <select id="type" formControlName="type" required>
+            <option value="Transportation">Transportation</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Lpg">Lpg</option>
+            <option value="Shipping">Shipping</option>
+            <option value="AirConditioner">AirConditioner</option>
+          </select>
+  
+          <label for="description">Description</label>
+          <input type="text" id="description" formControlName="description" required />
+  
+          <label for="targetScore">Target Score</label>
+          <input type="number" id="targetScore" formControlName="targetScore" required />
+  
+          <label for="rewardPoint">Reward Points</label>
+          <input type="number" id="rewardPoint" formControlName="rewardPoint" required />
+  
+          <label for="badgeUrl">Badge Image URL</label>
+          <input type="url" id="badgeUrl" formControlName="badgeUrl" required />
+  
+          <button type="submit" [disabled]="predefinedGoalForm.invalid">Update Goal</button>
+          <button type="button" (click)="closeEditModal()">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  

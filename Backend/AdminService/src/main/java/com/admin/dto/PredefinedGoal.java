@@ -18,5 +18,5 @@ public class PredefinedGoal {
     private String description;
     private Long targetScore;
     private Long rewardPoint;
-
+    private String badgeUrl;
 }
