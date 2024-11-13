@@ -1,8 +1,10 @@
-.ujwal{
-    background-color: #608BC1;
+.footprint-sidebar{
+    /* background-color: #608BC1; */
+    background-color: black;
 }
 
-.keyur{
-    background: rgb(31,23,82);
-    background: linear-gradient(0deg, rgba(31,23,82,1) 0%, rgba(25,105,144,1) 100%);
+.footprint-header{
+    /* background: rgb(31,23,82);
+    background: linear-gradient(0deg, rgba(31,23,82,1) 0%, rgba(25,105,144,1) 100%); */
+    background-color: black;
 }

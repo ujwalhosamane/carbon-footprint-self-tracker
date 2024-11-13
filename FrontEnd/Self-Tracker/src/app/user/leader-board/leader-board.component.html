@@ -1,0 +1,97 @@
+<h1>LeaderBoard</h1>
+
+<!-- Tabs for different leaderboards -->
+<div class="tabs">
+  <button
+    *ngFor="let tab of tabs; let i = index"
+    [class.active]="selectedTab === i"
+    (click)="selectTab(i)"
+    class="tab-button"
+  >
+    {{ tab.title }}
+  </button>
+</div>
+
+<!-- Content based on selected tab -->
+<div class="tab-content">
+  <!-- Leaderboard for Reward Points (6 Months) -->
+  <table *ngIf="selectedTab === 0" class="leaderboard-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>City</th>
+        <th>Reward Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of currentPageData(sixMonthsLeaderboard); let i = index" [class.highlight]="item.isCurrentUser">
+        <td>{{ (currentPage - 1) * 10 + i + 1 }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.city }}</td>
+        <td>{{ item.sixMonthRewardPoints }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Controls for Reward Points -->
+  <div *ngIf="selectedTab === 0" class="pagination">
+    <button (click)="prevPage('sixMonthsLeaderboard')" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{ currentPage }} of {{ getTotalPages(sixMonthsLeaderboard) }}</span>
+    <button (click)="nextPage('sixMonthsLeaderboard')" [disabled]="currentPage === getTotalPages(sixMonthsLeaderboard)">Next</button>
+  </div>
+
+  <!-- Leaderboard for Total Reward Points -->
+  <table *ngIf="selectedTab === 1" class="leaderboard-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>City</th>
+        <th>Total Reward Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of currentPageData(totalRewardPointsLeaderboard); let i = index" [class.highlight]="item.isCurrentUser">
+        <td>{{ (currentPage - 1) * 10 + i + 1 }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.city }}</td>
+        <td>{{ item.totalRewardPoints }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Controls for Total Reward Points -->
+  <div *ngIf="selectedTab === 1" class="pagination">
+    <button (click)="prevPage('totalRewardPointsLeaderboard')" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{ currentPage }} of {{ getTotalPages(totalRewardPointsLeaderboard) }}</span>
+    <button (click)="nextPage('totalRewardPointsLeaderboard')" [disabled]="currentPage === getTotalPages(totalRewardPointsLeaderboard)">Next</button>
+  </div>
+
+  <!-- Leaderboard for Total Carbon Footprint -->
+  <table *ngIf="selectedTab === 2" class="leaderboard-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>City</th>
+        <th>Total Carbon Footprint</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of currentPageData(totalCarbonFootprintLeaderboard); let i = index" [class.highlight]="item.isCurrentUser">
+        <td>{{ (currentPage - 1) * 10 + i + 1 }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.city }}</td>
+        <td>{{ item.totalFootprint }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination Controls for Total Carbon Footprint -->
+  <div *ngIf="selectedTab === 2" class="pagination">
+    <button (click)="prevPage('totalCarbonFootprintLeaderboard')" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{ currentPage }} of {{ getTotalPages(totalCarbonFootprintLeaderboard) }}</span>
+    <button (click)="nextPage('totalCarbonFootprintLeaderboard')" [disabled]="currentPage === getTotalPages(totalCarbonFootprintLeaderboard)">Next</button>
+  </div>
+</div>

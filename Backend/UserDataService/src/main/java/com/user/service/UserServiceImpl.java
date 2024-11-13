@@ -3,6 +3,7 @@ package com.user.service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.user.dto.LeaderBoardOnFootprint;
 import com.user.dto.LeaderBoardOnRewardPoints;
 import com.user.dto.LeaderBoardOnSixMonthRewardPoints;
+import com.user.dto.UserAfterLogin;
 import com.user.dto.UserDataCreationDTO;
 import com.user.exception.UserNotFoundException;
 import com.user.model.UserData;
@@ -103,6 +105,7 @@ public class UserServiceImpl implements UserServiceInterface {
 	public void addUser(UserDataCreationDTO userDto) {
 		UserData user = new UserData(userDto.getUserId(),
 				userDto.getName(),
+				userDto.getEmail(),
 				userDto.getCity(),
 				userDto.getCreationDate());
 		userRepository.save(user);
@@ -121,5 +124,25 @@ public class UserServiceImpl implements UserServiceInterface {
             userRepository.updateTotlaRewardPoints(userId, totalRewardPoints);
         }
 	}
+
+	@Override
+	public UserAfterLogin getUserAfterLogin(String userId) {
+		Optional<UserData> optional = userRepository.findByUserId(userId);
+		if(optional.isEmpty()) {
+			throw new UserNotFoundException("User not found");
+		}
+		UserData userData = optional.get();
+		UserAfterLogin afterLogin = new UserAfterLogin(
+				userData.getName(),
+				userData.getEmail(),
+				userData.getCity(),
+				userData.getCreationDate(),
+				userData.getTotalFootprint(),
+				userData.getSixMonthRewardPoints(),
+				userData.getTotalRewardPoints());
+		return afterLogin;
+	}
+	
+	
 
 }

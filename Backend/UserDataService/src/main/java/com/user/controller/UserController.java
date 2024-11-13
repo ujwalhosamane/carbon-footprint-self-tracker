@@ -22,6 +22,7 @@ import com.user.client.GoalClient;
 import com.user.dto.LeaderBoardOnFootprint;
 import com.user.dto.LeaderBoardOnRewardPoints;
 import com.user.dto.LeaderBoardOnSixMonthRewardPoints;
+import com.user.dto.UserAfterLogin;
 import com.user.dto.UserDataCreationDTO;
 import com.user.service.UserServiceImpl;
 import com.user.util.JwtUtil;
@@ -96,4 +97,14 @@ public class UserController {
 		userService.addUser(userCreationDTO);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
+	
+	@GetMapping("/afterLogin/get")
+	public ResponseEntity<UserAfterLogin> getAfterLogin(
+			@RequestHeader("Authorization") String authorizationHeader) {
+		String token = authorizationHeader.substring(7); 
+        String userId = jwtUtil.extractUserId(token);
+        
+        return new ResponseEntity<>(userService.getUserAfterLogin(userId), HttpStatus.OK);
+	}
+	
 }

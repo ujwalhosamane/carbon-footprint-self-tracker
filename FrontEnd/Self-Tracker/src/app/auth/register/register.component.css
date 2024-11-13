@@ -1,0 +1,117 @@
+/* Centering the form container */
+.register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;}
+  
+  /* Styling the form box */
+  .register-box {
+      background: rgba(255, 255, 255, 0.8); /* Translucent white background */
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+  }
+  
+  /* Error message styling */
+  .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    
+    /* You can adjust the form-group spacing if needed */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    /* Styling for the register button when disabled */
+   
+    
+    /* Register page styling */
+    /* .register-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f4f4f4;
+    } */
+    
+    /* .register-box {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    } */
+    
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+    
+  
+  /* Form field styling */
+  .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+  }
+  
+  .form-group label {
+      display: block;
+      color: #333;
+      font-weight: bold;
+      margin-bottom: 5px;
+  }
+  
+  .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+  }
+  
+  /* Register button styling */
+  .register-button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff; /* Darker blue color */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+  }
+  
+  .register-button:hover {
+      background-color: #0056b3; /* Slightly darker on hover */
+  }
+  
+  .register-button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+  
+  /* Login text and link styling */
+  .redirect-link {
+      margin-top: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .redirect-link a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    
+    .redirect-link a:hover {
+      text-decoration: underline;
+    }
+  
