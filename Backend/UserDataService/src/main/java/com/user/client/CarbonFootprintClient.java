@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.user.dto.CarbonFootprintDTO;
 
 @FeignClient(name = "CARBON-FOOTPRINT-SERVICE")
-@CrossOrigin(origins = "http://localhost:4200")
 public interface CarbonFootprintClient {
 	/**
 	 * USER
