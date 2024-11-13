@@ -43,4 +43,7 @@ public interface GoalClient {
 	
 	@GetMapping("/goal/get/user/rewardPoints")
 	public ResponseEntity<Map<String, Double>> getUserAndRewardPoints();
+	
+	@PutMapping("/goal/update/score/{year}")
+	public ResponseEntity<Void> updateCurrentScoreOfAllUser(@RequestBody List<String> userIds, @PathVariable int year); 
 }

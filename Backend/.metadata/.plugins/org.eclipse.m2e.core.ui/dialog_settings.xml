@@ -12,8 +12,16 @@
 	</section>
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\GlobalInsightService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\UserDataService"/>
 			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\SuggestionService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\QuartzSchedulerService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\IdentityService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\GoalService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\GlobalInsightService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\EurekaRegistryService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\CarbonFootprintService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\AdminService"/>
+			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\ApiGatewayService"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>

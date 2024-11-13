@@ -1,5 +1,6 @@
 package com.admin.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,13 @@ public class GoalController {
 		}
 		
 		PredefinedGoal predefinedGoal = response.getBody();
-		goalClient.addGoal(userClient.getAllNonAdmin().getBody(), predefinedGoal.getPredefinedGoalId());
+		List<String> userIds = userClient.getAllNonAdmin().getBody();
+		goalClient.addGoal(userIds, predefinedGoal.getPredefinedGoalId());
+		
+		LocalDate currentDate = LocalDate.now();
+		
+        int currentYear = currentDate.getYear();
+		goalClient.updateCurrentScoreOfAllUser(userIds, currentYear);
 		return new ResponseEntity<PredefinedGoal>(predefinedGoal, HttpStatus.OK);
 	}
 	
