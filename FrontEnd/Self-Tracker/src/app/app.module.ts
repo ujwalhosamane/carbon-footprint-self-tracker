@@ -6,6 +6,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LucideAngularModule, File, Home, Menu, UserCheck,LogOut } from 'lucide-angular';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
 import { RouterModule } from '@angular/router';
 @NgModule({
   declarations: [
@@ -15,6 +17,8 @@ import { RouterModule } from '@angular/router';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    AuthModule,
+    AdminModule,
     UserModule,
     RouterModule,
     LucideAngularModule.pick({File, Home, Menu, UserCheck,LogOut }) 
