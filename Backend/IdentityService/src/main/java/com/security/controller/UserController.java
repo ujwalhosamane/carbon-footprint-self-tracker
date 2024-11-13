@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +20,11 @@ import com.security.dto.UserCreationDTO;
 import com.security.exception.DuplicateUserCreationException;
 import com.security.service.AuthService;
 
+import ch.qos.logback.core.subst.Token;
+
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class UserController {
     
     @Autowired
@@ -45,7 +49,7 @@ public class UserController {
         		new UsernamePasswordAuthenticationToken(
         				authRequest.getUsername(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
-            return new ResponseEntity<>(authService.generateToken(authRequest.getUsername()), HttpStatus.OK);
+        	return new ResponseEntity<>(authService.generateToken(authRequest.getUsername()), HttpStatus.OK);
         } else {
             throw new RuntimeException("Invalid access");
         }
