@@ -1,5 +1,7 @@
 package com.security.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -44,12 +47,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest authRequest) {
     	Authentication authenticate = authenticationManager.authenticate(
         		new UsernamePasswordAuthenticationToken(
         				authRequest.getUsername(), authRequest.getPassword()));
         if (authenticate.isAuthenticated()) {
-        	return new ResponseEntity<>(authService.generateToken(authRequest.getUsername()), HttpStatus.OK);
+        	String token = authService.generateToken(authRequest.getUsername());
+        	String role = authService.extractRole(token);
+        	Map<String, String> successfullLoginMap = Map.of(
+        			"Token", token,
+        			"Role", role);
+        	return new ResponseEntity<>(successfullLoginMap, HttpStatus.OK);
         } else {
             throw new RuntimeException("Invalid access");
         }

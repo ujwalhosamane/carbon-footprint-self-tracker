@@ -6,6 +6,7 @@ import java.util.Map;
 import com.user.dto.LeaderBoardOnFootprint;
 import com.user.dto.LeaderBoardOnRewardPoints;
 import com.user.dto.LeaderBoardOnSixMonthRewardPoints;
+import com.user.dto.UserAfterLogin;
 import com.user.dto.UserDataCreationDTO;
 
 public interface UserServiceInterface {
@@ -20,4 +21,5 @@ public interface UserServiceInterface {
 	void deleteUserAccount(String userId);
 	
 	void updateTotalRewardPoints(Map<String, Double> userTotalRewardPoints);
+	UserAfterLogin getUserAfterLogin(String userId);
 }
