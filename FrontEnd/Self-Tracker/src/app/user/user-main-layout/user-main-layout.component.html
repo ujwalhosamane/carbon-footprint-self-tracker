@@ -1,0 +1,43 @@
+<nav [ngClass]="{'hidden': isModalOpen}" class="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-blue-900 to-black p-4 shadow-lg">
+    <div class="container mx-auto flex justify-between items-center">
+      <!-- Logo/Brand -->
+      <div class="flex items-center">
+        <h1 class="text-2xl font-bold text-white">EcoSphere</h1>
+      </div>
+  
+      <!-- Navigation Items -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="/user/home" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Home</a>
+        <a href="/user/leaderBoard" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Leader Board</a>
+        <a href="/user/overview" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Overview</a>
+        <a href="/user/footprint" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Footprint</a>
+        <a href="/user/goal" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Goal</a>
+      </div>
+  
+      <!-- User Profile Dropdown -->
+      <div class="relative">
+        <button (click)="toggleDropdown()" class="flex items-center space-x-2 text-white focus:outline-none">
+          <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+          </svg>
+        </button>
+  
+        <div *ngIf="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50">
+          <a href="/user/profile" class="block px-4 py-2 text-gray-800 hover:bg-blue-100 text-lg font-semibold">
+            Profile
+          </a>
+          <hr class="my-2 border-gray-200">
+          <button (click)="logout()" class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 text-lg font-semibold">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <main class="bg-white min-h-screen pt-20">
+      <div class="container mx-auto px-4">
+          <router-outlet></router-outlet>
+      </div>
+  </main>
+  

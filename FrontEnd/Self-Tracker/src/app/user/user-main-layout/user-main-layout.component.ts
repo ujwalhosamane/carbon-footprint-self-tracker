@@ -8,5 +8,29 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-main-layout.component.css'],
 })
 export class UserMainLayoutComponent {
-  
+  isDropdownOpen = false;
+  isModalOpen = false;
+
+  constructor(private router: Router) {}
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.relative')) {
+      this.isDropdownOpen = false;
+    }
+  }
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  logout() {
+    // Clear any stored user data/tokens
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    
+    // Navigate to login page
+    this.router.navigate(['/auth/login']);
+  }
 }
