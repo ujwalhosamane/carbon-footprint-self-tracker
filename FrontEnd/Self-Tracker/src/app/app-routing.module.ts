@@ -7,6 +7,13 @@ import { RegisterComponent } from './auth/register/register.component';
 import { LeaderBoardComponent } from './user/leader-board/leader-board.component';
 import { AdminMainLayoutComponent } from './admin/admin-main-layout/admin-main-layout.component';
 import { PredefinedGoalComponent } from './admin/predefined-goal/predefined-goal.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { AdminHomeComponent } from './admin/admin-home/admin-home.component';
+import { AnalyticsComponent } from './admin/analytics/analytics.component';
+import { AdminUsersComponent } from './admin/admin-users/admin-users.component';
+import { AdminOverviewComponent } from './admin/admin-overview/admin-overview.component';
+import { HomeComponent } from './user/home/home.component';
+import { UserHomeComponent } from './user/user-home/user-home.component';
 
 const routes: Routes = [
   {
@@ -14,6 +21,7 @@ const routes: Routes = [
     component: UserMainLayoutComponent, 
     children: [
       { path: 'leaderBoard', component: LeaderBoardComponent },
+      { path: 'home', component: UserHomeComponent },
     ],
   },
   {
@@ -28,7 +36,17 @@ const routes: Routes = [
     path: 'admin',
     component: AdminMainLayoutComponent,
     children: [
-      { path: 'predefinedGoal', component: PredefinedGoalComponent },
+      { 
+        path: 'dashboard', 
+        component: AdminDashboardComponent,
+        children: [
+          { path: 'goal', component: PredefinedGoalComponent },
+          { path: 'analytics', component: AnalyticsComponent },
+          { path: 'users', component: AdminUsersComponent },
+          { path: 'overview', component: AdminOverviewComponent },
+        ]
+      },
+      { path: 'home', component: AdminHomeComponent },
     ],
   },
 ];

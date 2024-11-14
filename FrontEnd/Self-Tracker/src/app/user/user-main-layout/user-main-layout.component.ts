@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-main-layout',
@@ -7,4 +8,5 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   styleUrls: ['./user-main-layout.component.css'],
 })
 export class UserMainLayoutComponent {
+  
 }

@@ -7,12 +7,13 @@ import { RouterModule } from '@angular/router';
 import { LeaderBoardComponent } from './leader-board/leader-board.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
+import { UserHomeComponent } from './user-home/user-home.component';
 @NgModule({
   declarations: [
     UserMainLayoutComponent, 
     LeaderBoardComponent, 
     DashboardComponent, 
-    HomeComponent
+    HomeComponent, UserHomeComponent
   ],
   
   imports: [

@@ -26,14 +26,14 @@ export class UserService {
   })
 
   getLeaderBoardOnFootprint():Observable<any> {
-    return this.http.get(this.url + "/leaderBoard/footprint");
+    return this.http.get(this.url + "/leaderBoard/footprint", {headers:this.headers});
   }
 
   getLeaderBoardOnRewardPoints():Observable<any> {
-    return this.http.get(this.url + "/leaderBoard/rewardPoints");
+    return this.http.get(this.url + "/leaderBoard/rewardPoints", {headers:this.headers});
   }
   
   getLeaderBoardOnSixMonthRewardPoints():Observable<any> {
-    return this.http.get(this.url + "/leaderBoard/rewardPoints/sixMonths");
+    return this.http.get(this.url + "/leaderBoard/rewardPoints/sixMonths", {headers:this.headers});
   }
 }
