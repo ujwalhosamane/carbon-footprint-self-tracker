@@ -26,11 +26,11 @@ export class UserMainLayoutComponent {
   }
 
   logout() {
-    // Clear any stored user data/tokens
+  
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     
-    // Navigate to login page
+   
     this.router.navigate(['/auth/login']);
   }
 }

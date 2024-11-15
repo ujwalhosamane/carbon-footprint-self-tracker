@@ -1,0 +1,188 @@
+<div class="container mx-auto px-4 py-8"></div>
+  <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+   
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-4">
+      <h2 class="text-2xl font-bold text-white flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M5 3a2 2 0 012-2h6a2 2 0 012 2v1h2a2 2 0 012 2v12a2 2 0 01-2 2H3a2 2 0 01-2-2V6a2 2 0 012-2h2V3zm4 1h2V3H9v1z"/>
+        </svg>
+        Leaderboard
+      </h2>
+    </div>
+
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-gray-50">
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">6 Month Points</h3>
+        <div class="text-3xl font-bold text-blue-600">{{sixMonthsLeaderboard[0].sixMonthRewardPoints || 0}}</div>
+        <p class="text-sm text-gray-500">Top Score</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Total Points</h3>
+        <div class="text-3xl font-bold text-green-600">{{totalRewardPointsLeaderboard[0].totalRewardPoints || 0}}</div>
+        <p class="text-sm text-gray-500">Highest Points</p>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 mb-2">Carbon Footprint</h3>
+        <div class="text-3xl font-bold text-amber-600">{{totalCarbonFootprintLeaderboard[0].totalFootprint || 0}}</div>
+        <p class="text-sm text-gray-500">Best Performance</p>
+      </div>
+    </div>
+
+  
+    <div class="border-b border-gray-200">
+      <nav class="flex -mb-px">
+        <button *ngFor="let tab of tabs; let i = index" 
+                (click)="selectedTab = i; loadLeaderboardData()"
+                class="flex-1 px-4 py-3 text-center border-b-2 transition-colors duration-200"
+                [class.border-blue-500]="selectedTab === i"
+                [class.text-blue-600]="selectedTab === i"
+                [class.border-transparent]="selectedTab !== i"
+                [class.text-gray-500]="selectedTab !== i">
+          <span class="flex items-center justify-center">
+            <svg *ngIf="i === 0" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zm0 16a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+            </svg>
+            <svg *ngIf="i === 1" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            <svg *ngIf="i === 2" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+            {{tab.title}}
+          </span>
+        </button>
+      </nav>
+    </div>
+
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">City</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {{selectedTab === 2 ? 'Footprint' : 'Points'}}
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          
+          <tr *ngFor="let user of sixMonthsLeaderboard | slice:(currentPage-1)*pageSize:currentPage*pageSize; let i = index"
+              [class.bg-green-50]="user.isCurrentUser"
+              [hidden]="selectedTab !== 0"
+              class="hover:bg-gray-50 transition-colors duration-150">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span [class.text-yellow-500]="i === 0"
+                    [class.text-gray-400]="i === 1"
+                    [class.text-amber-700]="i === 2"
+                    class="inline-flex items-center">
+                <svg *ngIf="i < 3" class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <span class="font-medium">{{(currentPage-1)*pageSize + i + 1}}</span>
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{user.name}}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.city}}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 rounded-full text-sm font-medium" 
+                    [class.bg-blue-100]="i === 0"
+                    [class.text-blue-800]="i === 0"
+                    [class.bg-gray-100]="i !== 0"
+                    [class.text-gray-800]="i !== 0">
+                {{user.sixMonthRewardPoints}}
+              </span>
+            </td>
+          </tr>
+
+          <tr *ngFor="let user of totalRewardPointsLeaderboard | slice:(currentPage-1)*pageSize:currentPage*pageSize; let i = index"
+              [class.bg-green-50]="user.isCurrentUser"
+              [hidden]="selectedTab !== 1"
+              class="hover:bg-gray-50 transition-colors duration-150">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span [class.text-yellow-500]="i === 0"
+                    [class.text-gray-400]="i === 1"
+                    [class.text-amber-700]="i === 2"
+                    class="inline-flex items-center">
+                <svg *ngIf="i < 3" class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <span class="font-medium">{{(currentPage-1)*pageSize + i + 1}}</span>
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{user.name}}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.city}}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 rounded-full text-sm font-medium"
+                    [class.bg-green-100]="i === 0"
+                    [class.text-green-800]="i === 0"
+                    [class.bg-gray-100]="i !== 0"
+                    [class.text-gray-800]="i !== 0">
+                {{user.totalRewardPoints}}
+              </span>
+            </td>
+          </tr>
+
+       
+          <tr *ngFor="let user of totalCarbonFootprintLeaderboard | slice:(currentPage-1)*pageSize:currentPage*pageSize; let i = index"
+              [class.bg-green-50]="user.isCurrentUser"
+              [hidden]="selectedTab !== 2"
+              class="hover:bg-gray-50 transition-colors duration-150">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span [class.text-yellow-500]="i === 0"
+                    [class.text-gray-400]="i === 1"
+                    [class.text-amber-700]="i === 2"
+                    class="inline-flex items-center">
+                <svg *ngIf="i < 3" class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <span class="font-medium">{{(currentPage-1)*pageSize + i + 1}}</span>
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{{user.name}}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-gray-500">{{user.city}}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-3 py-1 rounded-full text-sm font-medium"
+                    [class.bg-amber-100]="i === 0"
+                    [class.text-amber-800]="i === 0"
+                    [class.bg-gray-100]="i !== 0"
+                    [class.text-gray-800]="i !== 0">
+                {{user.totalFootprint}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    
+    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+      <div class="flex-1 flex justify-center">
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+          <button (click)="previousPage()"
+                  [disabled]="currentPage === 1"
+                  class="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium transition-colors duration-150"
+                  [class.text-gray-700]="currentPage !== 1"
+                  [class.text-gray-300]="currentPage === 1"
+                  [class.hover:bg-gray-50]="currentPage !== 1">
+            Previous
+          </button>
+          <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+            Page {{currentPage}} of {{totalPages}}
+          </span>
+          <button (click)="nextPage()"
+                  [disabled]="currentPage === totalPages"
+                  class="relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium transition-colors duration-150"
+                  [class.text-gray-700]="currentPage !== totalPages"
+                  [class.text-gray-300]="currentPage === totalPages"
+                  [class.hover:bg-gray-50]="currentPage !== totalPages">
+            Next
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+<!-- </div> -->

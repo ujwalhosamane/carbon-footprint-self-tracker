@@ -1,0 +1,133 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Your Carbon Goals</h2>
+        <p class="mt-2 text-sm text-gray-600">Track your carbon footprint and achieve sustainability goals</p>
+      </div>
+  
+      <div class="bg-white rounded-lg shadow-xl p-6 mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-gray-900">Current Goal Period</h2>
+          <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+            {{currentMonth >= 7 ? 'July - December' : 'January - June'}} {{currentYear}}
+          </span>
+        </div>
+  
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="text-sm font-semibold text-gray-600">Transportation</h4>
+            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.transportation || 0}} kg CO2</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="text-sm font-semibold text-gray-600">Electricity</h4>
+            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.electricity || 0}} kg CO2</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="text-sm font-semibold text-gray-600">LPG</h4>
+            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.lpg || 0}} kg CO2</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="text-sm font-semibold text-gray-600">Shipping</h4>
+            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.shipping || 0}} kg CO2</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <h4 class="text-sm font-semibold text-gray-600">Air Conditioner</h4>
+            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.airConditioner || 0}} kg CO2</p>
+          </div>
+        </div>
+  
+     
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">Your Goals:</h3>
+          <div class="space-y-4">
+            <div *ngFor="let goal of goals" class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
+              <div class="flex-grow">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="text-lg font-medium text-gray-900">{{goal.title}}</h4>
+                  <span [ngClass]="{
+                    'bg-green-100 text-green-800': goal.isAchieved,
+                    'bg-yellow-100 text-yellow-800': !goal.isAchieved
+                  }" class="px-3 py-1 rounded-full text-sm font-medium">
+                    {{goal.isAchieved ? 'Achieved' : 'In Progress'}}
+                  </span>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">{{goal.description}}</p>
+                <div class="flex items-center space-x-4 text-sm">
+                  <span class="text-gray-600">Current: {{goal.currentScore}} kg CO2</span>
+                  <span class="text-gray-600">Target: {{goal.targetScore}} kg CO2</span>
+                  <span class="text-green-600">Achieved {{goal.count}} times</span>
+                </div>
+                <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                  <div [style.width.%]="(goal.currentScore/goal.targetScore)*100" 
+                       [ngClass]="{
+                         'bg-green-500': goal.currentScore <= goal.targetScore,
+                         'bg-red-500': goal.currentScore > goal.targetScore
+                       }" 
+                       class="h-full rounded-full transition-all duration-500">
+                  </div>
+                </div>
+              </div>
+              <div class="ml-4 flex flex-col items-center">
+                <img [src]="goal.badgeUrl" [alt]="goal.title" class="w-16 h-16 mb-2">
+                <span class="text-sm font-medium text-green-600">{{goal.rewardPoint}} pts</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+     
+      <div class="bg-white rounded-lg shadow-xl p-8 mt-8">
+        <h3 class="text-2xl font-bold text-gray-900 mb-6">Tips & Resources</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-green-50 p-6 rounded-lg">
+            <h4 class="text-lg font-semibold text-green-800 mb-4">Carbon Reduction Tips</h4>
+            <ul class="space-y-3 text-green-700">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Use public transportation when possible
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Optimize energy consumption
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Regular maintenance of appliances
+              </li>
+            </ul>
+          </div>
+          <div class="bg-blue-50 p-6 rounded-lg">
+            <h4 class="text-lg font-semibold text-blue-800 mb-4">Achievement Tracking</h4>
+            <ul class="space-y-3 text-blue-700">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Monitor your progress regularly
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Earn badges for consistency
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Track achievement cycles
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

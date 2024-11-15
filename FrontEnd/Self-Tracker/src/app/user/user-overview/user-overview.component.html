@@ -1,0 +1,177 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Your Overview</h2>
+        <p class="mt-2 text-sm text-gray-600">Track your environmental impact and achievements</p>
+      </div>
+  
+
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+        
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-green-100 rounded-md p-3">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Total Reward Points</dt>
+                  <dd class="flex items-baseline">
+                    <div class="text-2xl font-semibold text-gray-900">0</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Carbon Footprint</dt>
+                  <dd class="flex items-baseline">
+                    <div class="text-2xl font-semibold text-gray-900">0 kg CO2</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
+                <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Completed Goals</dt>
+                  <dd class="flex items-baseline">
+                    <div class="text-2xl font-semibold text-gray-900">0</div>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      
+      <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium text-gray-900">Your Position</h3>
+            <div class="mt-4">
+              <p class="text-sm text-gray-500">View your ranking on the leaderboard</p>
+              <div class="mt-4">
+                <a routerLink="/user/leaderboard" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                  View Full Leaderboard
+                  <svg class="ml-2 -mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+            <div class="mt-4">
+              <div class="text-center py-8">
+                <p class="text-sm text-gray-500">No recent activities to display</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      
+      <div class="bg-white rounded-lg shadow-xl p-6 mt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-gray-900">Current Goal Period</h2>
+          <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
+            {{currentMonth >= 7 ? 'July - December' : 'January - June'}} {{currentYear}}
+          </span>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg">
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">Active Goals:</h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-700">Reduce Energy Consumption</span>
+              <span class="text-sm font-medium text-green-600">In Progress</span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mt-8">
+        <a href="/user/home" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Home</h3>
+          <p class="text-gray-600">Return to your dashboard</p>
+        </a>
+        
+        <a href="/user/footprint" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Footprint</h3>
+          <p class="text-gray-600">Track your carbon impact</p>
+        </a>
+  
+        <a href="/user/goal" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Goals</h3>
+          <p class="text-gray-600">Set and track your goals</p>
+        </a>
+  
+        <a href="/user/profile" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Profile</h3>
+          <p class="text-gray-600">View your profile details</p>
+        </a>
+      </div>
+  
+
+      <div class="bg-white rounded-lg shadow-xl p-6 mt-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Environmental Impact Tips</h2>
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+          <ul class="mt-4 space-y-2 text-gray-700">
+            <li class="flex items-center">
+              <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Track your daily carbon footprint
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Participate in bi-annual environmental goals
+            </li>
+            <li class="flex items-center">
+              <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Compete with others on the leaderboard
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
