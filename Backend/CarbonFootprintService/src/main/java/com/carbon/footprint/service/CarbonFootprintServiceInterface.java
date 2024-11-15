@@ -2,6 +2,7 @@ package com.carbon.footprint.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import com.carbon.footprint.dto.CarbonFootprintDTO;
 import com.carbon.footprint.model.CarbonFootprint;
@@ -28,5 +29,5 @@ public interface CarbonFootprintServiceInterface {
 	CarbonFootprintDTO findHalfYearlySumsByYear(String userId, int year);
 	
 	// Goal validation
-	List<String> getLast6MonthsFootprintCount(List<String> userIds);
+	List<String> getLast6MonthsFootprintCount(List<String> userIds, Map<String, LocalDate> createdAt);
 }

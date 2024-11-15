@@ -5,7 +5,9 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -334,16 +336,26 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 	}
 	
 	@Override
-	public List<String> getLast6MonthsFootprintCount(List<String> userIds) {
-        LocalDate currentDate = LocalDate.now();
-        int currentYear = currentDate.getYear();
-        int currentMonth = currentDate.getMonthValue(); 
-        
-        for(String userId: userIds) {
-        	if(carbonFootprintRepository.countFootprintsForLast6Months(userId, currentYear, currentMonth) != 6) {
-        		userIds.remove(userId);
-        	}
-        }
-        return userIds;
+	public List<String> getLast6MonthsFootprintCount(List<String> userIds, Map<String, LocalDate> createdAt) {
+		LocalDate currentDate = LocalDate.now();
+	    int currentYear = currentDate.getYear();
+	    int currentMonth = currentDate.getMonthValue();
+
+	    LocalDate sixMonthsAgo = currentDate.minusMonths(6).withDayOfMonth(1);
+
+	    Iterator<String> iterator = userIds.iterator();
+	    while (iterator.hasNext()) {
+	        String userId = iterator.next();
+	        LocalDate userCreationDate = createdAt.get(userId);
+
+	        if (userCreationDate.isBefore(sixMonthsAgo)) {
+	            int footprintCount = carbonFootprintRepository.countFootprintsForLast6Months(userId, currentYear, currentMonth);
+	            if (footprintCount != 6) {
+	                iterator.remove();
+	            }
+	        }
+	    }
+
+	    return userIds;
     }
 }

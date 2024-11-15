@@ -2,6 +2,7 @@ package com.carbon.footprint.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.carbon.footprint.client.UserDataClient;
 import com.carbon.footprint.dto.CarbonFootprintDTO;
 import com.carbon.footprint.model.CarbonFootprint;
 import com.carbon.footprint.service.CarbonFootprintServiceImpl;
@@ -29,6 +31,8 @@ public class CarbonFootprintController {
 	@Autowired
 	private CarbonFootprintServiceImpl carbonFootprintService;
 	
+	@Autowired
+	private UserDataClient userDataClient;
 	//changed
 	@PostMapping("/add/{userId}")
 	public ResponseEntity<CarbonFootprintDTO> addCarbonFootprint(
@@ -110,6 +114,7 @@ public class CarbonFootprintController {
 	
 	@GetMapping("/count/forAllUserId")
 	public ResponseEntity<List<String>> getCountOfFootprint(@RequestBody List<String> userIds) {
-		return new ResponseEntity<List<String>>(carbonFootprintService.getLast6MonthsFootprintCount(userIds), HttpStatus.OK);
+		Map<String, LocalDate> response = userDataClient.getUserIsWithCreatedAt(userIds);
+		return new ResponseEntity<List<String>>(carbonFootprintService.getLast6MonthsFootprintCount(userIds, response), HttpStatus.OK);
 	}
 }

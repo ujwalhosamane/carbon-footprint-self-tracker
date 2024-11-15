@@ -1,6 +1,8 @@
 package com.user.repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -69,4 +71,7 @@ public interface UserRepository extends JpaRepository<UserData, String> {
 	
 	@Query("SELECT COUNT(u) FROM UserData u WHERE YEAR(u.creationDate) = :year AND MONTH(u.creationDate) = :month")
     long countByCreationMonth(@Param("year") int year, @Param("month") int month);
+	
+	@Query("SELECT u.userId AS userId, u.creationDate AS creationDate FROM UserData u WHERE u.userId IN :userIds")
+    Map<String, LocalDate> findCreationDatesByUserIds(@Param("userIds") List<String> userIds);
 }

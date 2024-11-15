@@ -145,6 +145,10 @@ public class UserServiceImpl implements UserServiceInterface {
 		return afterLogin;
 	}
 	
+	public Map<String, LocalDate> findCreationDatesByUserIds(List<String> userIds) {
+		return userRepository.findCreationDatesByUserIds(userIds);
+	}
+	
 	public long countUsersThisMonth() {
         LocalDate now = LocalDate.now();
         return userRepository.countByCreationMonth(now.getYear(), now.getMonthValue());
@@ -158,5 +162,7 @@ public class UserServiceImpl implements UserServiceInterface {
     public long getTotalUserCount() {
         return userRepository.count();
     }
+    
+    
 
 }

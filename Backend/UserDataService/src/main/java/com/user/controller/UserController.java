@@ -1,5 +1,6 @@
 package com.user.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -120,5 +121,10 @@ public class UserController {
     @GetMapping("/users/total/count")
     public long getTotalUserCount() {
         return userService.getTotalUserCount();
+    }
+    
+    @GetMapping("/get/createdAt")
+    public Map<String, LocalDate> getUserIsWithCreatedAt(@RequestBody List<String> userIds) {
+    	return userService.findCreationDatesByUserIds(userIds);
     }
 }
