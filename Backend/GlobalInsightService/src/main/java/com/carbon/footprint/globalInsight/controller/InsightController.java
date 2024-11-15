@@ -1,6 +1,7 @@
 package com.carbon.footprint.globalInsight.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.carbon.footprint.globalInsight.DTO.GlobalInsightDTO;
 import com.carbon.footprint.globalInsight.DTO.InsightDTO;
 import com.carbon.footprint.globalInsight.model.GlobalInsight;
 import com.carbon.footprint.globalInsight.service.InsightService;
@@ -30,10 +32,18 @@ public class InsightController {
 	private InsightService service;
 	
 	@GetMapping("/allInsights")
-	public ResponseEntity<List<GlobalInsight>> fetchAllInsight()
+	public ResponseEntity<List<GlobalInsightDTO>> fetchAllInsight()
 	{
-		List<GlobalInsight> allInsights = service.getAllInsights();
-		if(allInsights != null)
+		List<GlobalInsightDTO> allInsights = new ArrayList<>();
+		for(GlobalInsight insight: service.getAllInsights()) {
+			GlobalInsightDTO dto = new GlobalInsightDTO();
+			dto.setDate(insight.getDate());
+			dto.setDescription(insight.getDescription());
+			dto.setInsightId(insight.getInsightId());
+			
+			allInsights.add(dto);
+		}
+		if(allInsights.size() > 0)
 		{
 			return ResponseEntity.ok(allInsights);
 		}
@@ -43,11 +53,17 @@ public class InsightController {
 		}	
 	}
 	
-	@PostMapping(value="/addInsight")
-	public ResponseEntity<GlobalInsight> addInsight(@RequestBody GlobalInsight insight)
+	@PostMapping(value="/addInsight/{userId}")
+	public ResponseEntity<GlobalInsightDTO> addInsight(@RequestBody GlobalInsightDTO insightDto,
+			@PathVariable String userId)
 	{
-		GlobalInsight addedInsight = service.createInsight(insight);
-		return ResponseEntity.status(HttpStatus.OK).body(addedInsight);
+		GlobalInsight addedInsight = new GlobalInsight();
+		addedInsight.setDate(insightDto.getDate());
+		addedInsight.setDescription(insightDto.getDescription());
+		addedInsight.setUserId(userId);
+		
+		service.createInsight(addedInsight);
+		return ResponseEntity.status(HttpStatus.OK).body(insightDto);
 	}
 	
 	@GetMapping(value="/insight/{insightId}")

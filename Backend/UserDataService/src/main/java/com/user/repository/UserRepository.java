@@ -66,4 +66,7 @@ public interface UserRepository extends JpaRepository<UserData, String> {
     void updateTotlaRewardPoints(String userId, Double totalRewardPoints);
 	
 	void deleteByUserId(String userId);
+	
+	@Query("SELECT COUNT(u) FROM UserData u WHERE YEAR(u.creationDate) = :year AND MONTH(u.creationDate) = :month")
+    long countByCreationMonth(@Param("year") int year, @Param("month") int month);
 }

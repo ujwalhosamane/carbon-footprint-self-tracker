@@ -47,6 +47,7 @@ public class AuthService {
         UserDataCreation userDataCreation = new UserDataCreation(
         		user.getUserId(),
         		user.getName(),
+        		user.getEmail(),
         		user.getCity(),
         		user.getCreationDate());
         if(!userDataClient.addUser(userDataCreation).getStatusCode().equals(HttpStatus.OK)) {

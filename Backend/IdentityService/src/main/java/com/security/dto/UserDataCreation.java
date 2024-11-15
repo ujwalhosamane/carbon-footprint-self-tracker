@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class UserDataCreation {
 	private String userId;
 	private String name;
+	private String email;
 	private String city;
 	private LocalDate creationDate;
 }

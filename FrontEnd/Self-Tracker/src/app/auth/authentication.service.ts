@@ -30,8 +30,9 @@ export class AuthenticationService {
     return this.http.post<any>(this.apiUrl + '/auth/login', data,{headers:this.headers});
   }
 
-  register(data: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl + '/auth/register', data);
+  register(data: any): Observable<string> {
+    console.log(data);
+    return this.http.post<string>(this.apiUrl + '/auth/register', data);
   }
 
   

@@ -1,5 +1,6 @@
 package com.security.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -22,8 +22,6 @@ import com.security.dto.AuthRequest;
 import com.security.dto.UserCreationDTO;
 import com.security.exception.DuplicateUserCreationException;
 import com.security.service.AuthService;
-
-import ch.qos.logback.core.subst.Token;
 
 @RestController
 @RequestMapping("/auth")
@@ -40,10 +38,14 @@ public class UserController {
     private UserDataClient userDataClient;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserCreationDTO userCreationDTO) 
-    		throws DuplicateUserCreationException {    		
-    	authService.saveUser(userCreationDTO);
-        return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
+    public ResponseEntity<Map<String, String>> register(@RequestBody UserCreationDTO userCreationDTO) 
+            throws DuplicateUserCreationException {      
+        authService.saveUser(userCreationDTO);
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User registered successfully!");
+        
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/login")
@@ -55,8 +57,8 @@ public class UserController {
         	String token = authService.generateToken(authRequest.getUsername());
         	String role = authService.extractRole(token);
         	Map<String, String> successfullLoginMap = Map.of(
-        			"Token", token,
-        			"Role", role);
+        			"token", token,
+        			"role", role);
         	return new ResponseEntity<>(successfullLoginMap, HttpStatus.OK);
         } else {
             throw new RuntimeException("Invalid access");

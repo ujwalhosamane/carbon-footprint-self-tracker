@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PredefinedGoal } from 'src/app/models/predefined-goal.model';
+import { PredefinedGoalDTO } from 'src/app/models/predefined-goal-dto.model';
+import { AdminService } from '../admin.service';
 
 @Component({
   selector: 'app-predefined-goal',
@@ -34,68 +36,21 @@ export class PredefinedGoalComponent implements OnInit {
   shippingGoals: number = 0;
   airConditionerGoals: number = 0;
 
-  predefinedGoals: PredefinedGoal[] = [
-    new PredefinedGoal(
-      1,
-      new Date(),
-      'Transportation Efficiency',
-      'Transportation', 
-      'Achieve 20% reduction in transportation costs.',
-      85,
-      100,
-      'https://example.com/badge1.png'
-    ),
-    new PredefinedGoal(
-      2,
-      new Date(),
-      'Energy Conservation',
-      'Electricity',
-      'Reduce energy consumption by 15% in 6 months.',
-      90,
-      120,
-      'https://example.com/badge2.png'
-    ),
-    new PredefinedGoal(
-      3, 
-      new Date(),
-      'LPG Usage Reduction',
-      'Lpg',
-      'Reduce LPG usage by 10% in 3 months.',
-      80,
-      110,
-      'https://example.com/badge3.png'
-    ),
-    new PredefinedGoal(
-      4,
-      new Date(),
-      'Shipping Cost Reduction', 
-      'Shipping',
-      'Decrease shipping costs by 12% in the next quarter.',
-      87,
-      95,
-      'https://example.com/badge4.png'
-    ),
-    new PredefinedGoal(
-      5,
-      new Date(),
-      'Air Conditioner Efficiency',
-      'AirConditioner',
-      'Improve air conditioner energy efficiency by 18%.',
-      92,
-      130,
-      'https://example.com/badge5.png'
-    )
-  ];
+  predefinedGoals: PredefinedGoal[] = [];
 
   goalTypes: string[] = ['Transportation', 'Electricity', 'Lpg', 'Shipping', 'AirConditioner'];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private adminService: AdminService
+  ) {
     this.goalForm = this.fb.group({
       title: ['', Validators.required],
       type: ['', Validators.required], 
       description: ['', Validators.required],
       targetScore: ['', [Validators.required, Validators.min(1)]],
-      rewardPoint: ['', [Validators.required, Validators.min(1)]]
+      rewardPoint: ['', [Validators.required, Validators.min(1)]],
+      badgeUrl: ['', Validators.required]
     });
 
     this.editForm = this.fb.group({
@@ -103,13 +58,26 @@ export class PredefinedGoalComponent implements OnInit {
       type: ['', Validators.required],
       description: ['', Validators.required], 
       targetScore: ['', [Validators.required, Validators.min(1)]],
-      rewardPoint: ['', [Validators.required, Validators.min(1)]]
+      rewardPoint: ['', [Validators.required, Validators.min(1)]],
+      badgeUrl: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
-    this.updateGoalCounts();
-    this.calculateTotalPages();
+    this.loadPredefinedGoals();
+  }
+
+  private loadPredefinedGoals(): void {
+    this.adminService.getAllPredefinedGoal().subscribe({
+      next: (goals) => {
+        this.predefinedGoals = goals;
+        this.updateGoalCounts();
+        this.calculateTotalPages();
+      },
+      error: (error) => {
+        console.error('Error loading predefined goals:', error);
+      }
+    });
   }
 
   private calculateTotalPages(): void {
@@ -157,7 +125,7 @@ export class PredefinedGoalComponent implements OnInit {
     this.selectedGoal = null;
   }
 
-  openEditModal(goal: any) {
+  openEditModal(goal: PredefinedGoal) {
     this.selectedGoal = goal;
     this.isEditModalOpen = true;
     this.isViewModalOpen = false;
@@ -166,7 +134,8 @@ export class PredefinedGoalComponent implements OnInit {
       type: goal.type,
       description: goal.description,
       targetScore: goal.targetScore,
-      rewardPoint: goal.rewardPoint
+      rewardPoint: goal.rewardPoint,
+      badgeUrl: goal.badgeUrl
     });
   }
 
@@ -178,22 +147,27 @@ export class PredefinedGoalComponent implements OnInit {
   onAddSubmit() {
     if (this.goalForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
-      const newGoal = new PredefinedGoal(
-        this.predefinedGoals.length + 1,
-        new Date(),
+      
+      const newGoalDto = new PredefinedGoalDTO(
         this.goalForm.value.title,
         this.goalForm.value.type,
         this.goalForm.value.description,
         this.goalForm.value.targetScore,
         this.goalForm.value.rewardPoint,
-        'https://example.com/badge.png'
+        this.goalForm.value.badgeUrl
       );
       
-      this.predefinedGoals.push(newGoal);
-      this.updateGoalCounts();
-      this.calculateTotalPages();
-      this.isSubmitting = false;
-      this.closeAddModal();
+      this.adminService.addPredefinedGoal(newGoalDto).subscribe({
+        next: () => {
+          this.loadPredefinedGoals();
+          this.isSubmitting = false;
+          this.closeAddModal();
+        },
+        error: (error) => {
+          console.error('Error adding predefined goal:', error);
+          this.isSubmitting = false;
+        }
+      });
     }
   }
 
@@ -201,29 +175,40 @@ export class PredefinedGoalComponent implements OnInit {
     if (this.editForm.valid && !this.isSubmitting && this.selectedGoal) {
       this.isSubmitting = true;
       
-      const index = this.predefinedGoals.findIndex(goal => goal.predefinedGoalId === this.selectedGoal.predefinedGoalId);
-      if (index !== -1) {
-        this.predefinedGoals[index] = {
-          ...this.selectedGoal,
-          ...this.editForm.value
-        };
-      }
+      const updatedGoalDto = new PredefinedGoalDTO(
+        this.editForm.value.title,
+        this.editForm.value.type,
+        this.editForm.value.description,
+        this.editForm.value.targetScore,
+        this.editForm.value.rewardPoint,
+        this.editForm.value.badgeUrl
+      );
 
-      this.updateGoalCounts();
-      this.isSubmitting = false;
-      this.closeEditModal();
+      this.adminService.updatePredefinedGoal(updatedGoalDto, this.selectedGoal.predefinedGoalId).subscribe({
+        next: () => {
+          this.loadPredefinedGoals();
+          this.isSubmitting = false;
+          this.closeEditModal();
+        },
+        error: (error) => {
+          console.error('Error updating predefined goal:', error);
+          this.isSubmitting = false;
+        }
+      });
     }
   }
 
   deleteGoal(goal: PredefinedGoal) {
-    const index = this.predefinedGoals.findIndex(g => g.predefinedGoalId === goal.predefinedGoalId);
-    if (index !== -1) {
-      this.predefinedGoals.splice(index, 1);
-      this.updateGoalCounts();
-      this.calculateTotalPages();
-      this.closeEditModal();
-      this.closeViewModal();
-    }
+    this.adminService.deletePredefinedGoal(goal.predefinedGoalId).subscribe({
+      next: () => {
+        this.loadPredefinedGoals();
+        this.closeEditModal();
+        this.closeViewModal();
+      },
+      error: (error) => {
+        console.error('Error deleting predefined goal:', error);
+      }
+    });
   }
 
   onSearch(event: any) {

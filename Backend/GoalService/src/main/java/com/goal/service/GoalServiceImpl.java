@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.goal.dto.CarbonFootprintDTO;
+import com.goal.dto.GoalDTO;
 import com.goal.exception.PredefinedGoalNotFoundException;
 import com.goal.model.Goal;
 import com.goal.model.PredefinedGoal;
@@ -51,8 +52,8 @@ public class GoalServiceImpl implements GoalServiceInterface {
 	}
 
 	@Override
-	public List<Goal> getByUserId(String userId) {
-		return goalRepo.findByUserId(userId);
+	public List<GoalDTO> getByUserId(String userId) {
+		return goalRepo.findDtoByUserId(userId);
 	}
 
 	@Override

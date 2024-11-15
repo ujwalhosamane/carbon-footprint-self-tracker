@@ -17,7 +17,8 @@ import com.admin.dto.GlobalInsight;
 @FeignClient(name = "GLOBAL-INSIGHTS-SERVICE")
 public interface GlobalInsightsClient {
 	@PostMapping(value="/globalInsight/addInsight")
-	public ResponseEntity<GlobalInsight> addInsight(@RequestBody GlobalInsight insight);
+	public ResponseEntity<GlobalInsight> addInsight(@RequestBody GlobalInsight insight,
+			@PathVariable String userId);
 	
 	@GetMapping("/globalInsight/allInsights")
 	public ResponseEntity<List<GlobalInsight>> fetchAllInsight();

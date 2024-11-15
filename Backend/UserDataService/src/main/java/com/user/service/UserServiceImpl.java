@@ -1,5 +1,7 @@
 package com.user.service;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -143,6 +145,18 @@ public class UserServiceImpl implements UserServiceInterface {
 		return afterLogin;
 	}
 	
-	
+	public long countUsersThisMonth() {
+        LocalDate now = LocalDate.now();
+        return userRepository.countByCreationMonth(now.getYear(), now.getMonthValue());
+    }
+
+    public long countUsersLastMonth() {
+        YearMonth previousMonth = YearMonth.now().minusMonths(1);
+        return userRepository.countByCreationMonth(previousMonth.getYear(), previousMonth.getMonthValue());
+    }
+    
+    public long getTotalUserCount() {
+        return userRepository.count();
+    }
 
 }

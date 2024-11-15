@@ -9,12 +9,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { AuthHomeComponent } from './auth-home/auth-home.component';
 
 @NgModule({
   declarations: [
     LoginComponent,
     RegisterComponent,
-    AuthLayoutComponent
+    AuthLayoutComponent,
+    AuthHomeComponent
   ],
   imports: [
     CommonModule,

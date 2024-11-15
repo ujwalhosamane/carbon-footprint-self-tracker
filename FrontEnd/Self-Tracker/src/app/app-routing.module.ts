@@ -12,15 +12,19 @@ import { AdminHomeComponent } from './admin/admin-home/admin-home.component';
 import { AnalyticsComponent } from './admin/analytics/analytics.component';
 import { AdminUsersComponent } from './admin/admin-users/admin-users.component';
 import { AdminOverviewComponent } from './admin/admin-overview/admin-overview.component';
-import { HomeComponent } from './user/home/home.component';
 import { UserHomeComponent } from './user/user-home/user-home.component';
-
+import { AdminInsightsComponent } from './admin/admin-insights/admin-insights.component';
+import { AuthHomeComponent } from './auth/auth-home/auth-home.component';
+import { UserOverviewComponent } from './user/user-overview/user-overview.component';
+import { UserGoalComponent } from './user/user-goal/user-goal.component';
 const routes: Routes = [
   {
     path: 'user',
     component: UserMainLayoutComponent, 
     children: [
-      { path: 'leaderBoard', component: LeaderBoardComponent },
+      { path: 'leaderboard', component: LeaderBoardComponent },
+      { path: 'overview', component: UserOverviewComponent },
+      { path: 'goal', component: UserGoalComponent },
       { path: 'home', component: UserHomeComponent },
     ],
   },
@@ -28,8 +32,10 @@ const routes: Routes = [
     path: 'auth',
     component: AuthLayoutComponent,
     children: [
+      { path: 'home', component: AuthHomeComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent},
+      { path: '', redirectTo: 'home', pathMatch: 'full' }
     ],
   },
   {
@@ -44,6 +50,7 @@ const routes: Routes = [
           { path: 'analytics', component: AnalyticsComponent },
           { path: 'users', component: AdminUsersComponent },
           { path: 'overview', component: AdminOverviewComponent },
+          { path: 'insights', component: AdminInsightsComponent },  
         ]
       },
       { path: 'home', component: AdminHomeComponent },

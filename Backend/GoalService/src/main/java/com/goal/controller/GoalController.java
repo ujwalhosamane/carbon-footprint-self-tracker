@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.goal.dto.GoalDTO;
 import com.goal.model.Goal;
 import com.goal.service.GoalServiceImpl;
 
@@ -37,7 +38,7 @@ public class GoalController {
 	}
 	
 	@GetMapping("/get/{userId}")
-	public ResponseEntity<List<Goal>> getAllGoal(@PathVariable String userId) {
+	public ResponseEntity<List<GoalDTO>> getAllGoal(@PathVariable String userId) {
 		return new ResponseEntity<>(goalService.getByUserId(userId), HttpStatus.OK);
 	}
 	

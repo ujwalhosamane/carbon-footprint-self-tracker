@@ -6,14 +6,15 @@ import { LucideAngularModule, File, Home, Menu, UserCheck,LogOut } from 'lucide-
 import { RouterModule } from '@angular/router';
 import { LeaderBoardComponent } from './leader-board/leader-board.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HomeComponent } from './home/home.component';
 import { UserHomeComponent } from './user-home/user-home.component';
+import { UserGoalComponent } from './user-goal/user-goal.component';
+import { UserOverviewComponent } from './user-overview/user-overview.component';
 @NgModule({
   declarations: [
     UserMainLayoutComponent, 
     LeaderBoardComponent, 
     DashboardComponent, 
-    HomeComponent, UserHomeComponent
+    UserHomeComponent, UserGoalComponent, UserOverviewComponent
   ],
   
   imports: [

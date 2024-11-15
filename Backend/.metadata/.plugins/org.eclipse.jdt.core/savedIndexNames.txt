@@ -61,7 +61,6 @@ INDEX VERSION 1.134+C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\.met
 3735501689.index
 1638890920.index
 3838625807.index
-3794525776.index
 2189572827.index
 1119818691.index
 168178251.index

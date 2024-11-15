@@ -4,12 +4,19 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.goal.dto.GoalDTO;
 import com.goal.model.Goal;
 
 public interface GoalRepository extends JpaRepository<Goal, Long> {
 	
-	List<Goal>findByUserId(String userId);
+	@Query("SELECT new com.goal.dto.GoalDTO(g.goalId, g.currentScore, g.count, g.isAchieved, "
+            + "pg.creationDate, pg.title, pg.type, pg.description, pg.targetScore, pg.rewardPoint, pg.badgeUrl) "
+            + "FROM Goal g JOIN g.predefinedGoal pg WHERE g.userId = :userId")
+    List<GoalDTO> findDtoByUserId(@Param("userId") String userId);
+	
+	List<Goal> findByUserId(String userId);
 	
 	void deleteByUserId(String userId);
 	

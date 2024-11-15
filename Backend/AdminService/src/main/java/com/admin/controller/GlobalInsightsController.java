@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.admin.client.GlobalInsightsClient;
 import com.admin.dto.GlobalInsight;
+import com.admin.util.JwtUtil;
 
 @RestController
 @RequestMapping("/admin/globalInsight")
@@ -23,10 +25,17 @@ public class GlobalInsightsController {
 	@Autowired
 	private GlobalInsightsClient gloablInsightsClient;
 	
+	@Autowired
+	private JwtUtil jwtUtil;
+	
 	@PostMapping(value="/addInsight")
-	public ResponseEntity<GlobalInsight> addInsight(@RequestBody GlobalInsight insight) {
+	public ResponseEntity<GlobalInsight> addInsight(@RequestHeader("Authorization") String authorizationHeader, 
+			@RequestBody GlobalInsight insight) {
+		String token = authorizationHeader.substring(7); 
+        String userId = jwtUtil.extractUserId(token);
+
 		insight.setDate(LocalDate.now());
-		return gloablInsightsClient.addInsight(insight);
+		return gloablInsightsClient.addInsight(insight, userId);
 	}
 	
 	@GetMapping("/allInsights")

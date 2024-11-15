@@ -83,6 +83,28 @@
 	        <artifactId>javax.el</artifactId>
 	        <version>3.0.0</version> <!-- Use the latest stable version -->
     	</dependency>
+    	
+    	<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-api</artifactId>
+		    <version>0.11.0</version>
+		</dependency>
+		
+		<!-- JJWT Implementation (required for JWT operations) -->
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-impl</artifactId>
+		    <version>0.11.0</version>
+		    <scope>runtime</scope>
+		</dependency>
+		
+		<!-- JJWT Jackson Integration (for handling JSON with Jackson) -->
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-jackson</artifactId>
+		    <version>0.11.0</version>
+		    <scope>runtime</scope>
+		</dependency>
   		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

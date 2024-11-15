@@ -107,4 +107,18 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserAfterLogin(userId), HttpStatus.OK);
 	}
 	
+	@GetMapping("/users/this-month/count")
+    public long getThisMonthUserCount() {
+        return userService.countUsersThisMonth();
+    }
+
+    @GetMapping("/users/last-month/count")
+    public long getLastMonthUserCount() {
+        return userService.countUsersLastMonth();
+    }
+    
+    @GetMapping("/users/total/count")
+    public long getTotalUserCount() {
+        return userService.getTotalUserCount();
+    }
 }

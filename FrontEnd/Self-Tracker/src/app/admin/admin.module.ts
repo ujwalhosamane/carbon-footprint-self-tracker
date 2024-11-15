@@ -12,6 +12,7 @@ import { AdminHomeComponent } from './admin-home/admin-home.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import { AdminOverviewComponent } from './admin-overview/admin-overview.component';
 import { AdminUsersComponent } from './admin-users/admin-users.component';
+import { AdminInsightsComponent } from './admin-insights/admin-insights.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { AdminUsersComponent } from './admin-users/admin-users.component';
     AdminHomeComponent,
     AnalyticsComponent,
     AdminOverviewComponent,
-    AdminUsersComponent
+    AdminUsersComponent,
+    AdminInsightsComponent
   ],
   imports: [
     CommonModule,
