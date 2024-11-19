@@ -1,15 +1,20 @@
 package com.carbon.footprint.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.carbon.footprint.model.CarbonFootprint;
 import com.carbon.footprint.dto.CarbonFootprintDTO;
+import com.carbon.footprint.model.CarbonFootprint;
+
+import jakarta.persistence.Tuple;
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface CarbonFootprintRepository extends JpaRepository<CarbonFootprint, Long> {
@@ -83,4 +88,28 @@ public interface CarbonFootprintRepository extends JpaRepository<CarbonFootprint
 	    int countFootprintsForLast6Months(@Param("userId") String userId, 
 	                                      @Param("year") int year, 
 	                                      @Param("month") int month);
+	
+	@Query("SELECT c FROM CarbonFootprint c WHERE c.userId = :userId " +
+		       "ORDER BY c.footprintYear DESC, " +
+		       "FIELD(c.footprintMonth, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December') DESC")
+	Optional<CarbonFootprint> findLatestFootprintByUser(@Param("userId") String userId);
+	
+	@Query("SELECT c.creationDate AS creationDate, c.updatedDate AS updatedDate, c.footprintMonth AS footprintMonth, c.footprintYear AS footprintYear " +
+		       "FROM CarbonFootprint c " +
+		       "WHERE c.userId = :userId " +
+		       "ORDER BY c.updatedDate DESC, c.creationDate DESC")
+	List<Tuple> findLatestActivityByUserId(@Param("userId") String userId);
+	
+	 @Query("SELECT CONCAT(c.footprintMonth, '-', c.footprintYear) AS monthYear, " +
+	            "SUM(c.transportation + c.electricity + c.lpg + c.shipping + c.airConditioner) AS totalFootprint " +
+	            "FROM CarbonFootprint c " +
+	            "WHERE c.footprintMonth IN :months AND c.footprintYear IN :years " +
+	            "GROUP BY c.footprintMonth, c.footprintYear")
+	 Map<String, Double> getTotalFootprintForCurrentAndPreviousMonth(List<String> months, List<Integer> years);
+	 
+	 
+	 @Modifying
+     @Transactional
+     @Query("DELETE FROM CarbonFootprint cf WHERE cf.footprintYear < :year OR (cf.footprintYear = :year AND cf.footprintMonth < :month)")
+     void deleteByFootprintYearBeforeOrFootprintYearAndFootprintMonthBefore(@Param("year") int year, @Param("month") String month);
 }

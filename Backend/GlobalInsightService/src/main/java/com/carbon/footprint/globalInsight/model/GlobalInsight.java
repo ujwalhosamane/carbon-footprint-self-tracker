@@ -21,6 +21,7 @@ public class GlobalInsight {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long insightId;
 	private String userId;
+	private String title;
 	private String description;
 	private LocalDate date;
 

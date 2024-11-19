@@ -175,5 +175,15 @@ public class GoalServiceImpl implements GoalServiceInterface {
                           result -> ((Number) result[1]).doubleValue() 
                       ));
 	}
+	
+	public Long getTotalCountByUserId(String userId) {
+        Long totalCount = goalRepo.findTotalCountByUserId(userId);
+        return totalCount != null ? totalCount : 0L; 
+    }
+	
+	public Long getTotalCount() {
+		 Long totalCount = goalRepo.findTotalCount();
+	     return totalCount != null ? totalCount : 0L;
+	}
 
 }

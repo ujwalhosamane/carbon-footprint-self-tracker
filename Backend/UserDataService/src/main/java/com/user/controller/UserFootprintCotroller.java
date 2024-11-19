@@ -13,14 +13,18 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.user.client.CarbonFootprintClient;
 import com.user.client.GoalClient;
 import com.user.dto.CarbonFootprintDTO;
+import com.user.dto.EmissionFactor;
+import com.user.dto.LatestActivity;
 import com.user.exception.CarbonFootprintException;
 import com.user.service.ClientService;
 import com.user.util.JwtUtil;
@@ -82,7 +86,7 @@ public class UserFootprintCotroller {
 		return new ResponseEntity<>(response.getBody(), response.getStatusCode());
 	}
 	
-	@PostMapping("/update")
+	@PutMapping("/update")
 	public ResponseEntity<CarbonFootprintDTO> updateCarbonFootprint(
 			@RequestHeader("Authorization") String authorizationHeader,
 			@RequestBody CarbonFootprintDTO carbonFootprint){
@@ -130,12 +134,32 @@ public class UserFootprintCotroller {
 	@DeleteMapping("/delete/{month}/{year}")
 	public ResponseEntity<Void> deleteFootprintById(
 			@RequestHeader("Authorization") String authorizationHeader,
-			@PathVariable String month, 
-			@PathVariable int year) {
+			@PathVariable("month") String month, 
+			@PathVariable("year") int year) {
 		String token = authorizationHeader.substring(7); 
         String userId = jwtUtil.extractUserId(token);
         
-		return footprintClient.deleteFootprintById(userId, month, year);
+        footprintClient.deleteFootprintById(userId, month, year);
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        
+		goalClient.updateCurrentScoreByUserId(userId, currentYear);
+		
+		ResponseEntity<CarbonFootprintDTO> dtoResponse = footprintClient.getAllSumsByUserId(userId);
+		if(!dtoResponse.getStatusCode().equals(HttpStatus.OK)) {
+			throw new RuntimeException("Error occured while saving the footprint");
+		} 
+		if(dtoResponse.getBody() != null) {
+			CarbonFootprintDTO totalFootprintDTO = dtoResponse.getBody();
+			Double totalFootprint = Double.valueOf(totalFootprintDTO.getTransportation()) + Double.valueOf(totalFootprintDTO.getElectricity()) +
+					Double.valueOf(totalFootprintDTO.getLpg()) + Double.valueOf(totalFootprintDTO.getShipping()) + Double.valueOf(totalFootprintDTO.getAirConditioner());
+			
+			clientService.updateUserTotalFootprint(userId, totalFootprint);
+		}
+		
+		clientService.updateUserTotalFootprint(userId, Double.valueOf(0));
+		
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	
 	@GetMapping("/get")
@@ -150,11 +174,56 @@ public class UserFootprintCotroller {
 	@GetMapping("/getAllSums/{months}")
 	public ResponseEntity<List<CarbonFootprintDTO>> getNMonthsSumByUserId(
 			@RequestHeader("Authorization") String authorizationHeader, 
-			@PathVariable int months) {
+			@PathVariable("months") int months) {
 		String token = authorizationHeader.substring(7); 
         String userId = jwtUtil.extractUserId(token);
         
 		return footprintClient.getNMonthsSumByUserId(userId, months);
+	}
+	
+	@GetMapping("/get/{month}/{year}")
+	public ResponseEntity<CarbonFootprintDTO> getByUserIdAndMonthAndYear(
+			@RequestHeader("Authorization") String authorizationHeader,
+			@PathVariable("month") String month, 
+			@PathVariable("year") int year) {
+		String token = authorizationHeader.substring(7); 
+        String userId = jwtUtil.extractUserId(token);
+        
+        ResponseEntity<CarbonFootprintDTO> responseEntity = footprintClient.getByUserIdAndMonthAndYear(userId, month, year);
+        if(responseEntity.getBody() == null) {
+        	CarbonFootprintDTO dto = new CarbonFootprintDTO(month, year, 0, 0, 0, 0, 0);
+        	return new ResponseEntity<CarbonFootprintDTO>(dto, HttpStatus.OK);
+        }
+		return responseEntity;
+	}
+	
+	@GetMapping("/get/latest")
+    public ResponseEntity<CarbonFootprintDTO> getLatestCarbonFootprint(
+    		@RequestHeader("Authorization") String authorizationHeader) {
+		String token = authorizationHeader.substring(7); 
+        String userId = jwtUtil.extractUserId(token);
+        
+        ResponseEntity<CarbonFootprintDTO> responseEntity = footprintClient.getLatestCarbonFootprint(userId);
+        if(responseEntity.getBody() == null) {
+        	CarbonFootprintDTO dto = new CarbonFootprintDTO("", 0, 0, 0, 0, 0, 0);
+        	return new ResponseEntity<CarbonFootprintDTO>(dto, HttpStatus.OK);
+        }
+		return responseEntity;
+	}
+	
+	@GetMapping("/get/emissionFactor")
+	 public ResponseEntity<EmissionFactor> getEmissionFactor() {
+		return footprintClient.getEmissionFactor();
+	}
+	
+	@GetMapping("/latest-activity")
+    public ResponseEntity<LatestActivity> getLatestActivity(
+    		@RequestHeader("Authorization") String authorizationHeader) {
+		String token = authorizationHeader.substring(7); 
+        String userId = jwtUtil.extractUserId(token);
+        
+        return footprintClient.getLatestActivity(userId);
+		
 	}
 	
 }

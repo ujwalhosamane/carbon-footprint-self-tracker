@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminUsersComponent } from './admin-users.component';
+import { UserFootprintComponent } from './user-footprint.component';
 
-describe('AdminUsersComponent', () => {
-  let component: AdminUsersComponent;
-  let fixture: ComponentFixture<AdminUsersComponent>;
+describe('UserFootprintComponent', () => {
+  let component: UserFootprintComponent;
+  let fixture: ComponentFixture<UserFootprintComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AdminUsersComponent ]
+      declarations: [ UserFootprintComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AdminUsersComponent);
+    fixture = TestBed.createComponent(UserFootprintComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

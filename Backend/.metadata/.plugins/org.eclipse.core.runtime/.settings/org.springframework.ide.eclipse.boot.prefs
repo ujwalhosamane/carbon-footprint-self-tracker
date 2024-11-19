@@ -1,11 +1,11 @@
 eclipse.preferences.version=1
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-eureka=7
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-eureka-server=1
-org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-feign=4
-org.springframework.ide.eclipse.boot.wizard.PopularityTracker.data-jpa=6
+org.springframework.ide.eclipse.boot.wizard.PopularityTracker.cloud-feign=5
+org.springframework.ide.eclipse.boot.wizard.PopularityTracker.data-jpa=7
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.devtools=7
-org.springframework.ide.eclipse.boot.wizard.PopularityTracker.lombok=6
-org.springframework.ide.eclipse.boot.wizard.PopularityTracker.mysql=6
+org.springframework.ide.eclipse.boot.wizard.PopularityTracker.lombok=7
+org.springframework.ide.eclipse.boot.wizard.PopularityTracker.mysql=7
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.quartz=1
 org.springframework.ide.eclipse.boot.wizard.PopularityTracker.web=8
 org.springframework.ide.eclipse.boot.wizard.PreferredSelections.artifactId=AdminService

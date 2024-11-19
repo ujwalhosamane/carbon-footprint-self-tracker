@@ -1,6 +1,7 @@
 package com.user.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -13,5 +14,5 @@ public interface GlobalInsightsClient {
 	 * User
 	 */
 	@GetMapping("/globalInsight/getNInsights/{n}")
-	public ResponseEntity<List<String>> getNInsights(@PathVariable int n);
+	public ResponseEntity<Map<String, String>> getNInsights(@PathVariable int n);
 }

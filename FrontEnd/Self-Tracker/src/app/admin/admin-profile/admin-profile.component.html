@@ -1,0 +1,106 @@
+<div class="container mx-auto px-4 py-12">
+  <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+    <div class="bg-gradient-to-r from-gray-900 via-blue-900 to-black p-8 relative overflow-hidden">
+      <div class="absolute inset-0 bg-pattern opacity-10"></div>
+      <div class="flex items-center relative z-10">
+        <div class="p-5 rounded-full bg-white shadow-lg transform hover:scale-110 transition-transform duration-300">
+          <svg class="w-20 h-20 text-blue-900" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+          </svg>
+        </div>
+        <div class="ml-8">
+          <h1 class="text-4xl font-extrabold text-white tracking-tight">{{name}}</h1>
+          <p class="text-blue-200 text-lg mt-2 font-medium">Administrator since {{creationDate | date:'mediumDate'}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-10">
+      <div class="grid grid-cols-1 gap-8">
+        <div class="space-y-8 transform hover:scale-[1.01] transition-all duration-300">
+          <h2 class="text-3xl font-bold text-gray-900 border-b-4 border-blue-900 pb-2 inline-block">Administrator Details</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+              <label class="text-base font-semibold text-gray-600">Email</label>
+              <p class="mt-2 text-xl text-gray-900 font-medium">{{email}}</p>
+            </div>
+            <div class="bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+              <label class="text-base font-semibold text-gray-600">City</label>
+              <p class="mt-2 text-xl text-gray-900 font-medium">{{city}}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-xl shadow-lg mt-8">
+          <h3 class="text-2xl font-bold text-blue-900 mb-4">Administrative Role</h3>
+          <p class="text-gray-700 text-lg">
+            As an administrator, you have full access to manage users, monitor system analytics, and maintain platform integrity.
+          </p>
+          <div class="mt-6 flex space-x-4">
+            <a href="/admin/dashboard" class="inline-flex items-center px-6 py-3 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors duration-300">
+              <span>View Dashboard</span>
+            </a>
+            <a href="/admin/analytics" class="inline-flex items-center px-6 py-3 bg-indigo-900 text-white rounded-lg hover:bg-indigo-800 transition-colors duration-300">
+              <span>View Analytics</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b-4 border-blue-900 pb-2 inline-block">Update Password</h2>
+          <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()" class="max-w-lg mx-auto space-y-6 bg-gray-50 p-8 rounded-xl shadow-lg">
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">Current Password</label>
+              <input type="password" formControlName="currentPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-300">
+              <p *ngIf="passwordForm.get('currentPassword')?.errors?.['required'] && passwordForm.get('currentPassword')?.touched" class="text-red-500 text-sm mt-1">
+                Current password is required
+              </p>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">New Password</label>
+              <input type="password" formControlName="newPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-300">
+              <p *ngIf="passwordForm.get('newPassword')?.errors?.['required'] && passwordForm.get('newPassword')?.touched" class="text-red-500 text-sm mt-1">
+                New password is required
+              </p>
+              <p *ngIf="passwordForm.get('newPassword')?.errors?.['minlength'] && passwordForm.get('newPassword')?.touched" class="text-red-500 text-sm mt-1">
+                Password must be at least 6 characters long
+              </p>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">Confirm New Password</label>
+              <input type="password" formControlName="confirmPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-300">
+              <p *ngIf="passwordForm.get('confirmPassword')?.errors?.['required'] && passwordForm.get('confirmPassword')?.touched" class="text-red-500 text-sm mt-1">
+                Password confirmation is required
+              </p>
+              <p *ngIf="passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched" class="text-red-500 text-sm mt-1">
+                Passwords do not match
+              </p>
+            </div>
+
+            <div [@toastAnimation]="toastState" *ngIf="successMessage" class="fixed right-4 top-20 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+              <div class="flex items-center space-x-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>{{ successMessage }}</span>
+              </div>
+            </div>
+
+            <div [@toastAnimation]="toastState" *ngIf="errorMessage" class="fixed right-4 top-20 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+              <div class="flex items-center space-x-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                <span>{{ errorMessage }}</span>
+              </div>
+            </div>
+
+            <button type="submit" [disabled]="!passwordForm.valid" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-gradient-to-r from-blue-900 to-indigo-800 hover:from-blue-800 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              Update Password
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.admin.dto.PredefinedGoal;
 import com.admin.dto.PredefinedGoalDTO;
@@ -46,4 +47,13 @@ public interface GoalClient {
 	
 	@PutMapping("/goal/update/score/{year}")
 	public ResponseEntity<Void> updateCurrentScoreOfAllUser(@RequestBody List<String> userIds, @PathVariable int year); 
+	
+	@GetMapping("/predefinedGoal/recent-goals/titles-descriptions")
+    public List<Map<String, Object>> getRecentGoalTitlesAndDescriptions(@RequestParam(defaultValue = "2") int limit);
+	
+	@GetMapping("/predefinedGoal/with-goal-count")
+    public List<Map<String, Object>> getPredefinedGoalsWithGoalCount(@RequestParam(defaultValue = "6") int limit);
+	
+	@GetMapping("/goal/total-count")
+	public ResponseEntity<Map<String, Long>> getTotalCount();
 }

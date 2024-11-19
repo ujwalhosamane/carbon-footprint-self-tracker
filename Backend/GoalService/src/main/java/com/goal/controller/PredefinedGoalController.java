@@ -1,6 +1,7 @@
 package com.goal.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goal.dto.PredefinedGoalDTO;
@@ -51,4 +53,14 @@ public class PredefinedGoalController {
 		predefinedGoalService.deletePredefinedGoal(predefinedGoalId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	@GetMapping("/recent-goals/titles-descriptions")
+    public List<Map<String, Object>> getRecentGoalTitlesAndDescriptions(@RequestParam(defaultValue = "2") int limit) {
+        return predefinedGoalService.getRecentlyCreatedGoalTitlesAndDescriptions(limit);
+    }
+	
+	@GetMapping("/with-goal-count")
+    public List<Map<String, Object>> getPredefinedGoalsWithGoalCount(@RequestParam(defaultValue = "6") int limit) {
+        return predefinedGoalService.getPredefinedGoalsWithGoalCount(limit);
+    }
 }

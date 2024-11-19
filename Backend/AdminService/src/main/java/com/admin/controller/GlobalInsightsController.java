@@ -2,6 +2,7 @@ package com.admin.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class GlobalInsightsController {
 	}
 	
 	@DeleteMapping(value="/deleteInsight/{insightId}")
-	public String removeInsightById(@PathVariable("insightId") long insightId) {
+	public Map<String, String> removeInsightById(@PathVariable("insightId") long insightId) {
 		return gloablInsightsClient.removeInsightById(insightId);
 	}
 }

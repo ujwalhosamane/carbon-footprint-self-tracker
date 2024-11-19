@@ -2,6 +2,7 @@ package com.admin.client;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import com.admin.dto.GlobalInsight;
 
 @FeignClient(name = "GLOBAL-INSIGHTS-SERVICE")
 public interface GlobalInsightsClient {
-	@PostMapping(value="/globalInsight/addInsight")
+	@PostMapping(value="/globalInsight/addInsight/{userId}")
 	public ResponseEntity<GlobalInsight> addInsight(@RequestBody GlobalInsight insight,
 			@PathVariable String userId);
 	
@@ -30,6 +31,6 @@ public interface GlobalInsightsClient {
 	public ResponseEntity<List<GlobalInsight>> fetchDescriptionByDate(@PathVariable("date") LocalDate date);
 	
 	@DeleteMapping(value="/globalInsight/deleteInsight/{insightId}")
-	public String removeInsightById(@PathVariable("insightId") long insightId);
+	public Map<String, String> removeInsightById(@PathVariable("insightId") long insightId);
 	
 }

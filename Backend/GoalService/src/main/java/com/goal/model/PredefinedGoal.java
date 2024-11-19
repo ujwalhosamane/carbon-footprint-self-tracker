@@ -1,5 +1,6 @@
 package com.goal.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +29,6 @@ public class PredefinedGoal {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long predefinedGoalId;
 
-	@Temporal(TemporalType.DATE)
 	private Date creationDate;
 	
 	@NotNull(message = "Title cannot be null")

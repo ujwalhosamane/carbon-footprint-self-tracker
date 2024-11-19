@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import io.jsonwebtoken.JwtException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	@ExceptionHandler(UserNotFoundException.class)
@@ -24,6 +26,11 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(DuplicateUserCreationException.class)
     public ResponseEntity<String> handleDuplicateUserCreationException(DuplicateUserCreationException ex) {
+    	return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+    
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<String> handleJwtException(JwtException ex) {
     	return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 }

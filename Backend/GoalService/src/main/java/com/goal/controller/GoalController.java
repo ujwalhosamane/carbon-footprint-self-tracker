@@ -1,5 +1,6 @@
 package com.goal.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goal.dto.GoalDTO;
-import com.goal.model.Goal;
 import com.goal.service.GoalServiceImpl;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/goal")
@@ -67,5 +69,20 @@ public class GoalController {
 	public ResponseEntity<Map<String, Double>> getUserAndSixMonthsRewardPoints() {
 		return new ResponseEntity<Map<String,Double>>(goalService.getUserIdsWithSixMonthsRewardPoints(), HttpStatus.OK);
 	}
+	
+	@GetMapping("/total-count/{userId}")
+    public ResponseEntity<Map<String, Long>> getTotalCount(@PathVariable String userId) {
+        Long totalCount = goalService.getTotalCountByUserId(userId);
+        Map<String, Long> response = Map.of("totalCount", totalCount);
+        return ResponseEntity.ok(response);
+    }
+	
+	@GetMapping("/total-count")
+	public ResponseEntity<Map<String, Long>> getTotalCount() {
+		Long totalCount = goalService.getTotalCount();
+        Map<String, Long> response = Map.of("totalCount", totalCount);
+        return ResponseEntity.ok(response); 
+	}
+	
 	
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.admin.client.GoalClient;
@@ -58,11 +59,11 @@ public class GoalController {
 		return goalClient.getPredefinedGoal(predefinedGoalId);
 	}
 	
-	@PutMapping("/predefinedGoal/update/{predefinedGoalId}")
+	@PutMapping("/update/{predefinedGoalId}")
 	public ResponseEntity<PredefinedGoal> updatePredefinedGoal(
 			@RequestBody PredefinedGoalDTO predefinedGoalDto, 
 			@PathVariable Long predefinedGoalId) {
-		return goalClient.getPredefinedGoal(predefinedGoalId);
+		return goalClient.updatePredefinedGoal(predefinedGoalDto, predefinedGoalId);
 	}
 	
 	@DeleteMapping("/delete/{predefinedGoalId}")
@@ -74,5 +75,20 @@ public class GoalController {
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		}
 		return response;
+	}
+	
+	@GetMapping("/recent-goals/titles-descriptions")
+    public ResponseEntity<List<Map<String, Object>>> getRecentGoalTitlesAndDescriptions() {
+		return new ResponseEntity<List<Map<String,Object>>>(goalClient.getRecentGoalTitlesAndDescriptions(2), HttpStatus.OK);
+	}
+	
+	@GetMapping("/with-goal-count")
+    public ResponseEntity<List<Map<String, Object>>> getPredefinedGoalsWithGoalCount() {
+		return new ResponseEntity<List<Map<String,Object>>> (goalClient.getPredefinedGoalsWithGoalCount(6), HttpStatus.OK);
+	}
+	
+	@GetMapping("/total-count")
+	public ResponseEntity<Map<String, Long>> getTotalCount() {
+		return goalClient.getTotalCount();
 	}
 }

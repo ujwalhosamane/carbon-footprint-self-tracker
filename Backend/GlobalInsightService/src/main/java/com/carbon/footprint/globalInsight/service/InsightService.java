@@ -2,6 +2,7 @@ package com.carbon.footprint.globalInsight.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.carbon.footprint.globalInsight.DTO.InsightDTO;
 import com.carbon.footprint.globalInsight.model.GlobalInsight;
@@ -71,11 +71,10 @@ public class InsightService {
 		repository.deleteById(insightId);
 	}
 	 
-	public List<String> fetchTopNByDate(int n) {
+	public Map<String, String> fetchTopNByDate(int n) {
 	    Pageable pageable = PageRequest.of(0, n); 
 	    return repository.findAllByOrderByDateDesc(pageable)
-	    		.stream()
-	            .map(GlobalInsight::getDescription)
-	            .collect(Collectors.toList());
+	            .stream()
+	            .collect(Collectors.toMap(GlobalInsight::getTitle, GlobalInsight::getDescription));
 	}
 }

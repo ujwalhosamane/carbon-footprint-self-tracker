@@ -1,71 +1,93 @@
-<!-- Analytics Dashboard -->
-<div class="p-6 space-y-8">
-    <!-- Header Section -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-      <p class="text-gray-600">Track and analyze user engagement and goal completion metrics</p>
+<div class="p-8 space-y-10 bg-gray-50 min-h-screen">
+    <div class="mb-10 text-center">
+      <h1 class="text-4xl font-bold text-gray-900 mb-3">Analytics Dashboard</h1>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">Track and analyze user engagement and goal completion metrics with real-time updates</p>
     </div>
   
-    <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Active Users Card -->
-      <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Active Users</p>
-            <p class="text-2xl font-semibold text-gray-900">2,847</p>
-            <p class="text-sm text-green-600">+12.5% from last month</p>
+            <p class="text-sm font-medium text-gray-600 uppercase tracking-wider">Active Users</p>
+            <p class="text-3xl font-bold text-gray-900 my-2">{{ thisMonthUsers !== null ? thisMonthUsers : 0 }}</p>
+            <p class="text-sm font-medium" [ngClass]="{
+              'text-red-600': calculatePercentageChange(thisMonthUsers, lastMonthUsers) < 0,
+              'text-green-600': calculatePercentageChange(thisMonthUsers, lastMonthUsers) > 0,
+              'text-gray-600': calculatePercentageChange(thisMonthUsers, lastMonthUsers) === 0
+            }">
+              {{ calculatePercentageChange(thisMonthUsers, lastMonthUsers) }}% from last month
+            </p>
           </div>
-          <div class="p-3 bg-blue-100 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="p-4 bg-blue-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
           </div>
         </div>
       </div>
   
-      <!-- Goals Completed Card -->
-      <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Goals Completed</p>
-            <p class="text-2xl font-semibold text-gray-900">1,234</p>
-            <p class="text-sm text-green-600">+8.3% from last month</p>
+            <p class="text-sm font-medium text-gray-600 uppercase tracking-wider">Total Goals Completed</p>
+            <p class="text-3xl font-bold text-gray-900 my-2">{{totalCompletedGoals || 0}}</p>
+            <p class="text-sm font-medium text-gray-600">Across all categories</p>
           </div>
-          <div class="p-3 bg-green-100 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="p-4 bg-green-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         </div>
       </div>
+
+      <ng-container *ngFor="let goal of goalsByType">
+        <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-600 uppercase tracking-wider">{{goal.type}} Goals</p>
+              <p class="text-3xl font-bold text-gray-900 my-2">{{goal.totalCount || 0}}</p>
+              <p class="text-sm font-medium text-gray-600">{{goal.title}}</p>
+            </div>
+            <div class="p-4 bg-green-100 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </ng-container>
   
-      <!-- Carbon Reduction Card -->
-      <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Carbon Reduction</p>
-            <p class="text-2xl font-semibold text-gray-900">856 kg</p>
-            <p class="text-sm text-green-600">+15.2% from last month</p>
+            <p class="text-sm font-medium text-gray-600 uppercase tracking-wider">Carbon Reduction</p>
+            <p class="text-3xl font-bold text-gray-900 my-2">{{thisMonthFootprint || 0}} kg</p>
+            <p class="text-sm font-medium" [ngClass]="{
+              'text-red-600': calculatePercentageChange(thisMonthFootprint, lastMonthFootprint) < 0,
+              'text-green-600': calculatePercentageChange(thisMonthFootprint, lastMonthFootprint) > 0,
+              'text-gray-600': calculatePercentageChange(thisMonthFootprint, lastMonthFootprint) === 0
+            }">
+              {{calculatePercentageChange(thisMonthFootprint, lastMonthFootprint)}}% from last month
+            </p>
           </div>
-          <div class="p-3 bg-yellow-100 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="p-4 bg-yellow-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
         </div>
       </div>
   
-      <!-- Points Awarded Card -->
-      <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Points Awarded</p>
-            <p class="text-2xl font-semibold text-gray-900">45,678</p>
-            <p class="text-sm text-green-600">+10.1% from last month</p>
+            <p class="text-sm font-medium text-gray-600 uppercase tracking-wider">Points Awarded</p>
+            <p class="text-3xl font-bold text-gray-900 my-2">{{totalRewardPoints || 0}}</p>
+            <p class="text-sm font-medium text-gray-600">Total rewards earned</p>
           </div>
-          <div class="p-3 bg-purple-100 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="p-4 bg-purple-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
@@ -73,134 +95,112 @@
       </div>
     </div>
   
-    <!-- Goal Type Distribution -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- Goal Completion by Type -->
-      <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Goal Completion by Type</h2>
-        <div class="space-y-4">
-          <!-- Transportation -->
-          <div>
-            <div class="flex justify-between mb-1">
-              <span class="text-sm font-medium text-gray-700">Transportation</span>
-              <span class="text-sm font-medium text-gray-700">75%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
-            </div>
-          </div>
-          <!-- Electricity -->
-          <div>
-            <div class="flex justify-between mb-1">
-              <span class="text-sm font-medium text-gray-700">Electricity</span>
-              <span class="text-sm font-medium text-gray-700">60%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-yellow-600 h-2 rounded-full" style="width: 60%"></div>
-            </div>
-          </div>
-          <!-- LPG -->
-          <div>
-            <div class="flex justify-between mb-1">
-              <span class="text-sm font-medium text-gray-700">LPG</span>
-              <span class="text-sm font-medium text-gray-700">45%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-red-600 h-2 rounded-full" style="width: 45%"></div>
-            </div>
-          </div>
-          <!-- Air Conditioner -->
-          <div>
-            <div class="flex justify-between mb-1">
-              <span class="text-sm font-medium text-gray-700">Air Conditioner</span>
-              <span class="text-sm font-medium text-gray-700">35%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-green-600 h-2 rounded-full" style="width: 35%"></div>
-            </div>
-          </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-white p-8 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Goal Completion by Type</h2>
+        <div class="space-y-6">
+          <ng-container *ngIf="goalsByType && goalsByType.length > 0; else noGoals">
+            <ng-container *ngFor="let goal of goalsByType">
+              <div class="flex justify-between mb-2">
+                <span class="text-sm font-semibold text-gray-700">{{goal.type}}</span>
+                <span class="text-sm font-semibold text-gray-700">{{goal.totalCount || 0}}</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-3">
+                <div [class]="'h-3 rounded-full transition-all duration-500 ' + (
+                  goal.type === 'Transportation' ? 'bg-blue-600' :
+                  goal.type === 'Electricity' ? 'bg-yellow-600' :
+                  goal.type === 'LPG' ? 'bg-red-600' : 'bg-green-600'
+                )" [style.width.%]="goal.totalCount"></div>
+              </div>
+            </ng-container>
+          </ng-container>
+          <ng-template #noGoals>
+            <p class="text-center text-gray-500 py-8">No goals completed yet</p>
+          </ng-template>
         </div>
       </div>
   
-      <!-- Recent Activity -->
-      <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h2>
+      <div class="bg-white p-8 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Recent Activity</h2>
         <div class="space-y-4">
-          <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-            <div class="flex-shrink-0 mr-4">
-              <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+          <ng-container *ngIf="recentGoals && recentGoals.length > 0 || latestUser || latestLogin; else noActivity">
+            <ng-container *ngFor="let goal of recentGoals">
+              <div class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                <div class="flex-shrink-0 mr-4">
+                  <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900">Created goal: {{goal.title}}</p>
+                  <p class="text-sm text-gray-500">Type: {{goal.type}} | {{goal.createdDate | date}}</p>
+                </div>
+              </div>
+            </ng-container>
+
+            <div *ngIf="latestUser" class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+              <div class="flex-shrink-0 mr-4">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900">New user: {{latestUser.name}}</p>
+                <p class="text-sm text-gray-500">Account created: {{latestUser.lastActivityTime | date}}</p>
               </div>
             </div>
-            <div>
-              <p class="text-sm font-medium text-gray-900">Transportation goal completed</p>
-              <p class="text-sm text-gray-500">2 minutes ago</p>
-            </div>
-          </div>
-          <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-            <div class="flex-shrink-0 mr-4">
-              <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
+
+            <div *ngIf="latestLogin" class="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+              <div class="flex-shrink-0 mr-4">
+                <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-900">User login: {{latestLogin.name}}</p>
+                <p class="text-sm text-gray-500">Last active: {{latestLogin.lastActivityTime | date}}</p>
               </div>
             </div>
-            <div>
-              <p class="text-sm font-medium text-gray-900">New user registered</p>
-              <p class="text-sm text-gray-500">5 minutes ago</p>
-            </div>
-          </div>
-          <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-            <div class="flex-shrink-0 mr-4">
-              <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
-                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-900">Electricity goal started</p>
-              <p class="text-sm text-gray-500">10 minutes ago</p>
-            </div>
-          </div>
+          </ng-container>
+          <ng-template #noActivity>
+            <p class="text-center text-gray-500 py-8">No recent activity</p>
+          </ng-template>
         </div>
       </div>
     </div>
   
-    <!-- New Features -->
-    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
-      <!-- Top Performers -->
-      <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Top Performers</h2>
+    <div class="grid grid-cols-1 gap-8">
+      <div class="bg-white p-8 rounded-xl shadow-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Top Performers</h2>
         <div class="space-y-4">
-          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <div class="flex items-center">
-              <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
-                <span class="text-indigo-600 font-semibold">1</span>
+          <ng-container *ngIf="topPerformers && topPerformers.length > 0; else noPerformers">
+            <ng-container *ngFor="let performer of topPerformers; let i = index">
+              <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                <div class="flex items-center">
+                  <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                    <span class="text-xl font-bold text-indigo-600">{{i + 1}}</span>
+                  </div>
+                  <div>
+                    <p class="text-lg font-semibold text-gray-900">{{performer.name}}</p>
+                    <p class="text-sm font-medium text-gray-500">{{performer.points || 0}} points</p>
+                  </div>
+                </div>
+                <div class="bg-indigo-50 px-4 py-2 rounded-lg">
+                  <span class="text-indigo-600 font-medium">Rank #{{i + 1}}</span>
+                </div>
               </div>
-              <div>
-                <p class="font-medium">John Doe</p>
-                <p class="text-sm text-gray-500">5,230 points</p>
-              </div>
-            </div>
-            <span class="text-green-600">+12%</span>
-          </div>
-          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-            <div class="flex items-center">
-              <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mr-3">
-                <span class="text-indigo-600 font-semibold">2</span>
-              </div>
-              <div>
-                <p class="font-medium">Jane Smith</p>
-                <p class="text-sm text-gray-500">4,890 points</p>
-              </div>
-            </div>
-            <span class="text-green-600">+8%</span>
-          </div>
+            </ng-container>
+          </ng-container>
+          <ng-template #noPerformers>
+            <p class="text-center text-gray-500 py-8">No top performers yet</p>
+          </ng-template>
         </div>
       </div>
     </div>
   </div>
-  

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.user.dto.LeaderBoardOnFootprint;
@@ -163,6 +164,19 @@ public class UserServiceImpl implements UserServiceInterface {
         return userRepository.count();
     }
     
+    public Map<String, Double> getCombinedFootprintAndRewards() {
+        Double totalFootprint = userRepository.getTotalFootprint();
+        Double totalRewardPoints = userRepository.getTotalRewardPoints();
+
+        return Map.of(
+            "TotalFootprint", totalFootprint != null ? totalFootprint : 0.0,
+            "TotalRewardPoints", totalRewardPoints != null ? totalRewardPoints : 0.0
+        );
+    }
+    
+    public List<Map<String, Object>> getTopPerformers(int count) {
+        return userRepository.findTopPerformers(PageRequest.of(0, count));
+    }
     
 
 }

@@ -1,133 +1,186 @@
-<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto">
-      
-      <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Your Carbon Goals</h2>
-        <p class="mt-2 text-sm text-gray-600">Track your carbon footprint and achieve sustainability goals</p>
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    
+    <div class="text-center mb-8 bg-white rounded-lg shadow-lg p-8 border-b-4 border-b-blue-500">
+      <h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-600 sm:text-4xl">Your Carbon Goals</h2>
+      <p class="mt-2 text-sm text-gray-600">Track your carbon footprint and achieve sustainability goals</p>
+    </div>
+
+    <div class="bg-gradient-to-r from-white to-gray-50 rounded-lg shadow-xl p-6 mb-8 border-x-4 border-x-blue-400">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Current Goal Period</h2>
+        <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-shadow duration-300">
+          {{currentMonth >= 7 ? 'July - December' : 'January - June'}} {{currentYear}}
+        </span>
       </div>
-  
-      <div class="bg-white rounded-lg shadow-xl p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-bold text-gray-900">Current Goal Period</h2>
-          <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
-            {{currentMonth >= 7 ? 'July - December' : 'January - June'}} {{currentYear}}
-          </span>
-        </div>
-  
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="text-sm font-semibold text-gray-600">Transportation</h4>
-            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.transportation || 0}} kg CO2</p>
-          </div>
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="text-sm font-semibold text-gray-600">Electricity</h4>
-            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.electricity || 0}} kg CO2</p>
-          </div>
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="text-sm font-semibold text-gray-600">LPG</h4>
-            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.lpg || 0}} kg CO2</p>
-          </div>
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="text-sm font-semibold text-gray-600">Shipping</h4>
-            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.shipping || 0}} kg CO2</p>
-          </div>
-          <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="text-sm font-semibold text-gray-600">Air Conditioner</h4>
-            <p class="text-lg font-bold text-gray-900">{{carbonFootprint?.airConditioner || 0}} kg CO2</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="p-3 bg-green-100 rounded-full mr-4">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-lg font-semibold text-gray-900">Transportation</h4>
+              <p class="text-xl font-bold text-green-600">{{carbonFootprint?.transportation || 0}} kg CO2</p>
+            </div>
           </div>
         </div>
-  
-     
-        <div class="bg-gray-50 p-4 rounded-lg">
-          <h3 class="text-lg font-semibold text-gray-800 mb-3">Your Goals:</h3>
-          <div class="space-y-4">
-            <div *ngFor="let goal of goals" class="flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
-              <div class="flex-grow">
-                <div class="flex items-center justify-between mb-2">
-                  <h4 class="text-lg font-medium text-gray-900">{{goal.title}}</h4>
-                  <span [ngClass]="{
-                    'bg-green-100 text-green-800': goal.isAchieved,
-                    'bg-yellow-100 text-yellow-800': !goal.isAchieved
-                  }" class="px-3 py-1 rounded-full text-sm font-medium">
-                    {{goal.isAchieved ? 'Achieved' : 'In Progress'}}
-                  </span>
-                </div>
-                <p class="text-sm text-gray-600 mb-2">{{goal.description}}</p>
-                <div class="flex items-center space-x-4 text-sm">
-                  <span class="text-gray-600">Current: {{goal.currentScore}} kg CO2</span>
-                  <span class="text-gray-600">Target: {{goal.targetScore}} kg CO2</span>
-                  <span class="text-green-600">Achieved {{goal.count}} times</span>
-                </div>
-                <div class="mt-2 h-2 bg-gray-200 rounded-full">
-                  <div [style.width.%]="(goal.currentScore/goal.targetScore)*100" 
-                       [ngClass]="{
-                         'bg-green-500': goal.currentScore <= goal.targetScore,
-                         'bg-red-500': goal.currentScore > goal.targetScore
-                       }" 
-                       class="h-full rounded-full transition-all duration-500">
-                  </div>
-                </div>
-              </div>
-              <div class="ml-4 flex flex-col items-center">
-                <img [src]="goal.badgeUrl" [alt]="goal.title" class="w-16 h-16 mb-2">
-                <span class="text-sm font-medium text-green-600">{{goal.rewardPoint}} pts</span>
-              </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="p-3 bg-yellow-100 rounded-full mr-4">
+              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-lg font-semibold text-gray-900">Electricity</h4>
+              <p class="text-xl font-bold text-yellow-600">{{carbonFootprint?.electricity || 0}} kg CO2</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="p-3 bg-red-100 rounded-full mr-4">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-lg font-semibold text-gray-900">LPG</h4>
+              <p class="text-xl font-bold text-red-600">{{carbonFootprint?.lpg || 0}} kg CO2</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="p-3 bg-blue-100 rounded-full mr-4">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 16l-7-7-7 7"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-lg font-semibold text-gray-900">Shipping</h4>
+              <p class="text-xl font-bold text-blue-600">{{carbonFootprint?.shipping || 0}} kg CO2</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md border border-gray-100 hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+          <div class="flex items-center mb-4">
+            <div class="p-3 bg-purple-100 rounded-full mr-4">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-lg font-semibold text-gray-900">Air Conditioner</h4>
+              <p class="text-xl font-bold text-purple-600">{{carbonFootprint?.airConditioner || 0}} kg CO2</p>
             </div>
           </div>
         </div>
       </div>
-  
-     
-      <div class="bg-white rounded-lg shadow-xl p-8 mt-8">
-        <h3 class="text-2xl font-bold text-gray-900 mb-6">Tips & Resources</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-green-50 p-6 rounded-lg">
-            <h4 class="text-lg font-semibold text-green-800 mb-4">Carbon Reduction Tips</h4>
-            <ul class="space-y-3 text-green-700">
-              <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Use public transportation when possible
-              </li>
-              <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Optimize energy consumption
-              </li>
-              <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Regular maintenance of appliances
-              </li>
-            </ul>
+    </div>
+
+    <div class="bg-gradient-to-r from-white to-gray-50 rounded-lg shadow-xl p-6 border-x-4 border-x-green-400">
+      <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600 mb-6">Your Goals</h3>
+      <div class="space-y-4">
+        <div *ngIf="goals && goals.length > 0">
+          <div *ngFor="let goal of goals" class="flex items-center justify-between bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
+            <div class="flex-grow">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="text-lg font-medium text-gray-900">{{goal.title}}</h4>
+                <span [ngClass]="{
+                  'bg-green-100 text-green-800 ring-2 ring-green-500': goal.isAchieved,
+                  'bg-yellow-100 text-yellow-800 ring-2 ring-yellow-500': !goal.isAchieved
+                }" class="px-3 py-1 rounded-full text-sm font-medium shadow-sm">
+                  {{goal.isAchieved ? 'Achieved' : 'In Progress'}}
+                </span>
+              </div>
+              <p class="text-sm text-gray-600 mb-2">{{goal.description}}</p>
+              <div class="flex items-center space-x-4 text-sm">
+                <span class="text-gray-600 font-medium">Current: {{goal.currentScore}} kg CO2</span>
+                <span class="text-gray-600 font-medium">Target: {{goal.targetScore}} kg CO2</span>
+                <span class="text-green-600 font-medium">Achieved {{goal.count}} times</span>
+              </div>
+              <div class="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div [style.width.%]="(goal.currentScore/goal.targetScore)*100" 
+                     [ngClass]="{
+                       'bg-gradient-to-r from-green-400 to-green-600': goal.currentScore <= goal.targetScore,
+                       'bg-gradient-to-r from-red-400 to-red-600': goal.currentScore > goal.targetScore
+                     }" 
+                     class="h-full rounded-full transition-all duration-500">
+                </div>
+              </div>
+            </div>
+            <div class="ml-4 flex flex-col items-center">
+              <img [src]="goal.badgeUrl" [alt]="goal.title" class="w-16 h-16 mb-2 transform hover:scale-110 transition-transform duration-300">
+              <span class="text-sm font-medium text-green-600">{{goal.rewardPoint}} pts</span>
+            </div>
           </div>
-          <div class="bg-blue-50 p-6 rounded-lg">
-            <h4 class="text-lg font-semibold text-blue-800 mb-4">Achievement Tracking</h4>
-            <ul class="space-y-3 text-blue-700">
-              <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Monitor your progress regularly
-              </li>
-              <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Earn badges for consistency
-              </li>
-              <li class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                Track achievement cycles
-              </li>
-            </ul>
-          </div>
+        </div>
+        <div *ngIf="!goals || goals.length === 0" class="text-center py-12 bg-white rounded-lg shadow-inner">
+          <p class="text-lg text-gray-600">Goals coming soon! We're working on adding exciting sustainability targets for you.</p>
+          <p class="text-sm text-gray-500 mt-2">Check back in a little while to start tracking your progress.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-white to-gray-50 rounded-lg shadow-xl p-8 mt-8 border-x-4 border-x-cyan-400">
+      <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600 mb-6">Tips & Resources</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+          <h4 class="text-lg font-semibold text-green-800 mb-4">Carbon Reduction Tips</h4>
+          <ul class="space-y-3 text-green-700">
+            <li class="flex items-center hover:translate-x-2 transition-transform duration-300">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Use public transportation when possible
+            </li>
+            <li class="flex items-center hover:translate-x-2 transition-transform duration-300">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Optimize energy consumption
+            </li>
+            <li class="flex items-center hover:translate-x-2 transition-transform duration-300">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Regular maintenance of appliances
+            </li>
+          </ul>
+        </div>
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+          <h4 class="text-lg font-semibold text-blue-800 mb-4">Achievement Tracking</h4>
+          <ul class="space-y-3 text-blue-700">
+            <li class="flex items-center hover:translate-x-2 transition-transform duration-300">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Monitor your progress regularly
+            </li>
+            <li class="flex items-center hover:translate-x-2 transition-transform duration-300">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Earn badges for consistency
+            </li>
+            <li class="flex items-center hover:translate-x-2 transition-transform duration-300">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Track achievement cycles
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
+</div>

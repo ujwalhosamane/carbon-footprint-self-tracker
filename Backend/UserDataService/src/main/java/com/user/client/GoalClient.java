@@ -35,6 +35,9 @@ public interface GoalClient {
 	@GetMapping("/goal/get/user/rewardPoints/six")
 	public ResponseEntity<Map<String, Double>> getUserAndSixMonthsRewardPoints();
 	
+	@GetMapping("/goal/total-count/{userId}")
+    public ResponseEntity<Map<String, Long>> getTotalCount(@PathVariable String userId);
+	
 	
 	/**
 	 * Without Security

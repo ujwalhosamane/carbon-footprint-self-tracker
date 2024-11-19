@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Goal } from '../../models/goal';
+import { UserService } from '../user.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-user-goal',
@@ -17,72 +19,60 @@ export class UserGoalComponent implements OnInit {
     airConditioner: 0
   };
 
-  goals: Goal[] = [
-    new Goal(
-      1,
-      150,
-      2,
-      false,
-      new Date(),
-      'Reduce Energy Consumption',
-      'Energy',
-      'Decrease household electricity usage by 20%',
-      200,
-      100,
-      'assets/badges/energy-saver.png'
-    ),
-    new Goal(
-      2,
-      80,
-      1,
-      true,
-      new Date(),
-      'Lower Transportation Emissions',
-      'Transport',
-      'Reduce transportation related emissions by carpooling',
-      100,
-      150,
-      'assets/badges/transport-hero.png'
-    )
-  ];
+  goals: Goal[] = [];
 
-  // Form model
   newGoal = {
     type: '',
     targetDate: '',
     description: ''
   };
 
-  constructor() {
+  constructor(private userService: UserService) {
     const today = new Date();
     this.currentMonth = today.getMonth() + 1;
     this.currentYear = today.getFullYear();
   }
 
   ngOnInit(): void {
-    // Initialize carbon footprint data
-    this.carbonFootprint = {
-      transportation: 120,
-      electricity: 80,
-      lpg: 40,
-      shipping: 25,
-      airConditioner: 60
-    };
-  }
+    this.userService.getAllGoal().subscribe({
+      next: (goals) => {
+        this.goals = goals;
+      },
+      error: (error) => {
+        console.error('Error fetching goals:', error);
+      }
+    });
 
-  addGoal(): void {
-    // TODO: Implement goal addition logic
-    console.log('Adding new goal:', this.newGoal);
-  }
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let startMonth = this.currentMonth >= 7 ? 6 : 0;
+    let requests = [];
 
-  updateGoal(goal: Goal): void {
-    // TODO: Implement goal update logic
-    console.log('Updating goal:', goal);
-  }
+    for(let i = startMonth; i < this.currentMonth; i++) {
+      requests.push(this.userService.getCarbonFootprintForMonthAndYear(months[i], this.currentYear));
+    }
 
-  removeGoal(goal: Goal): void {
-   
-    this.goals = this.goals.filter(g => g.goalId !== goal.goalId);
+    forkJoin(requests).subscribe({
+      next: (responses) => {
+        this.carbonFootprint = responses.reduce((acc, curr) => {
+          return {
+            transportation: acc.transportation + (curr.transportation || 0),
+            electricity: acc.electricity + (curr.electricity || 0),
+            lpg: acc.lpg + (curr.lpg || 0),
+            shipping: acc.shipping + (curr.shipping || 0),
+            airConditioner: acc.airConditioner + (curr.airConditioner || 0)
+          };
+        }, {
+          transportation: 0,
+          electricity: 0,
+          lpg: 0,
+          shipping: 0,
+          airConditioner: 0
+        });
+      },
+      error: (error) => {
+        console.error('Error fetching carbon footprint data:', error);
+      }
+    });
   }
 
   clearForm(): void {

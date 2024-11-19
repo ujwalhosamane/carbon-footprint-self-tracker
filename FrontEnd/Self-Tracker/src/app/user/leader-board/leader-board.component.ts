@@ -18,7 +18,7 @@ export class LeaderBoardComponent implements OnInit {
     { title: 'Total Carbon Footprint' }
   ];
 
- 
+  loading = false;
   sixMonthsLeaderboard: LeaderBoardOnSixMonthRewardPoints[] = [];
   totalRewardPointsLeaderboard: LeaderBoardOnRewardPoints[] = [];
   totalCarbonFootprintLeaderboard: LeaderBoardOnFootprint[] = [];
@@ -35,25 +35,38 @@ export class LeaderBoardComponent implements OnInit {
   }
 
   loadLeaderboardData() {
+    this.loading = true;
     forkJoin({
       sixMonths: this.userService.getLeaderBoardOnSixMonthRewardPoints(),
       totalRewards: this.userService.getLeaderBoardOnRewardPoints(),
       carbonFootprint: this.userService.getLeaderBoardOnFootprint()
-    }).subscribe(({ sixMonths, totalRewards, carbonFootprint }) => {
-      this.sixMonthsLeaderboard = sixMonths;
-      this.totalRewardPointsLeaderboard = totalRewards;
-      this.totalCarbonFootprintLeaderboard = carbonFootprint;
-      
-     
-      const currentData = this.selectedTab === 0 ? sixMonths : 
-                         this.selectedTab === 1 ? totalRewards : 
-                         carbonFootprint;
-      this.calculateTotalPages(currentData.length);
+    }).subscribe({
+      next: ({ sixMonths, totalRewards, carbonFootprint }) => {
+        this.sixMonthsLeaderboard = sixMonths;
+        this.totalRewardPointsLeaderboard = totalRewards;
+        this.totalCarbonFootprintLeaderboard = carbonFootprint;
+        
+        this.currentPage = 1;
+        
+        const currentData = this.selectedTab === 0 ? sixMonths : 
+                          this.selectedTab === 1 ? totalRewards : 
+                          carbonFootprint;
+        this.calculateTotalPages(currentData.length);
+      },
+      error: (error) => {
+        console.error('Error loading leaderboard data:', error);
+      },
+      complete: () => {
+        this.loading = false;
+      }
     });
   }
 
   calculateTotalPages(totalItems: number) {
     this.totalPages = Math.ceil(totalItems / this.pageSize);
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
   }
 
   previousPage() {

@@ -31,7 +31,7 @@ public class ClientService implements ClientServiceInterface {
 		if(optional.isEmpty()) {
 			throw new UserNotFoundException("User not found for the particular userId");
 		}
-		optional.get().setTotalFootprint(totalFootprint);
+		optional.get().setTotalFootprint(roundToTwoDecimalPlaces(totalFootprint));
 		userRepository.save(optional.get());
 	}
 
@@ -53,6 +53,10 @@ public class ClientService implements ClientServiceInterface {
             Double totalRewardPoints = entry.getValue();
             userRepository.updateTotlaRewardPoints(userId, totalRewardPoints);
         }
+	}
+	
+	private double roundToTwoDecimalPlaces(double value) {
+	    return Math.round(value * 100.0) / 100.0;
 	}
 
 }

@@ -37,6 +37,15 @@ public class UserGoalController {
 		return goalClient.getAllGoalDTO(userId);
 	}
 	
+	@GetMapping("/user/goal/total-count")
+    public ResponseEntity<Map<String, Long>> getTotalCount(
+    		@RequestHeader("Authorization") String authorizationHeader) {
+		String token = authorizationHeader.substring(7); 
+        String userId = jwtUtil.extractUserId(token);
+        
+		return goalClient.getTotalCount(userId);
+	}
+	
 	// updating the 6 months reward points
 	@PutMapping("/get/and/update/rewardPoints/six")
 	public ResponseEntity<Void> getAndUpdateSixMonthsRewardPoints() {

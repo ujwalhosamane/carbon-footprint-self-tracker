@@ -108,17 +108,17 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserAfterLogin(userId), HttpStatus.OK);
 	}
 	
-	@GetMapping("/users/this-month/count")
+	@GetMapping("/this-month/count")
     public long getThisMonthUserCount() {
         return userService.countUsersThisMonth();
     }
 
-    @GetMapping("/users/last-month/count")
+    @GetMapping("/last-month/count")
     public long getLastMonthUserCount() {
         return userService.countUsersLastMonth();
     }
     
-    @GetMapping("/users/total/count")
+    @GetMapping("/total/count")
     public long getTotalUserCount() {
         return userService.getTotalUserCount();
     }
@@ -126,5 +126,15 @@ public class UserController {
     @GetMapping("/get/createdAt")
     public Map<String, LocalDate> getUserIsWithCreatedAt(@RequestBody List<String> userIds) {
     	return userService.findCreationDatesByUserIds(userIds);
+    }
+    
+    @GetMapping("/get/topPerformer")
+    public List<Map<String, Object>> getTopPerformers() {
+    	return userService.getTopPerformers(2);
+    }
+    
+    @GetMapping("/totals")
+    public Map<String, Double> getTotalFootprintAndRewardPoints() {
+        return userService.getCombinedFootprintAndRewards();
     }
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AdminService } from '../admin.service';
 
 @Component({
   selector: 'app-admin-main-layout',
@@ -10,7 +11,7 @@ export class AdminMainLayoutComponent {
   isDropdownOpen = false;
   isModalOpen = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private adminService: AdminService) {}
 
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
@@ -20,7 +21,6 @@ export class AdminMainLayoutComponent {
     this.isDropdownOpen = false;
   }
 
-  // Handle modal state
   openModal() {
     this.isModalOpen = true;
   }
@@ -29,7 +29,6 @@ export class AdminMainLayoutComponent {
     this.isModalOpen = false;
   }
 
-  // Navigation methods
   navigateToHome() {
     this.router.navigate(['/admin/home']);
     this.closeDropdown();
@@ -51,13 +50,15 @@ export class AdminMainLayoutComponent {
   }
 
   logout() {
-    // Clear any stored auth tokens/session data
-    localStorage.removeItem('adminToken');
-    
-    // Close dropdown before navigating
-    this.closeDropdown();
-
-    // Navigate to login page
-    this.router.navigate(['/login']);
+    this.adminService.logOut().subscribe({
+      next: () => {
+        localStorage.removeItem('auth');
+        this.closeDropdown();
+        this.router.navigate(['/auth/home']);
+      },
+      error: (error) => {
+        console.error('Logout failed:', error);
+      }
+    });
   }
 }

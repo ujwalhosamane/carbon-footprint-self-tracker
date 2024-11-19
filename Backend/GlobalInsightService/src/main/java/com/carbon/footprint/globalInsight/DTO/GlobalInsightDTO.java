@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class GlobalInsightDTO {
 	
 	private long insightId;
+	private String title;
 	private String description;
 	private LocalDate date;
 

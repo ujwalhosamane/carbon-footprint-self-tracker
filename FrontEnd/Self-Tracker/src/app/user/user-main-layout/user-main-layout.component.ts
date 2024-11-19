@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-user-main-layout',
@@ -11,7 +11,7 @@ export class UserMainLayoutComponent {
   isDropdownOpen = false;
   isModalOpen = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private userService: UserService) {}
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -26,11 +26,14 @@ export class UserMainLayoutComponent {
   }
 
   logout() {
-  
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    
-   
-    this.router.navigate(['/auth/login']);
+    this.userService.logOut().subscribe({
+      next: () => {
+        localStorage.removeItem('__auth');
+        this.router.navigate(['/auth/home']);
+      },
+      error: (error) => {
+        console.error('Logout failed:', error);
+      }
+    });
   }
 }

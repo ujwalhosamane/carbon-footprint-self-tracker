@@ -3,8 +3,10 @@ package com.carbon.footprint.globalInsight.controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.hibernate.service.spi.Stoppable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +40,7 @@ public class InsightController {
 		for(GlobalInsight insight: service.getAllInsights()) {
 			GlobalInsightDTO dto = new GlobalInsightDTO();
 			dto.setDate(insight.getDate());
+			dto.setTitle(insight.getTitle());
 			dto.setDescription(insight.getDescription());
 			dto.setInsightId(insight.getInsightId());
 			
@@ -49,7 +52,7 @@ public class InsightController {
 		}
 		else
 		{
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.ok(null);
 		}	
 	}
 	
@@ -59,6 +62,7 @@ public class InsightController {
 	{
 		GlobalInsight addedInsight = new GlobalInsight();
 		addedInsight.setDate(insightDto.getDate());
+		addedInsight.setTitle(insightDto.getTitle());
 		addedInsight.setDescription(insightDto.getDescription());
 		addedInsight.setUserId(userId);
 		
@@ -76,7 +80,7 @@ public class InsightController {
 		}
 		else
 		{
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.ok(null);
 		}
 	}
 	
@@ -96,15 +100,15 @@ public class InsightController {
 	}
 	
 	@GetMapping("/getNInsights/{n}")
-	public ResponseEntity<List<String>> getNInsights(@PathVariable int n) {
+	public ResponseEntity<Map<String, String>> getNInsights(@PathVariable int n) {
 		return new ResponseEntity<>(service.fetchTopNByDate(n), HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value="/deleteInsight/{insightId}")
-	public String removeInsightById(@PathVariable("insightId") long insightId)
+	public Map<String, String> removeInsightById(@PathVariable("insightId") long insightId)
 	{
 		service.deleteInsightbyId(insightId);
-		return "insight deleted";
+		return Map.of("message", "Successfully deleted");
 	}
 	
 	@PutMapping(value="/updateInsight")

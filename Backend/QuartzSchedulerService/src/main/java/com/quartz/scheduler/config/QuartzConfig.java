@@ -10,10 +10,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.quartz.scheduler.job.AchievementStatusUpdateJob;
 import com.quartz.scheduler.job.CurrentScoreResetJob;
+import com.quartz.scheduler.job.FootprintRetentionJob;
 import com.quartz.scheduler.job.SixMonthRewardPointUpdateJob;
 import com.quartz.scheduler.job.TotalRewardUpdateJob;
-
-import java.util.Calendar;
 
 @Configuration
 public class QuartzConfig {
@@ -115,5 +114,25 @@ public class QuartzConfig {
                 .build();
     }
 
+    
+    /*
+	 * Footprint Retention Job
+	 */
+    @Bean
+    public JobDetail footprintRetentionJobDetail() {
+        return JobBuilder.newJob(FootprintRetentionJob.class)
+                .withIdentity("footprintRetentionJob")
+                .storeDurably()
+                .build();
+    }
+
+    @Bean
+    public Trigger footprintRetentionJobTrigger() {
+        return TriggerBuilder.newTrigger()
+                .forJob(footprintRetentionJobDetail())
+                .withIdentity("footprintRetentionJobTrigger")
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 5 12 1 * ?"))
+                .build();
+    }
     
 }

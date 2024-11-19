@@ -1,0 +1,74 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+  <div *ngIf="showToast" class="fixed top-20 right-4 px-6 py-3 rounded-lg shadow-lg transition-opacity duration-500" 
+    [ngClass]="{
+      'opacity-100': showToast, 
+      'opacity-0': !showToast,
+      'bg-green-500': !toastMessage.toLowerCase().includes('error'),
+      'bg-red-500': toastMessage.toLowerCase().includes('error')
+    }">
+    <span class="text-white">{{toastMessage}}</span>
+  </div>
+
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">Admin Settings</h1>
+      <p class="mt-2 text-gray-600">Manage system configurations and preferences</p>
+    </div>
+
+    <div class="space-y-6">
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Emission Factors</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Transportation (kg CO2/km)</label>
+            <input type="number" [(ngModel)]="transportation" (ngModelChange)="emissionFactorsChanged = true" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" step="0.01">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Electricity (kg CO2/kWh)</label>
+            <input type="number" [(ngModel)]="electricity" (ngModelChange)="emissionFactorsChanged = true" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" step="0.01">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">LPG (kg CO2/kg)</label>
+            <input type="number" [(ngModel)]="lpg" (ngModelChange)="emissionFactorsChanged = true" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" step="0.01">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Shipping (kg CO2/kg goods)</label>
+            <input type="number" [(ngModel)]="shipping" (ngModelChange)="emissionFactorsChanged = true" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" step="0.01">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Air Conditioner (kg CO2/hour)</label>
+            <input type="number" [(ngModel)]="airConditioner" (ngModelChange)="emissionFactorsChanged = true" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" step="0.01">
+          </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+          <button type="button" [disabled]="!emissionFactorsChanged" (click)="updateEmissionFactors()" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+            Save Emission Factors
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Data Management</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Data Retention Period (months)</label>
+            <select [(ngModel)]="dataRetentionPeriod" (ngModelChange)="retentionPeriodChanged = true; onRetentionPeriodChange()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <option *ngFor="let option of retentionOptions" [value]="option">{{option}}</option>
+            </select>
+            <p *ngIf="retentionDate" class="mt-2 text-sm">
+              Data will be retained until: 
+              <span class="font-medium text-blue-600">
+                {{retentionDate | date:'EEE dd, MMMM yyyy'}}
+              </span>
+            </p>
+          </div>
+          <div class="mt-4 flex justify-end">
+            <button type="button" [disabled]="!retentionPeriodChanged" (click)="updateDataRetentionPeriod()" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+              Save Retention Period
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

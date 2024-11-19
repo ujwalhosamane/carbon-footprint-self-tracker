@@ -2,9 +2,11 @@ package com.carbon.footprint.service;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.carbon.footprint.dto.CarbonFootprintDTO;
+import com.carbon.footprint.dto.LatestActivity;
 import com.carbon.footprint.exception.FootprintDateException;
 import com.carbon.footprint.model.CarbonFootprint;
 import com.carbon.footprint.repository.CarbonFootprintRepository;
 
+import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -44,7 +48,6 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 		carbonFootprint.setAirConditioner(footprintDto.getAirConditioner());
 		
 		carbonFootprint.setTotalFootprint(totalFootprint);
-		carbonFootprint.setCreationDate(LocalDate.now());
 		
 		return carbonFootprintRepository.save(carbonFootprint) != null ? footprintDto : null;
 	}
@@ -95,7 +98,6 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 			carbonFootprint.setAirConditioner(footprintDto.getAirConditioner());
 			
 			carbonFootprint.setTotalFootprint(totalFootprint);
-			carbonFootprint.setCreationDate(LocalDate.now());
 			
 			return carbonFootprintRepository.save(carbonFootprint) != null ?
 					footprintDto : null;
@@ -108,15 +110,7 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 	public CarbonFootprintDTO findByUserIdAndMonthAndYear(String userId, String month, int year) {
 		Optional<CarbonFootprint> footprint = carbonFootprintRepository.findByUserIdAndMonthAndYear(userId, month, year);
 		if(footprint.isPresent()) {
-			CarbonFootprintDTO footprintDto = new CarbonFootprintDTO(
-					footprint.get().getFootprintMonth(),
-					footprint.get().getFootprintYear(),
-					footprint.get().getTransportation(),
-					footprint.get().getElectricity(),
-					footprint.get().getLpg(),
-					footprint.get().getShipping(),
-					footprint.get().getAirConditioner());
-			return footprintDto;		
+			return convertToDTO(footprint.get());		
 		}
 		
 		return null;
@@ -150,9 +144,11 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
         Calendar calendar = Calendar.getInstance();
 
         for (int i = 0; i < n; i++) {
-            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-            String month = getMonthName(calendar.get(Calendar.MONTH));
-            int year = calendar.get(Calendar.YEAR);
+        	Calendar current = (Calendar) calendar.clone();
+            current.add(Calendar.MONTH, -i); 
+
+            String month = getMonthName(current.get(Calendar.MONTH)); 
+            int year = current.get(Calendar.YEAR);
             
             List<CarbonFootprintDTO> carbonFootprintDto = carbonFootprintRepository.findSumsByMonthAndYear(month, year).orElse(null);
             
@@ -186,24 +182,38 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
     }
 	
 	private void validateFootprintDate(String footprintMonth, int footprintYear, LocalDate creationDate) {
-	    int creationYear = creationDate.getYear();
-	    Month creationMonth = creationDate.getMonth();
+//	    int creationYear = creationDate.getYear();
+//	    Month creationMonth = creationDate.getMonth();
+//
+//	    LocalDate currentDate = LocalDate.now();
+//	    int currentYear = currentDate.getYear();
+//	    Month currentMonth = currentDate.getMonth();
+//
+//	    Month footprintMonthEnum = Month.valueOf(footprintMonth.toUpperCase());
+//
+//	    if (footprintYear < creationYear || 
+//	        (footprintYear == creationYear && footprintMonthEnum.compareTo(creationMonth) < 0)) {
+//	        throw new FootprintDateException("Footprint month and year cannot be earlier than the account creation date.");
+//	    }
+//
+//	    if (footprintYear > currentYear || 
+//	        (footprintYear == currentYear && footprintMonthEnum.compareTo(currentMonth) > 0)) {
+//	        throw new FootprintDateException("Footprint month and year cannot be later than the current date.");
+//	    }
+		
+		LocalDate currentDate = LocalDate.now();
+		LocalDate sixMonthsAgo = currentDate.minusMonths(6);
 
-	    LocalDate currentDate = LocalDate.now();
-	    int currentYear = currentDate.getYear();
-	    Month currentMonth = currentDate.getMonth();
+		Month footprintMonthEnum = Month.valueOf(footprintMonth.toUpperCase());
+		LocalDate footprintDate = LocalDate.of(footprintYear, footprintMonthEnum, 1);
 
-	    Month footprintMonthEnum = Month.valueOf(footprintMonth.toUpperCase());
+		if (footprintDate.isBefore(sixMonthsAgo)) {
+		    throw new FootprintDateException("Footprint date cannot be earlier than six months from the current date.");
+		}
 
-	    if (footprintYear < creationYear || 
-	        (footprintYear == creationYear && footprintMonthEnum.compareTo(creationMonth) < 0)) {
-	        throw new FootprintDateException("Footprint month and year cannot be earlier than the account creation date.");
-	    }
-
-	    if (footprintYear > currentYear || 
-	        (footprintYear == currentYear && footprintMonthEnum.compareTo(currentMonth) > 0)) {
-	        throw new FootprintDateException("Footprint month and year cannot be later than the current date.");
-	    }
+		if (footprintDate.isAfter(currentDate)) {
+		    throw new FootprintDateException("Footprint date cannot be in the future.");
+		}
 	}
 
     private String getMonthName(int monthIndex) {
@@ -221,21 +231,15 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
         Calendar calendar = Calendar.getInstance();
 
         for (int i = 0; i < n; i++) {
-            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-            String month = getMonthName(calendar.get(Calendar.MONTH));
-            int year = calendar.get(Calendar.YEAR);
+        	Calendar current = (Calendar) calendar.clone();
+            current.add(Calendar.MONTH, -i); 
+
+            String month = getMonthName(current.get(Calendar.MONTH)); 
+            int year = current.get(Calendar.YEAR);
             
             CarbonFootprint carbonFootprint = carbonFootprintRepository.findByUserIdAndMonthAndYear(userId, month, year).orElse(null);
             if(carbonFootprint != null) {
-            	CarbonFootprintDTO eachMonth = new CarbonFootprintDTO(
-            			carbonFootprint.getTransportation(),
-						carbonFootprint.getElectricity(),
-						carbonFootprint.getLpg(),
-						carbonFootprint.getShipping(),
-						carbonFootprint.getAirConditioner());
-            	eachMonth.setFootprintMonth(month);
-            	eachMonth.setFootprintYear(year);
-                nMonthsResult.add(eachMonth);
+                nMonthsResult.add(convertToDTO(carbonFootprint));
             } else {
             	nMonthsResult.add(null);
             }
@@ -358,4 +362,74 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 
 	    return userIds;
     }
+	
+	public CarbonFootprintDTO getLatestFootprint(String userId) {
+        return carbonFootprintRepository.findLatestFootprintByUser(userId)
+                .map(this::convertToDTO)
+                .orElse(null);
+    }
+
+    private CarbonFootprintDTO convertToDTO(CarbonFootprint carbonFootprint) {
+        return new CarbonFootprintDTO(
+                carbonFootprint.getFootprintMonth(),
+                carbonFootprint.getFootprintYear(),
+                carbonFootprint.getTransportation(),
+                carbonFootprint.getElectricity(),
+                carbonFootprint.getLpg(),
+                carbonFootprint.getShipping(),
+                carbonFootprint.getAirConditioner()
+        );
+    }
+    
+    public LatestActivity getLatestActivity(String userId) {
+        List<Tuple> results = carbonFootprintRepository.findLatestActivityByUserId(userId);
+        if(results == null) {
+        	new RuntimeException("No activity found");
+        }
+        Date creationDate, updatedDate;
+        String footprintMonth;
+        int footprintYear;
+        System.out.println(results);
+        for (Tuple tuple : results) {
+            creationDate = tuple.get("creationDate", Date.class);
+            updatedDate = tuple.get("updatedDate", Date.class);
+            footprintMonth = tuple.get("footprintMonth", String.class);
+            footprintYear = tuple.get("footprintYear", Integer.class);
+            return new LatestActivity(creationDate, updatedDate, footprintMonth,footprintYear);
+        }
+        
+        return null;
+        
+    }
+    
+    public Map<String, Double> getTotalFootprintForCurrentAndPreviousMonth() {
+        LocalDate currentDate = LocalDate.now();
+        String currentMonth = currentDate.format(DateTimeFormatter.ofPattern("MM"));
+        int currentYear = currentDate.getYear();
+
+        LocalDate previousMonthDate = currentDate.minusMonths(1);
+        String previousMonth = previousMonthDate.format(DateTimeFormatter.ofPattern("MM"));
+        int previousYear = previousMonthDate.getYear();
+
+        return carbonFootprintRepository.getTotalFootprintForCurrentAndPreviousMonth(
+                Arrays.asList(currentMonth, previousMonth),
+                Arrays.asList(currentYear, previousYear)
+        );
+    }
+    
+    public void deleteOldFootprints(int retentionDurationMonths) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate retentionDate = currentDate.minusMonths(retentionDurationMonths);
+
+        int retentionYear = retentionDate.getYear();
+        String retentionMonth = retentionDate.getMonth().toString().toUpperCase(); 
+        carbonFootprintRepository.deleteByFootprintYearBeforeOrFootprintYearAndFootprintMonthBefore(retentionYear, retentionMonth);
+    }
+    
+    public Date getRetentionDate(int retentionDurationMonths) {
+    	LocalDate currentDate = LocalDate.now().withDayOfMonth(1);
+        LocalDate retentionDate = currentDate.minusMonths(retentionDurationMonths);
+        return java.sql.Date.valueOf(retentionDate);
+    }
+    
 }

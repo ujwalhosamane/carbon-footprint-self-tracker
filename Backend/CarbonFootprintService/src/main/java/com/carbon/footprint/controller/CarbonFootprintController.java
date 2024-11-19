@@ -1,5 +1,6 @@
 package com.carbon.footprint.controller;
 
+import java.util.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.carbon.footprint.client.UserDataClient;
 import com.carbon.footprint.dto.CarbonFootprintDTO;
-import com.carbon.footprint.model.CarbonFootprint;
+import com.carbon.footprint.dto.LatestActivity;
 import com.carbon.footprint.service.CarbonFootprintServiceImpl;
 
 @RestController
@@ -50,7 +51,7 @@ public class CarbonFootprintController {
 	//changed
 	@PutMapping("/update/{userId}")
 	public ResponseEntity<CarbonFootprintDTO> updateCarbonFootprint(
-			@PathVariable String userId,
+			@PathVariable("userId") String userId,
 			@RequestBody CarbonFootprintDTO carbonFootprintDto,
 			@RequestParam("accountCreationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate accountCreationDate) {
 		return new ResponseEntity<>(carbonFootprintService.updateFootprint(userId, carbonFootprintDto, accountCreationDate), HttpStatus.OK);
@@ -58,39 +59,42 @@ public class CarbonFootprintController {
 	
 	//changed
 	@GetMapping("/get/{userId}")
-	public ResponseEntity<List<CarbonFootprintDTO>> getFootprintsByUserId(@PathVariable String userId) {
+	public ResponseEntity<List<CarbonFootprintDTO>> getFootprintsByUserId(@PathVariable("userId") String userId) {
 		return new ResponseEntity<>(carbonFootprintService.getFootprintsByUserId(userId), HttpStatus.OK);
 	}
 	
 	//changed
 	@DeleteMapping("/delete/{month}/{year}/{userId}")
-	public ResponseEntity<Void> deleteFootprintById(@PathVariable String userId, 
-			@PathVariable String month, 
-			@PathVariable int year) {
+	public ResponseEntity<Void> deleteFootprintById(@PathVariable("userId") String userId, 
+			@PathVariable("month") String month, 
+			@PathVariable("year") int year) {
 		carbonFootprintService.deleteFootprint(userId, month, year);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	//changed
 	@GetMapping("/get/{month}/{year}/{userId}")
-	public ResponseEntity<CarbonFootprintDTO> getByUserIdAndMonthAndYear(@PathVariable String userId, 
-			@PathVariable String month, 
-			@PathVariable int year) {
+	public ResponseEntity<CarbonFootprintDTO> getByUserIdAndMonthAndYear(@PathVariable("userId") String userId, 
+			@PathVariable("month") String month, 
+			@PathVariable("year") int year) {
 		return new ResponseEntity<>(carbonFootprintService.findByUserIdAndMonthAndYear(userId, month, year), HttpStatus.OK);
 	}
 	
 	@GetMapping("/get/{month}/{year}")
-	public ResponseEntity<List<CarbonFootprintDTO>> getSumByMonthAndYear(@PathVariable String month, @PathVariable int year) {
+	public ResponseEntity<List<CarbonFootprintDTO>> getSumByMonthAndYear(@PathVariable("month") String month, 
+			@PathVariable("year") int year) {
 		return new ResponseEntity<>(carbonFootprintService.findByMonthAndYear(month, year), HttpStatus.OK);
 	}
 	
 	@GetMapping("/getAllNSums/{months}")
-	public ResponseEntity<List<CarbonFootprintDTO>> getNMonthsSum(@PathVariable int months) {
+	public ResponseEntity<List<CarbonFootprintDTO>> getNMonthsSum(@PathVariable("months") int months) {
 		return new ResponseEntity<>(carbonFootprintService.findLastNMonthsSums(months), HttpStatus.OK);
 	}
 	
 	@GetMapping("/getAllSums/{months}/{userId}")
-	public ResponseEntity<List<CarbonFootprintDTO>> getNMonthsSumByUserId(@PathVariable String userId, @PathVariable int months) {
+	public ResponseEntity<List<CarbonFootprintDTO>> getNMonthsSumByUserId(
+			@PathVariable("userId") String userId, 
+			@PathVariable("months") int months) {
 		return new ResponseEntity<>(carbonFootprintService.findLastNmonthsSumsByUserId(userId, months), HttpStatus.OK);
 	}
 	
@@ -116,5 +120,31 @@ public class CarbonFootprintController {
 	public ResponseEntity<List<String>> getCountOfFootprint(@RequestBody List<String> userIds) {
 		Map<String, LocalDate> response = userDataClient.getUserIsWithCreatedAt(userIds);
 		return new ResponseEntity<List<String>>(carbonFootprintService.getLast6MonthsFootprintCount(userIds, response), HttpStatus.OK);
+	}
+	
+	@GetMapping("/get/latest/{userId}")
+    public ResponseEntity<CarbonFootprintDTO> getLatestCarbonFootprint(@PathVariable("userId") String userId) {
+        return new ResponseEntity<>(carbonFootprintService.getLatestFootprint(userId), HttpStatus.OK);
+    }
+	
+	@GetMapping("/latest-activity")
+    public ResponseEntity<LatestActivity> getLatestActivity(@RequestParam String userId) {
+        return new ResponseEntity<LatestActivity>( carbonFootprintService.getLatestActivity(userId), HttpStatus.OK);
+    }
+	
+	@GetMapping("/total")
+    public Map<String, Double> getTotalFootprintForCurrentAndPreviousMonth() {
+        return carbonFootprintService.getTotalFootprintForCurrentAndPreviousMonth();
+    }
+	
+	@DeleteMapping("/deleteOldFootprints/{retentionDurationMonths}")
+    public ResponseEntity<String> deleteOldFootprints(@PathVariable int retentionDurationMonths) {
+        carbonFootprintService.deleteOldFootprints(retentionDurationMonths);
+        return ResponseEntity.ok("Carbon footprints older than " + retentionDurationMonths + " months have been deleted.");
+    }
+	
+	@GetMapping("/get/retention-date/{retentionDurationMonths}")
+	public Date getRetentionDate(@PathVariable("retentionDurationMonths") int retentionDurationMonths) {
+		return carbonFootprintService.getRetentionDate(retentionDurationMonths);
 	}
 }

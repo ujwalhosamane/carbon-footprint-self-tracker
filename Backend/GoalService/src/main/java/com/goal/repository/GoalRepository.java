@@ -35,4 +35,10 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
 		       "JOIN g.predefinedGoal pg " +
 		       "GROUP BY g.userId")
 	 List<Object[]> findUserIdsWithTotalRewardPoints();
+	 
+	 @Query("SELECT SUM(g.count) FROM Goal g WHERE g.userId = :userId")
+	 Long findTotalCountByUserId(@Param("userId") String userId);
+	 
+	 @Query("SELECT SUM(g.count) FROM Goal g")
+	 Long findTotalCount();
 }

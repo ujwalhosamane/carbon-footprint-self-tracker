@@ -36,4 +36,79 @@ export class UserService {
   getLeaderBoardOnSixMonthRewardPoints():Observable<any> {
     return this.http.get(this.url + "/leaderBoard/rewardPoints/sixMonths", {headers:this.headers});
   }
+
+  //GetAllGoal
+  getAllGoal():Observable<any> {
+    return this.http.get(this.url + "/goal/get", {headers:this.headers});
+  }
+
+  //getLastN-Months Crabon Foot print details
+  getLastNMonthsCarbonFootprint(n: number): Observable<any> {
+    return this.http.get(this.url + `/carbonFootprint/getAllSums/${n}`, {headers:this.headers});
+  }
+
+  //get Carbon Footprint for month and year
+  getCarbonFootprintForMonthAndYear(month: String, year: number): Observable<any> {
+    return this.http.get(this.url + `/carbonFootprint/get/${month}/${year}`, {headers:this.headers});
+  }
+
+  //get latest Carbon Footprint details
+  getLatestCarbonFootprint():Observable<any>{
+    return this.http.get(this.url + "/carbonFootprint/get/latest", {headers:this.headers});
+  }
+
+  //get n insights
+  getNInsights(n:number):Observable<any>{
+    return this.http.get(this.url + `/getNInsights/${n}`, {headers:this.headers});
+  }
+
+  //add carbon footprint
+  addCarbonFootprint(carbonFootprint:any):Observable<any>{
+    return this.http.post(this.url + "/carbonFootprint/add", carbonFootprint, {headers:this.headers});
+  }
+
+  //update carbon footprint
+  updateCarbonFootprint(carbonFootprint:any):Observable<any>{
+    return this.http.put(this.url + "/carbonFootprint/update", carbonFootprint, {headers:this.headers});
+  }
+
+  //delete carbon footprint by month and year
+  deleteCarbonFootprintByMonthAndYear(month:String, year:number):Observable<any>{
+    return this.http.delete(this.url + `/carbonFootprint/delete/${month}/${year}`, {headers:this.headers});
+  }
+
+  //get user details after login
+  getUserDetailsAfterLogin():Observable<any>{
+    return this.http.get(this.url + "/afterLogin/get", {headers:this.headers});
+  }
+
+  //update password
+  updatePassword(passwordData:any):Observable<any>{
+    return this.http.put(environment.baseUrl + "/auth/updatePassword", passwordData, {headers:this.headers});
+  }
+
+  //get emission factor
+  getEmissionFactor():Observable<any>{
+    return this.http.get(this.url + "/carbonFootprint/get/emissionFactor", {headers:this.headers});
+  }
+
+  //gte user's goal count
+  getUserGoalCount():Observable<any>{
+    return this.http.get(this.url + "/goal/total-count", {headers:this.headers});
+  }
+
+  //get user's latest activity
+  getUserLatestActivity():Observable<any>{
+    return this.http.get(this.url + "/carbonFootprint/latest-activity", {headers:this.headers});
+  }
+
+  // log out
+  logOut():Observable<any>{
+    return this.http.post(environment.baseUrl + "/auth/logout", {}, {headers:this.headers});
+  }
+  
+  //get N insights for user
+  getNInsightsForUser(n:number):Observable<any>{
+    return this.http.get(this.url + `/getNInsights/${n}`, {headers:this.headers});
+  }
 }

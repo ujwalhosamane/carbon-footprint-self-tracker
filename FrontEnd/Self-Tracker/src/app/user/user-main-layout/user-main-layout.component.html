@@ -1,20 +1,17 @@
 <nav [ngClass]="{'hidden': isModalOpen}" class="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-blue-900 to-black p-4 shadow-lg">
     <div class="container mx-auto flex justify-between items-center">
-      <!-- Logo/Brand -->
       <div class="flex items-center">
         <h1 class="text-2xl font-bold text-white">EcoSphere</h1>
       </div>
   
-      <!-- Navigation Items -->
       <div class="hidden md:flex items-center space-x-8">
         <a href="/user/home" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Home</a>
-        <a href="/user/leaderBoard" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Leader Board</a>
+        <a href="/user/leaderboard" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Leader Board</a>
         <a href="/user/overview" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Overview</a>
         <a href="/user/footprint" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Footprint</a>
         <a href="/user/goal" class="text-white hover:text-blue-200 transition-colors duration-300 text-lg font-semibold">Goal</a>
       </div>
   
-      <!-- User Profile Dropdown -->
       <div class="relative">
         <button (click)="toggleDropdown()" class="flex items-center space-x-2 text-white focus:outline-none">
           <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
@@ -40,4 +37,3 @@
           <router-outlet></router-outlet>
       </div>
   </main>
-  

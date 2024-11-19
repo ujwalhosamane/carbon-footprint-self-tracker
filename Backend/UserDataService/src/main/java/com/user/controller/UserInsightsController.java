@@ -1,8 +1,9 @@
 package com.user.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,7 @@ public class UserInsightsController {
 	private GlobalInsightsClient globalInsightsClient;
 	
 	@GetMapping("/getNInsights/{n}")
-	public ResponseEntity<List<String>> getNInsights(@PathVariable int n) {
-		return globalInsightsClient.getNInsights(n);
+	public ResponseEntity<Map<String, String>> getNInsights(@PathVariable int n) {
+		return new ResponseEntity<>(globalInsightsClient.getNInsights(n).getBody(), HttpStatus.OK);
 	}
 }

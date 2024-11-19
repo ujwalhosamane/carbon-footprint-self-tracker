@@ -6,10 +6,9 @@
         <p class="mt-2 text-sm text-gray-600">Track your environmental impact and achievements</p>
       </div>
   
-
       <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-gradient-to-r from-green-50 to-white overflow-hidden shadow rounded-lg border-x-4 border-x-green-400">
           <div class="px-4 py-5 sm:p-6">
             <div class="flex items-center">
               <div class="flex-shrink-0 bg-green-100 rounded-md p-3">
@@ -21,7 +20,7 @@
                 <dl>
                   <dt class="text-sm font-medium text-gray-500 truncate">Total Reward Points</dt>
                   <dd class="flex items-baseline">
-                    <div class="text-2xl font-semibold text-gray-900">0</div>
+                    <div class="text-2xl font-semibold text-gray-900">{{rewardPoints}}</div>
                   </dd>
                 </dl>
               </div>
@@ -29,8 +28,7 @@
           </div>
         </div>
   
-        
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-gradient-to-r from-blue-50 to-white overflow-hidden shadow rounded-lg border-x-4 border-x-blue-400">
           <div class="px-4 py-5 sm:p-6">
             <div class="flex items-center">
               <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
@@ -42,7 +40,7 @@
                 <dl>
                   <dt class="text-sm font-medium text-gray-500 truncate">Carbon Footprint</dt>
                   <dd class="flex items-baseline">
-                    <div class="text-2xl font-semibold text-gray-900">0 kg CO2</div>
+                    <div class="text-2xl font-semibold text-gray-900">{{carbonFootprint}} kg CO2</div>
                   </dd>
                 </dl>
               </div>
@@ -50,8 +48,7 @@
           </div>
         </div>
   
-        
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-gradient-to-r from-purple-50 to-white overflow-hidden shadow rounded-lg border-x-4 border-x-purple-400">
           <div class="px-4 py-5 sm:p-6">
             <div class="flex items-center">
               <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
@@ -63,7 +60,7 @@
                 <dl>
                   <dt class="text-sm font-medium text-gray-500 truncate">Completed Goals</dt>
                   <dd class="flex items-baseline">
-                    <div class="text-2xl font-semibold text-gray-900">0</div>
+                    <div class="text-2xl font-semibold text-gray-900">{{completedGoals}}</div>
                   </dd>
                 </dl>
               </div>
@@ -72,10 +69,9 @@
         </div>
       </div>
   
-      
       <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
         
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-gradient-to-r from-indigo-50 to-white overflow-hidden shadow rounded-lg border-x-4 border-x-indigo-400">
           <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg font-medium text-gray-900">Your Position</h3>
             <div class="mt-4">
@@ -92,20 +88,29 @@
           </div>
         </div>
   
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-gradient-to-r from-amber-50 to-white overflow-hidden shadow rounded-lg border-x-4 border-x-amber-400">
           <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
             <div class="mt-4">
-              <div class="text-center py-8">
-                <p class="text-sm text-gray-500">No recent activities to display</p>
+              <div *ngIf="!latestActivity" class="text-center py-8">
+                <p class="text-sm text-gray-500">No recent activity</p>
+              </div>
+              <div *ngIf="latestActivity" class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-600">Last Updated:</span>
+                  <span class="text-sm font-medium">{{latestActivity.updatedDate | date}}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-gray-600">Period:</span>
+                  <span class="text-sm font-medium">{{latestActivity.footprintMonth}} {{latestActivity.footprintYear}}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
   
-      
-      <div class="bg-white rounded-lg shadow-xl p-6 mt-8">
+      <div class="bg-gradient-to-r from-emerald-50 to-white rounded-lg shadow-xl p-6 mt-8 border-x-4 border-x-emerald-400">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-bold text-gray-900">Current Goal Period</h2>
           <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold">
@@ -114,40 +119,58 @@
         </div>
         <div class="bg-gray-50 p-4 rounded-lg">
           <h3 class="text-lg font-semibold text-gray-800 mb-3">Active Goals:</h3>
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <span class="text-gray-700">Reduce Energy Consumption</span>
-              <span class="text-sm font-medium text-green-600">In Progress</span>
+          <div *ngIf="activeGoals.length === 0" class="text-center py-4">
+            <p class="text-gray-500">No active goals found</p>
+          </div>
+          <div *ngIf="activeGoals.length > 0" class="space-y-3">
+            <div *ngFor="let goal of activeGoals" class="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
+              <div class="flex items-center space-x-3">
+                <img [src]="goal.badgeUrl" class="h-8 w-8" alt="Goal Badge">
+                <div>
+                  <span class="text-gray-700 font-medium">{{goal.title}}</span>
+                  <p class="text-sm text-gray-500">{{goal.description}}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm font-semibold" [ngClass]="{
+                  'text-green-600': goal.isAchieved,
+                  'text-yellow-600': !goal.isAchieved && goal.currentScore > 0,
+                  'text-red-600': !goal.isAchieved && goal.currentScore === 0
+                }">
+                  {{goal.currentScore}}/{{goal.targetScore}}
+                </div>
+                <div class="text-xs text-gray-500">
+                  Reward: {{goal.rewardPoint}} points
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
   
-      
       <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mt-8">
-        <a href="/user/home" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <a routerLink="/user/home" class="bg-gradient-to-r from-gray-50 to-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-x-4 border-x-gray-400">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Home</h3>
           <p class="text-gray-600">Return to your dashboard</p>
         </a>
         
-        <a href="/user/footprint" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <a routerLink="/user/footprint" class="bg-gradient-to-r from-teal-50 to-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-x-4 border-x-teal-400">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Footprint</h3>
           <p class="text-gray-600">Track your carbon impact</p>
         </a>
   
-        <a href="/user/goal" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <a routerLink="/user/goal" class="bg-gradient-to-r from-rose-50 to-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-x-4 border-x-rose-400">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Goals</h3>
           <p class="text-gray-600">Set and track your goals</p>
         </a>
   
-        <a href="/user/profile" class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <a routerLink="/user/profile" class="bg-gradient-to-r from-cyan-50 to-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 border-x-4 border-x-cyan-400">
           <h3 class="text-lg font-semibold text-gray-900 mb-2">Profile</h3>
           <p class="text-gray-600">View your profile details</p>
         </a>
       </div>
   
-
-      <div class="bg-white rounded-lg shadow-xl p-6 mt-8">
+      <div class="bg-gradient-to-r from-sky-50 to-white rounded-lg shadow-xl p-6 mt-8 border-x-4 border-x-sky-400">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Environmental Impact Tips</h2>
         <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
           <ul class="mt-4 space-y-2 text-gray-700">
@@ -174,4 +197,3 @@
       </div>
     </div>
   </div>
-  

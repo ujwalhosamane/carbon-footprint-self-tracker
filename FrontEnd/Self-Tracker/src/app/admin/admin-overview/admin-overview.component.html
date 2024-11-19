@@ -1,0 +1,124 @@
+<div class="bg-white p-6 rounded-lg shadow-2xl border border-gray-100">
+  <div class="flex justify-center items-center mb-8">
+    <h2 class="text-3xl font-bold text-gray-800 relative">
+      <span class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></span>
+      Overview Dashboard
+    </h2>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="bg-gradient-to-r from-blue-50 to-white overflow-hidden shadow rounded-lg border-x-4 border-x-blue-400">
+      <div class="px-4 py-5 sm:p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Total Users</dt>
+              <dd class="flex items-baseline">
+                <div class="text-2xl font-semibold text-gray-900">{{totalUsers || 0}}</div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-green-50 to-white overflow-hidden shadow rounded-lg border-x-4 border-x-green-400">
+      <div class="px-4 py-5 sm:p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-green-100 rounded-md p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">Active Users</dt>
+              <dd class="flex items-baseline">
+                <div class="text-2xl font-semibold text-gray-900">{{activeUsers || 0}}</div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-purple-50 to-white overflow-hidden shadow rounded-lg border-x-4 border-x-purple-400">
+      <div class="px-4 py-5 sm:p-6">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+          </div>
+          <div class="ml-5 w-0 flex-1">
+            <dl>
+              <dt class="text-sm font-medium text-gray-500 truncate">New Registrations (This Month)</dt>
+              <dd class="flex items-baseline">
+                <div class="text-2xl font-semibold text-gray-900">{{newRegistrations || 0}}</div>
+                <div *ngIf="growthPercentage" class="ml-2 flex items-baseline text-sm font-semibold" [ngClass]="{'text-green-600': growthPercentage > 0, 'text-red-600': growthPercentage < 0}">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 8 8">
+                    <path *ngIf="growthPercentage > 0" d="M4 0l4 4-4 4L2 6l3-3-3-3z" />
+                    <path *ngIf="growthPercentage < 0" d="M4 8l4-4-4-4L2 2l3 3-3 3z" />
+                  </svg>
+                  <span class="ml-1">{{growthPercentage}}%</span>
+                </div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-xl font-bold text-gray-800">System Notifications</h3>
+      <span class="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full">Real-time updates</span>
+    </div>
+    <div class="space-y-4">
+      <div *ngIf="recentActivities && recentActivities.length > 0; else noActivity">
+        <div *ngFor="let activity of recentActivities" class="flex items-start p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-all duration-300">
+          <div [ngClass]="activity.type === 'registration' ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-100 text-indigo-600'" class="flex-shrink-0 rounded-full p-3">
+            <svg *ngIf="activity.type === 'registration'" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+            <svg *ngIf="activity.type === 'login'" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+          </div>
+          <div class="ml-4 flex-1">
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-semibold text-gray-900">
+                <ng-container *ngIf="activity.description; else unknownActivity">
+                  {{activity.description}}
+                </ng-container>
+                <ng-template #unknownActivity>System notification unavailable</ng-template>
+              </p>
+              <span [ngClass]="activity.type === 'registration' ? 'bg-emerald-100 text-emerald-700' : 'bg-indigo-100 text-indigo-700'" class="px-2.5 py-0.5 rounded-full text-xs font-medium">
+                {{activity.type | titlecase}}
+              </span>
+            </div>
+            <p class="mt-1 text-xs text-gray-500">
+              <ng-container *ngIf="activity.time; else noTime">
+                {{activity.time | date:'MMM d, y, h:mm a'}}
+              </ng-container>
+              <ng-template #noTime>Timestamp pending</ng-template>
+            </p>
+          </div>
+        </div>
+      </div>
+      <ng-template #noActivity>
+        <div class="flex flex-col items-center justify-center py-12 bg-gray-50 rounded-lg">
+          <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+          <p class="mt-4 text-sm font-medium text-gray-500">No notifications at this time</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

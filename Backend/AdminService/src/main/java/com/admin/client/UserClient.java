@@ -17,12 +17,18 @@ public interface UserClient {
 	@PutMapping("/user/update/totalFootprint")
 	public ResponseEntity<Void> updateUserTotalFootprint(@RequestBody Map<String, Double> rewards);
 	
-	@GetMapping("/user/users/this-month/count")
+	@GetMapping("/user/this-month/count")
     public long getThisMonthUserCount();
 
-    @GetMapping("/user/users/last-month/count")
+    @GetMapping("/user/last-month/count")
     public long getLastMonthUserCount();
     
-    @GetMapping("/user/users/total/count")
+    @GetMapping("/user/total/count")
     public long getTotalUserCount();
+    
+    @GetMapping("/user/totals")
+    public Map<String, Double> getTotalFootprintAndRewardPoints();
+    
+    @GetMapping("/user/get/topPerformer")
+    public List<Map<String, Object>> getTopPerformers();
 }

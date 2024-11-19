@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -74,4 +75,13 @@ public interface UserRepository extends JpaRepository<UserData, String> {
 	
 	@Query("SELECT u.userId AS userId, u.creationDate AS creationDate FROM UserData u WHERE u.userId IN :userIds")
     Map<String, LocalDate> findCreationDatesByUserIds(@Param("userIds") List<String> userIds);
+	
+	@Query("SELECT SUM(u.totalFootprint) FROM UserData u")
+    Double getTotalFootprint();
+
+    @Query("SELECT SUM(u.totalRewardPoints) FROM UserData u")
+    Double getTotalRewardPoints();
+    
+    @Query("SELECT new map(u.name as name, u.totalRewardPoints as points) FROM UserData u ORDER BY u.totalRewardPoints DESC")
+    List<Map<String, Object>> findTopPerformers(Pageable pageable);
 }

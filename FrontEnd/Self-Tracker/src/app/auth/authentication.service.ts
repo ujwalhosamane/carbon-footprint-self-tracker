@@ -35,5 +35,11 @@ export class AuthenticationService {
     return this.http.post<string>(this.apiUrl + '/auth/register', data);
   }
 
+  validateToken(token: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/auth/validate`, {
+      params: { token },
+      headers: this.headers
+    });
+  }
   
 }

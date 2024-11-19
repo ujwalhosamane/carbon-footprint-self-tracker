@@ -1,0 +1,211 @@
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+  <div *ngIf="showToast" class="fixed top-4 right-4 z-50">
+    <div [ngClass]="{
+      'bg-green-500': toastType === 'success',
+      'bg-red-500': toastType === 'error'
+    }" class="rounded-lg p-4 text-white shadow-xl flex items-center">
+      <svg *ngIf="toastType === 'success'" class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+      <svg *ngIf="toastType === 'error'" class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+      <span class="text-sm font-medium">{{toastMessage}}</span>
+      <button (click)="showToast = false" class="ml-4">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="showUpdateForm" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-10 flex items-center justify-center">
+    <div class="bg-gradient-to-r from-blue-50 to-white rounded-lg shadow-2xl p-6 w-full max-w-2xl border-x-4 border-x-blue-400">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium text-blue-800">Update Carbon Footprint</h3>
+        <button (click)="showUpdateForm = false" class="text-gray-500 hover:text-gray-700">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Transportation (km)</label>
+          <input type="number" [(ngModel)]="selectedFootprint.transportation" class="mt-1 block w-full rounded-md border-blue-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Electricity (kWh)</label>
+          <input type="number" [(ngModel)]="selectedFootprint.electricity" class="mt-1 block w-full rounded-md border-blue-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">LPG (kg)</label>
+          <input type="number" [(ngModel)]="selectedFootprint.lpg" class="mt-1 block w-full rounded-md border-blue-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Shipping (kg)</label>
+          <input type="number" [(ngModel)]="selectedFootprint.shipping" class="mt-1 block w-full rounded-md border-blue-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Air Conditioner (hours)</label>
+          <input type="number" [(ngModel)]="selectedFootprint.airConditioner" class="mt-1 block w-full rounded-md border-blue-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white">
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end space-x-3">
+        <button (click)="showUpdateForm = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md shadow-sm">
+          Cancel
+        </button>
+        <button (click)="saveUpdate()" class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-md shadow-sm">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-blue-900 tracking-tight">Carbon Footprint Calculator</h1>
+      <p class="mt-2 text-blue-600 text-lg font-medium">Track and manage your monthly carbon emissions</p>
+    </div>
+
+    <div class="bg-gradient-to-r from-blue-50 to-white rounded-lg shadow-2xl p-6 mb-8 border-x-4 border-x-blue-400">
+      <div *ngIf="availableMonths.length > 0; else noMonths">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700">Month</label>
+            <select class="mt-1 block w-full rounded-md border-blue-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white text-gray-700" #month>
+              <option *ngFor="let month of monthsForSelectedYear" [value]="month">
+                {{month}}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700">Year</label>
+            <select class="mt-1 block w-full rounded-md border-blue-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white text-gray-700" 
+                    #year
+                    (change)="onYearChange($event)">
+              <option *ngFor="let year of availableYears" [value]="year">
+                {{year}}
+              </option>
+            </select>
+          </div>
+
+          <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gradient-to-r from-green-50 to-white p-4 rounded-lg shadow-md border-x-4 border-x-green-400">
+              <label class="block text-sm font-semibold text-gray-700">Transportation (km)</label>
+              <input type="number" class="mt-1 block w-full rounded-md border-green-200 shadow-sm focus:border-green-500 focus:ring-green-500 bg-white text-gray-700" placeholder="0" #transportation>
+              <p class="mt-1 text-xs text-gray-500 font-medium">Distance traveled by vehicles</p>
+            </div>
+
+            <div class="bg-gradient-to-r from-yellow-50 to-white p-4 rounded-lg shadow-md border-x-4 border-x-yellow-400">
+              <label class="block text-sm font-semibold text-gray-700">Electricity (kWh)</label>
+              <input type="number" class="mt-1 block w-full rounded-md border-yellow-200 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 bg-white text-gray-700" placeholder="0" #electricity>
+              <p class="mt-1 text-xs text-gray-500 font-medium">Monthly electricity consumption</p>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-50 to-white p-4 rounded-lg shadow-md border-x-4 border-x-purple-400">
+              <label class="block text-sm font-semibold text-gray-700">LPG (kg)</label>
+              <input type="number" class="mt-1 block w-full rounded-md border-purple-200 shadow-sm focus:border-purple-500 focus:ring-purple-500 bg-white text-gray-700" placeholder="0" #lpg>
+              <p class="mt-1 text-xs text-gray-500 font-medium">LPG consumption</p>
+            </div>
+
+            <div class="bg-gradient-to-r from-indigo-50 to-white p-4 rounded-lg shadow-md border-x-4 border-x-indigo-400">
+              <label class="block text-sm font-semibold text-gray-700">Shipping (kg)</label>
+              <input type="number" class="mt-1 block w-full rounded-md border-indigo-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-white text-gray-700" placeholder="0" #shipping>
+              <p class="mt-1 text-xs text-gray-500 font-medium">Goods shipped</p>
+            </div>
+
+            <div class="bg-gradient-to-r from-cyan-50 to-white p-4 rounded-lg shadow-md border-x-4 border-x-cyan-400">
+              <label class="block text-sm font-semibold text-gray-700">Air Conditioner (hours)</label>
+              <input type="number" class="mt-1 block w-full rounded-md border-cyan-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 bg-white text-gray-700" placeholder="0" #ac>
+              <p class="mt-1 text-xs text-gray-500 font-medium">AC usage duration</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end">
+          <button type="submit" 
+                  (click)="addFootprint()" 
+                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-lg text-sm font-semibold rounded-md text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Add Footprint
+          </button>
+        </div>
+      </div>
+
+      <ng-template #noMonths>
+        <div class="text-center py-8">
+          <h3 class="text-lg font-semibold text-blue-900 mb-2">All Entries for Last 6 Months</h3>
+          <p class="text-blue-500 mb-4 font-medium">You have already submitted data for all available months.</p>
+          <p class="text-blue-600 font-medium">You can view and update your existing entries in the Monthly History section below.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="bg-gradient-to-r from-green-50 to-white rounded-lg shadow-2xl p-6 mb-8 border-x-4 border-x-green-400">
+      <h2 class="text-xl font-bold text-green-900 mb-4">Your Carbon Footprint Summary</h2>
+      
+      <div class="bg-white rounded-lg p-4 mb-4 h-64 shadow-inner">
+        <ng-container *ngIf="carbonFootprints && carbonFootprints.length > 0; else noChartData">
+          <canvas id="footprintChart"></canvas>
+        </ng-container>
+        <ng-template #noChartData>
+          <div class="h-full flex items-center justify-center">
+            <p class="text-gray-500 text-lg font-medium">Chart will be available once you add your footprint details</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-purple-50 to-white rounded-lg shadow-2xl p-6 border-x-4 border-x-purple-400">
+      <h3 class="text-lg font-bold text-purple-900 mb-3">Monthly History</h3>
+      <div class="overflow-x-auto" *ngIf="!carbonFootprints || carbonFootprints.length > 0">
+        <table class="min-w-full divide-y divide-purple-200">
+          <thead class="bg-purple-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Month</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Transportation</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Electricity</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">LPG</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Shipping</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">AC</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Total</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          
+          <tbody class="bg-white divide-y divide-purple-100">
+            <tr *ngFor="let footprint of carbonFootprints" class="hover:bg-purple-50 transition-colors duration-150">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.footprintMonth}} {{footprint.footprintYear}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.transportation}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.electricity}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.lpg}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.shipping}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.airConditioner}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-900">{{calculateTotalFootprint(footprint)}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <button (click)="openUpdateForm(footprint)" class="text-indigo-600 hover:text-indigo-900 font-medium mr-2 relative group">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                  <span class="invisible group-hover:visible absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap">Edit entry</span>
+                </button>
+                <button (click)="deleteFootprint(footprint.footprintMonth, footprint.footprintYear)" class="text-red-600 hover:text-red-900 font-medium relative group">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                  <span class="invisible group-hover:visible absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded whitespace-nowrap">Delete entry</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="!carbonFootprints || carbonFootprints.length === 0" class="text-center py-8 bg-purple-50 rounded-lg mt-4">
+        <p class="text-purple-600 text-lg font-semibold">No carbon footprint data found for the last 6 months</p>
+        <p class="text-purple-400 text-sm font-medium mt-2">Add your first carbon footprint entry using the form above</p>
+      </div>
+    </div>
+  </div>
+</div>
