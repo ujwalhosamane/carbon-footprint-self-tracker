@@ -11,10 +11,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.carbon.footprint.client.SuggestionClient;
 import com.carbon.footprint.dto.CarbonFootprintDTO;
 import com.carbon.footprint.dto.LatestActivity;
 import com.carbon.footprint.exception.FootprintDateException;
@@ -29,6 +32,9 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 
 	@Autowired
 	private CarbonFootprintRepository carbonFootprintRepository;
+	
+	@Autowired
+	private SuggestionClient suggestionClient;
 	
 	@Override
 	public CarbonFootprintDTO addFootprint(String userId, CarbonFootprintDTO footprintDto, LocalDate accountCreationDate) {
@@ -49,7 +55,9 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 		
 		carbonFootprint.setTotalFootprint(totalFootprint);
 		
-		return carbonFootprintRepository.save(carbonFootprint) != null ? footprintDto : null;
+		carbonFootprint = carbonFootprintRepository.save(carbonFootprint);
+		suggestionClient.addSuggestion(userId, carbonFootprint.getCarbonFootprintId(), footprintDto);
+		return carbonFootprint != null ? footprintDto : null;
 	}
 
 	@Override
@@ -66,8 +74,9 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 		if(carbonFootprint.isEmpty()) {
 			//handle exception
 		}
-				
+		
 		carbonFootprintRepository.deleteById(carbonFootprint.get().getCarbonFootprintId());
+		suggestionClient.deleteByFootprintId(carbonFootprint.get().getCarbonFootprintId());
 	}
 
 	@Override
@@ -99,7 +108,9 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 			
 			carbonFootprint.setTotalFootprint(totalFootprint);
 			
-			return carbonFootprintRepository.save(carbonFootprint) != null ?
+			carbonFootprint = carbonFootprintRepository.save(carbonFootprint);
+			suggestionClient.regenerateAndUpdate(userId, carbonFootprint.getCarbonFootprintId(), footprintDto);
+			return carbonFootprint != null ?
 					footprintDto : null;
 		}
 		
@@ -280,6 +291,7 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 	@Transactional
 	public void deleteByUserId(String UserId) {
 		carbonFootprintRepository.deleteByUserId(UserId);
+		suggestionClient.removeSuggestionByUserId(UserId);
 	}
 
 	@Override
@@ -423,13 +435,54 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
 
         int retentionYear = retentionDate.getYear();
         String retentionMonth = retentionDate.getMonth().toString().toUpperCase(); 
+        List<CarbonFootprint> beforeDeletionDTO = carbonFootprintRepository.findAll();
         carbonFootprintRepository.deleteByFootprintYearBeforeOrFootprintYearAndFootprintMonthBefore(retentionYear, retentionMonth);
+        List<CarbonFootprint> afterDeletionDTO = carbonFootprintRepository.findAll();
+        
+        List<Long> footprintIds = findDeletedCarbonFootprintIds(beforeDeletionDTO, afterDeletionDTO);
+        suggestionClient.deleteAllByFootprintId(footprintIds);
+        
+    }
+    
+    public List<Long> findDeletedCarbonFootprintIds(List<CarbonFootprint> beforeDeletionDTO, List<CarbonFootprint> afterDeletionDTO) {
+        Set<Long> afterDeletionIds = afterDeletionDTO.stream()
+                .map(CarbonFootprint::getCarbonFootprintId)
+                .collect(Collectors.toSet());
+
+        List<Long> deletedIds = beforeDeletionDTO.stream()
+                .map(CarbonFootprint::getCarbonFootprintId)
+                .filter(id -> !afterDeletionIds.contains(id))
+                .collect(Collectors.toList());
+
+        return deletedIds;
     }
     
     public Date getRetentionDate(int retentionDurationMonths) {
     	LocalDate currentDate = LocalDate.now().withDayOfMonth(1);
         LocalDate retentionDate = currentDate.minusMonths(retentionDurationMonths);
         return java.sql.Date.valueOf(retentionDate);
+    }
+    
+    public CarbonFootprintDTO getFootprintDTO(
+    	String userId,
+    	Long carbonFootprintId) {
+    	CarbonFootprint carbonFootprint = carbonFootprintRepository.findById(carbonFootprintId).orElse(null);
+    	if(carbonFootprint == null) {
+    		return null;
+    	}
+    	
+    	if(!carbonFootprint.getUserId().equals(userId)) {
+    		return null;
+    	}
+    	return new CarbonFootprintDTO(
+                carbonFootprint.getFootprintMonth(),
+                carbonFootprint.getFootprintYear(),
+                carbonFootprint.getTransportation(),
+                carbonFootprint.getElectricity(),
+                carbonFootprint.getLpg(),
+                carbonFootprint.getShipping(),
+                carbonFootprint.getAirConditioner()
+        );
     }
     
 }

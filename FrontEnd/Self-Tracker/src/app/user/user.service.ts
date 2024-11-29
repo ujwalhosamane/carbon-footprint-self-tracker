@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { SuggestionDTO } from '../models/suggestion-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -110,5 +111,29 @@ export class UserService {
   //get N insights for user
   getNInsightsForUser(n:number):Observable<any>{
     return this.http.get(this.url + `/getNInsights/${n}`, {headers:this.headers});
+  }
+
+  //get latest suggestion
+  getLatestSuggestion():Observable<any> {
+    return this.http.get(this.url + `/suggestion/latest`, {headers:this.headers});
+  }
+
+  //get regenrated suggestion
+  getRegeneratedSuggestion(suggestionId: number):Observable<any> {
+    return this.http.get(this.url + `/suggestion/regenerate`, {
+      params: { suggestionId },
+      headers: this.headers
+    });
+  }
+
+  //update regenerated suggestion
+  updateRegeneratedSuggestion(suggestion: SuggestionDTO): Observable<any> {
+    return this.http.put(
+      this.url + `/suggestion/update`,
+      suggestion,
+      {
+        headers: this.headers
+      }
+    );
   }
 }

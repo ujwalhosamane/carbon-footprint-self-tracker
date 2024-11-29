@@ -29,7 +29,7 @@ public class SuggestionService {
 		return repository.findById(suggestionId);
 	}
 	
-	public List<SuggestionModel> getSuggestionByUserId(long userId)
+	public List<SuggestionModel> getSuggestionByUserId(String userId)
 	{
 		return repository.findByUserId(userId);
 	}
@@ -71,15 +71,15 @@ public class SuggestionService {
         List<SuggestionModel> suggestions = repository.findByCreationDateAfter(dateThreshold);
         
         return suggestions.stream()
-                          .map(suggestion -> new SuggestionDTO(suggestion.getDescription(), suggestion.getCreationDate()))
+                          .map(suggestion -> new SuggestionDTO(suggestion.getSuggestionId(), suggestion.getDescription(), suggestion.getCreationDate()))
                           .collect(Collectors.toList());
     }
-	public List<SuggestionDTO> getRecentSuggestionsByUserId(long userId, int nDays) {
+	public List<SuggestionDTO> getRecentSuggestionsByUserId(String userId, int nDays) {
         LocalDate dateThreshold = LocalDate.now().minusDays(nDays);
         List<SuggestionModel> suggestions = repository. findByUserIdAndCreationDateAfter(userId, dateThreshold);
         
         return suggestions.stream()
-                          .map(suggestion -> new SuggestionDTO(suggestion.getDescription(), suggestion.getCreationDate()))
+                          .map(suggestion -> new SuggestionDTO(suggestion.getSuggestionId(), suggestion.getDescription(), suggestion.getCreationDate()))
                           .collect(Collectors.toList());
     }
 	public void deleteSuggestionbyId(long suggestionId)
@@ -87,9 +87,31 @@ public class SuggestionService {
 		repository.deleteById(suggestionId);
 	}
 	 @Transactional
-	public void deleteSuggestionByUserId(long userId)
+	public void deleteSuggestionByUserId(String userId)
 	{
 		repository.deleteByUserId(userId);
+	}
+	 
+	public Optional<SuggestionModel> getLatestSuggestionByUserId(String userId) {
+	    return repository.findLatestSuggestionByUserId(userId);
+	}
+	
+	public void deleteAllByCarbonFootprintId(List<Long> carbonFootprintId) {
+		repository.deleteAllByCarbonFootprintIdIn(carbonFootprintId);
+	}
+	
+	
+	public void deleteByCarbonFootprintId(Long carbonFootprintId) {
+		repository.deleteByCarbonFootprintId(carbonFootprintId);
+	}
+	
+	public SuggestionModel getByCarbonFootprintId(Long carbonFootprintId) {
+		List<SuggestionModel> suggestionModels = repository.findByCarbonFootprintId(carbonFootprintId);
+		
+		if(suggestionModels.isEmpty() || suggestionModels.size() > 1) {
+			return null;
+		}
+		return suggestionModels.get(0);
 	}
 
 }

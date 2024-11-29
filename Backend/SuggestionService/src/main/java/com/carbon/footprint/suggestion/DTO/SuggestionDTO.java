@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SuggestionDTO {
+	private Long suggestionId;
 	private String description;
 	private LocalDate creationDate;
 }

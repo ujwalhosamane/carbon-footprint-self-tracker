@@ -34,13 +34,16 @@ public class CarbonFootprintController {
 	
 	@Autowired
 	private UserDataClient userDataClient;
+	
 	//changed
 	@PostMapping("/add/{userId}")
 	public ResponseEntity<CarbonFootprintDTO> addCarbonFootprint(
 			@PathVariable String userId,
 			@RequestBody CarbonFootprintDTO carbonFootprintDto,
 			@RequestParam("accountCreationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate accountCreationDate) {
-		return new ResponseEntity<>(carbonFootprintService.addFootprint(userId, carbonFootprintDto, accountCreationDate), HttpStatus.OK);
+		
+		CarbonFootprintDTO dto = carbonFootprintService.addFootprint(userId, carbonFootprintDto, accountCreationDate);
+		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 	
 	@GetMapping("/getAll")
@@ -54,7 +57,8 @@ public class CarbonFootprintController {
 			@PathVariable("userId") String userId,
 			@RequestBody CarbonFootprintDTO carbonFootprintDto,
 			@RequestParam("accountCreationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate accountCreationDate) {
-		return new ResponseEntity<>(carbonFootprintService.updateFootprint(userId, carbonFootprintDto, accountCreationDate), HttpStatus.OK);
+		CarbonFootprintDTO dto = carbonFootprintService.updateFootprint(userId, carbonFootprintDto, accountCreationDate);
+		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 	
 	//changed
@@ -146,5 +150,14 @@ public class CarbonFootprintController {
 	@GetMapping("/get/retention-date/{retentionDurationMonths}")
 	public Date getRetentionDate(@PathVariable("retentionDurationMonths") int retentionDurationMonths) {
 		return carbonFootprintService.getRetentionDate(retentionDurationMonths);
+	}
+	
+	@GetMapping("/get")
+	public ResponseEntity<CarbonFootprintDTO> getDto(
+			@RequestParam("userId") String userId,
+			@RequestParam("carbonFootprintId") Long carbonFootprintId) {
+		return new ResponseEntity<CarbonFootprintDTO>(
+				carbonFootprintService.getFootprintDTO(userId, carbonFootprintId),
+				HttpStatus.OK);
 	}
 }

@@ -55,7 +55,6 @@ export class LoginComponent implements OnInit {
 
       this.authService.login(loginData).subscribe({
         next: (data) => {
-          console.log(data);
           
           if (data.role === 'USER') {
             localStorage.setItem('__auth', data.token);
