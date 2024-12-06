@@ -17,6 +17,7 @@ export class UserFootprintComponent implements OnInit {
   @ViewChild('ac') ac!: ElementRef;
 
   carbonFootprints: any[] = [];
+  displayValues: any[] = [];
   availableMonths: any[] = [];
   availableYears: number[] = [];
   monthsForSelectedYear: string[] = [];
@@ -27,6 +28,7 @@ export class UserFootprintComponent implements OnInit {
   showToast: boolean = false;
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
+  loading: boolean = false;
 
   constructor(private userService: UserService) {}
 
@@ -45,13 +47,16 @@ export class UserFootprintComponent implements OnInit {
   }
 
   getEmissionFactors() {
+    this.loading = true;
     this.userService.getEmissionFactor().subscribe({
       next: (data) => {
         this.emissionFactors = data;
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error fetching emission factors:', error);
         this.showToastMessage('Error fetching emission factors', 'error');
+        this.loading = false;
       }
     });
   }
@@ -87,6 +92,7 @@ export class UserFootprintComponent implements OnInit {
       return;
     }
 
+    this.loading = true;
     const rawData = {
       footprintMonth: this.month.nativeElement.value,
       footprintYear: parseInt(this.year.nativeElement.value),
@@ -116,27 +122,30 @@ export class UserFootprintComponent implements OnInit {
         this.shipping.nativeElement.value = '';
         this.ac.nativeElement.value = '';
         this.showToastMessage('Carbon footprint added successfully', 'success');
-        this.loadCarbonFootprints();
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error adding footprint:', error);
         this.showToastMessage('Error adding carbon footprint', 'error');
+        this.loading = false;
       }
     });
   }
 
   loadCarbonFootprints() {
+    this.loading = true;
     this.userService.getLastNMonthsCarbonFootprint(6).subscribe({
       next: (data) => {
         if (!data) {
           this.carbonFootprints = [];
           this.generateAvailableMonths();
+          this.loading = false;
           return;
         }
 
         const validFootprints = data.filter((footprint: any) => footprint !== null);
         
-        this.carbonFootprints = validFootprints.map((footprint: any) => this.convertBackToOriginal(footprint))
+        this.carbonFootprints = validFootprints
           .sort((a: any, b: any) => {
             if (a.footprintYear !== b.footprintYear) {
               return b.footprintYear - a.footprintYear;
@@ -145,18 +154,28 @@ export class UserFootprintComponent implements OnInit {
                            'July', 'August', 'September', 'October', 'November', 'December'];
             return months.indexOf(b.footprintMonth) - months.indexOf(a.footprintMonth);
           });
+
+        this.displayValues = [];
+        
+        this.carbonFootprints.forEach((footprint: any) => {
+          this.displayValues.push(this.convertBackToOriginal(footprint));
+        });
         
         this.generateAvailableMonths();
         
         if (this.carbonFootprints.length > 0) {
-          this.updateChart();
+          setTimeout(() => {
+            this.updateChart();
+          }, 0);
         }
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error loading footprints:', error);
         this.showToastMessage('Error loading carbon footprints', 'error');
         this.carbonFootprints = [];
         this.generateAvailableMonths();
+        this.loading = false;
       }
     });
   }
@@ -228,9 +247,9 @@ export class UserFootprintComponent implements OnInit {
 
   calculateTotalFootprint(footprint: any): number {
     if (!footprint) return 0;
-    return Number(footprint.transportation) + Number(footprint.electricity) + 
+    return Number((Number(footprint.transportation) + Number(footprint.electricity) + 
            Number(footprint.lpg) + Number(footprint.shipping) + 
-           Number(footprint.airConditioner);
+           Number(footprint.airConditioner)).toFixed(2));
   }
 
   openUpdateForm(footprint: any) {
@@ -240,6 +259,7 @@ export class UserFootprintComponent implements OnInit {
 
   saveUpdate() {
     if (!this.selectedFootprint) return;
+    this.loading = true;
 
     const calculatedEmissions = this.calculateFootprint(this.selectedFootprint);
     const updatedFootprint = {
@@ -257,34 +277,40 @@ export class UserFootprintComponent implements OnInit {
         this.showUpdateForm = false;
         this.selectedFootprint = null;
         this.showToastMessage('Carbon footprint updated successfully', 'success');
-        this.loadCarbonFootprints();
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error updating footprint:', error);
         this.showToastMessage('Error updating carbon footprint', 'error');
+        this.loading = false;
       }
     });
   }
 
   deleteFootprint(month: string, year: number) {
     if (confirm('Are you sure you want to delete this footprint record?')) {
+      this.loading = true;
       this.userService.deleteCarbonFootprintByMonthAndYear(month, year).subscribe({
         next: () => {
           this.loadCarbonFootprints();
           this.showToastMessage('Carbon footprint deleted successfully', 'success');
+          this.loading = false;
         },
         error: (error) => {
           console.error('Error deleting footprint:', error);
           this.showToastMessage('Error deleting carbon footprint', 'error');
+          this.loading = false;
         }
       });
-      this.loadCarbonFootprints();
     }
   }
 
   updateChart() {
     const ctx = document.getElementById('footprintChart') as HTMLCanvasElement;
-    if (!ctx) return;
+    if (!ctx) {
+      console.error('Canvas element not found');
+      return;
+    }
     
     if (this.chart) {
       this.chart.destroy();
@@ -292,35 +318,59 @@ export class UserFootprintComponent implements OnInit {
 
     const reversedFootprints = [...this.carbonFootprints].reverse();
     const labels = reversedFootprints.map(f => `${f.footprintMonth} ${f.footprintYear}`);
-    const data = reversedFootprints.map(f => this.calculateTotalFootprint(f));
+    const datasets = [
+      {
+        label: 'Transportation',
+        data: reversedFootprints.map(f => f.transportation),
+        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false
+      },
+      {
+        label: 'Electricity',
+        data: reversedFootprints.map(f => f.electricity),
+        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false
+      },
+      {
+        label: 'LPG',
+        data: reversedFootprints.map(f => f.lpg),
+        backgroundColor: 'rgba(255, 206, 86, 0.7)',
+        borderColor: 'rgba(255, 206, 86, 1)',
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false
+      },
+      {
+        label: 'Shipping',
+        data: reversedFootprints.map(f => f.shipping),
+        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false
+      },
+      {
+        label: 'Air Conditioner',
+        data: reversedFootprints.map(f => f.airConditioner),
+        backgroundColor: 'rgba(153, 102, 255, 0.7)',
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 2,
+        borderRadius: 5,
+        borderSkipped: false
+      }
+    ];
 
     this.chart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: labels,
-        datasets: [{
-          label: 'Total Carbon Footprint (kg CO₂)',
-          data: data,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.7)',
-            'rgba(54, 162, 235, 0.7)', 
-            'rgba(255, 206, 86, 0.7)',
-            'rgba(75, 192, 192, 0.7)',
-            'rgba(153, 102, 255, 0.7)',
-            'rgba(255, 159, 64, 0.7)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)', 
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 2,
-          borderRadius: 5,
-          borderSkipped: false
-        }]
+        datasets: datasets
       },
       options: {
         responsive: true,
@@ -328,6 +378,7 @@ export class UserFootprintComponent implements OnInit {
         scales: {
           y: {
             beginAtZero: true,
+            stacked: true,
             title: {
               display: true,
               text: 'CO₂ Emissions (kg)',
@@ -341,6 +392,7 @@ export class UserFootprintComponent implements OnInit {
             }
           },
           x: {
+            stacked: true,
             title: {
               display: true,
               text: 'Month',
@@ -362,6 +414,15 @@ export class UserFootprintComponent implements OnInit {
               font: {
                 size: 12,
                 weight: 'bold'
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context: any) {
+                const label = context.dataset.label || '';
+                const value = context.parsed.y;
+                return `${label}: ${value.toFixed(2)} kg CO₂`;
               }
             }
           }

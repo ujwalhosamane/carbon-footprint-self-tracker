@@ -48,6 +48,7 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.isSubmitting = true;
+      
       let loginData = {
         username: this.loginForm.value.username,  
         password: this.loginForm.value.password
@@ -55,21 +56,21 @@ export class LoginComponent implements OnInit {
 
       this.authService.login(loginData).subscribe({
         next: (data) => {
-          
           if (data.role === 'USER') {
             localStorage.setItem('__auth', data.token);
             this.showToast(false, "Successfully logged in!");
             setTimeout(() => {
+              this.isSubmitting = false;
               this.router.navigate(['/user/home']);
             }, 1500);
           } else if(data.role === 'ADMIN') {
             localStorage.setItem('auth', data.token);
             this.showToast(false, "Successfully logged in!");
             setTimeout(() => {
+              this.isSubmitting = false;
               this.router.navigate(['/admin/dashboard']);
             }, 1500);
           }
-          this.isSubmitting = false;
         },
         error: (error) => {
           console.log(error);

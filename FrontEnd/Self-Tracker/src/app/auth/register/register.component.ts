@@ -12,6 +12,7 @@ export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
   showErrorToast: boolean = false;
   showSuccessToast: boolean = false;
+  loading: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -31,7 +32,6 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  // Custom validator for password matching
   passwordMatchValidator(formGroup: FormGroup) {
     const password = formGroup.get('password')?.value;
     const confirmPassword = formGroup.get('confirmPassword')?.value;
@@ -45,6 +45,7 @@ export class RegisterComponent implements OnInit {
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.loading = true;
       const userData = {
         name: this.registerForm.value.name,
         email: this.registerForm.value.email,
@@ -55,6 +56,7 @@ export class RegisterComponent implements OnInit {
       this.authService.register(userData).subscribe({
         next: (response: any) => {
           console.log('Response:', response);
+          this.loading = false;
           this.showSuccessToast = true;
           setTimeout(() => {
             this.showSuccessToast = false;
@@ -62,6 +64,7 @@ export class RegisterComponent implements OnInit {
           }, 2000);
         },
         error: (error) => {
+            this.loading = false;
             this.showErrorToast = true;
             setTimeout(() => {
               this.showErrorToast = false;

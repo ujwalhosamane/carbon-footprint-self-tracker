@@ -20,7 +20,10 @@ public interface SuggestionRepository extends JpaRepository<SuggestionModel, Lon
 	public List<SuggestionModel> findByCreationDateAfter(LocalDate date);
 	public List<SuggestionModel> findByUserIdAndCreationDateAfter(String userId, LocalDate date);
 	
-	@Query("SELECT s FROM SuggestionModel s WHERE s.userId = :userId ORDER BY s.creationDate DESC")
+	@Query(
+		    value = "SELECT * FROM suggestion_model s WHERE s.user_id = :userId ORDER BY s.creation_date DESC, s.suggestion_id DESC LIMIT 1", 
+		    nativeQuery = true
+		)
     Optional<SuggestionModel> findLatestSuggestionByUserId(String userId);
 	
 	@Transactional

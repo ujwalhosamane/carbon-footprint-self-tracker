@@ -2,6 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { SuggestionDTO } from '../../models/suggestion-dto';
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'typewriter'
+})
+export class TypewriterPipe implements PipeTransform {
+  transform(value: string): string {
+    if (!value) return '';
+    return value;
+  }
+}
 
 @Component({
   selector: 'app-user-home',
@@ -18,6 +29,10 @@ export class UserHomeComponent implements OnInit {
   latestSuggestion: SuggestionDTO | null = null;
   regeneratedSuggestion: string = '';
   showRegeneratedSuggestion: boolean = false;
+  isLoading: boolean = false;
+  typingSpeed: number = 15; 
+  currentTypingIndex: number = 0;
+  typingInterval: any;
 
   constructor(
     private router: Router,
@@ -60,6 +75,7 @@ export class UserHomeComponent implements OnInit {
       next: (suggestion) => {
         if (suggestion) {
           this.latestSuggestion = suggestion;
+          this.startTypewriter(suggestion.description);
         }
       },
       error: (error) => {
@@ -73,6 +89,24 @@ export class UserHomeComponent implements OnInit {
     if (this.slideInterval) {
       clearInterval(this.slideInterval);
     }
+    if (this.typingInterval) {
+      clearInterval(this.typingInterval);
+    }
+  }
+
+  startTypewriter(text: string) {
+    if (this.typingInterval) {
+      clearInterval(this.typingInterval);
+    }
+    this.currentTypingIndex = 0;
+    
+    this.typingInterval = setInterval(() => {
+      if (this.currentTypingIndex < text.length) {
+        this.currentTypingIndex++;
+      } else {
+        clearInterval(this.typingInterval);
+      }
+    }, this.typingSpeed);
   }
 
   goToSlide(index: number): void {
@@ -93,14 +127,18 @@ export class UserHomeComponent implements OnInit {
   regenrateSuggestion(): void {
     if (!this.latestSuggestion) return;
 
+    this.isLoading = true;
     this.userService.getRegeneratedSuggestion(this.latestSuggestion.suggestionId).subscribe({
       next: (response) => {
         const suggestionString = response.suggestion;
         this.regeneratedSuggestion = suggestionString;
         this.showRegeneratedSuggestion = true;
+        this.isLoading = false;
+        this.startTypewriter(suggestionString);
       },
       error: (error) => {
         console.error('Error regenerating suggestion:', error);
+        this.isLoading = false;
       }
     });
   }
@@ -108,6 +146,7 @@ export class UserHomeComponent implements OnInit {
   selectSuggestion(isRegeneratedSelected: boolean): void {
     if (!this.latestSuggestion) return;
 
+    this.isLoading = true;
     const selectedDescription = isRegeneratedSelected ? 
       this.regeneratedSuggestion : 
       this.latestSuggestion.description;
@@ -123,9 +162,12 @@ export class UserHomeComponent implements OnInit {
         this.latestSuggestion = suggestion;
         this.showRegeneratedSuggestion = false;
         this.regeneratedSuggestion = '';
+        this.isLoading = false;
+        this.startTypewriter(suggestion.description);
       },
       error: (error) => {
         console.error('Error updating suggestion:', error);
+        this.isLoading = false;
       }
     });
   }

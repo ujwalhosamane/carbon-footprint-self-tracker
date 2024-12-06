@@ -1,4 +1,8 @@
 <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+  <div *ngIf="loading" class="fixed inset-0 bg-white bg-opacity-75 z-50 flex items-center justify-center">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+  </div>
+
   <div *ngIf="showToast" class="fixed top-4 right-4 z-50">
     <div [ngClass]="{
       'bg-green-500': toastType === 'success',
@@ -160,30 +164,40 @@
 
     <div class="bg-gradient-to-r from-purple-50 to-white rounded-lg shadow-2xl p-6 border-x-4 border-x-purple-400">
       <h3 class="text-lg font-bold text-purple-900 mb-3">Monthly History</h3>
-      <div class="overflow-x-auto" *ngIf="!carbonFootprints || carbonFootprints.length > 0">
+      <div class="overflow-x-auto" *ngIf="!displayValues || displayValues.length > 0">
         <table class="min-w-full divide-y divide-purple-200">
           <thead class="bg-purple-50">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Month</th>
-              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Transportation</th>
-              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Electricity</th>
-              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">LPG</th>
-              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Shipping</th>
-              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">AC</th>
-              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Total</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Transportation<br/><span class="text-xs font-normal">(km / kg CO₂)</span></th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Electricity<br/><span class="text-xs font-normal">(kWh / kg CO₂)</span></th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">LPG<br/><span class="text-xs font-normal">(kg / kg CO₂)</span></th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Shipping<br/><span class="text-xs font-normal">(kg / kg CO₂)</span></th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">AC<br/><span class="text-xs font-normal">(hrs / kg CO₂)</span></th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Total CO₂<br/><span class="text-xs font-normal">(kg)</span></th>
               <th class="px-6 py-3 text-left text-xs font-bold text-purple-700 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           
           <tbody class="bg-white divide-y divide-purple-100">
-            <tr *ngFor="let footprint of carbonFootprints" class="hover:bg-purple-50 transition-colors duration-150">
+            <tr *ngFor="let footprint of displayValues; let i = index" class="hover:bg-purple-50 transition-colors duration-150">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.footprintMonth}} {{footprint.footprintYear}}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.transportation}}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.electricity}}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.lpg}}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.shipping}}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">{{footprint.airConditioner}}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-900">{{calculateTotalFootprint(footprint)}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">
+                {{footprint.transportation}} / {{carbonFootprints[i].transportation}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">
+                {{footprint.electricity}} / {{carbonFootprints[i].electricity}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">
+                {{footprint.lpg}} / {{carbonFootprints[i].lpg}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">
+                {{footprint.shipping}} / {{carbonFootprints[i].shipping}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">
+                {{footprint.airConditioner}} / {{carbonFootprints[i].airConditioner}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-purple-900">{{calculateTotalFootprint(carbonFootprints[i])}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <button (click)="openUpdateForm(footprint)" class="text-indigo-600 hover:text-indigo-900 font-medium mr-2 relative group">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

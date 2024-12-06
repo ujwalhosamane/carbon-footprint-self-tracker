@@ -37,6 +37,7 @@ export class UserProfileComponent implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
   toastState: 'visible' | 'hidden' = 'hidden';
+  loading: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -54,13 +55,16 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadUserProfile() {
+    this.loading = true;
     this.userService.getUserDetailsAfterLogin().subscribe({
       next: (response) => {
         this.user = response;
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error loading user profile:', error);
         this.showErrorMessage('Failed to load user profile');
+        this.loading = false;
       }
     });
   }
@@ -99,6 +103,7 @@ export class UserProfileComponent implements OnInit {
         return;
       }
 
+      this.loading = true;
       const passwordData = {
         currentPassword: this.passwordForm.get('currentPassword')?.value,
         newPassword: this.passwordForm.get('newPassword')?.value
@@ -110,6 +115,7 @@ export class UserProfileComponent implements OnInit {
             this.showSuccessMessage('Password updated successfully');
             this.passwordForm.reset();
           }
+          this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
           if (error.status === 400) {
@@ -120,6 +126,7 @@ export class UserProfileComponent implements OnInit {
             this.showErrorMessage('An error occurred while updating password');
           }
           console.error('Error updating password:', error);
+          this.loading = false;
         }
       });
     } else {
