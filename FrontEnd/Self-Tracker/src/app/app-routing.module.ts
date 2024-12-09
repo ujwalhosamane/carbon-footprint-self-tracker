@@ -72,7 +72,7 @@ const routes: Routes = [
           { path: 'overview', component: AdminOverviewComponent },
           { path: 'insights', component: AdminInsightsComponent },
           { path: 'settings', component: AdminSettingComponent },
-          { path: '', redirectTo: 'insights', pathMatch: 'full' },
+          { path: '', redirectTo: 'overview', pathMatch: 'full' },
           {
             path: '**',
             component: NotFoundComponent,
@@ -87,6 +87,11 @@ const routes: Routes = [
         component: NotFoundComponent,
       }
     ],
+  }, 
+  {
+    path: '',
+    redirectTo: 'auth/home',
+    pathMatch: 'full'
   },
   {
     path: '**',

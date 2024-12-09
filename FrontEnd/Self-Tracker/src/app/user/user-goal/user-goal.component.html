@@ -107,18 +107,27 @@
               </div>
               <p class="text-sm text-gray-600 mb-2">{{goal.description}}</p>
               <div class="flex items-center space-x-4 text-sm">
-                <span class="text-gray-600 font-medium">Current: {{goal.currentScore}} kg CO2</span>
+                <span class="text-gray-600 font-medium">Current: {{goal.currentScore.toFixed(2)}} kg CO2</span>
                 <span class="text-gray-600 font-medium">Target: {{goal.targetScore}} kg CO2</span>
                 <span class="text-green-600 font-medium">Achieved {{goal.count}} times</span>
               </div>
-              <div class="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div [style.width.%]="(goal.currentScore/goal.targetScore)*100" 
-                     [ngClass]="{
-                       'bg-gradient-to-r from-green-400 to-green-600': goal.currentScore <= goal.targetScore,
-                       'bg-gradient-to-r from-red-400 to-red-600': goal.currentScore > goal.targetScore
-                     }" 
-                     class="h-full rounded-full transition-all duration-500">
+              <div class="mt-2">
+                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div [style.width.%]="(goal.currentScore/goal.targetScore)*100" 
+                       [style.background]="goal.currentScore <= goal.targetScore ? 
+                         'linear-gradient(to right, #4ade80, #16a34a)' : 
+                         'linear-gradient(to right, #f87171, #dc2626)'"
+                       class="h-full rounded-full transition-all duration-500">
+                  </div>
                 </div>
+                <p class="text-sm mt-1" [ngClass]="{
+                  'text-green-600': goal.currentScore <= goal.targetScore,
+                  'text-red-600': goal.currentScore > goal.targetScore
+                }">
+                  {{goal.currentScore <= goal.targetScore ? 
+                    'On track! Keep up the good work.' : 
+                    'Exceeding target - let\'s work on reducing further.'}}
+                </p>
               </div>
             </div>
             <div class="ml-4 flex flex-col items-center">

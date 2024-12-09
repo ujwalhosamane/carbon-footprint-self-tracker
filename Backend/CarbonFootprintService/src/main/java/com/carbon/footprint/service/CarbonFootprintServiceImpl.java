@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -416,17 +417,23 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintServiceInterfa
     
     public Map<String, Double> getTotalFootprintForCurrentAndPreviousMonth() {
         LocalDate currentDate = LocalDate.now();
-        String currentMonth = currentDate.format(DateTimeFormatter.ofPattern("MM"));
+        String currentMonth = currentDate.format(DateTimeFormatter.ofPattern("MMMM"));
         int currentYear = currentDate.getYear();
 
         LocalDate previousMonthDate = currentDate.minusMonths(1);
-        String previousMonth = previousMonthDate.format(DateTimeFormatter.ofPattern("MM"));
+        String previousMonth = previousMonthDate.format(DateTimeFormatter.ofPattern("MMMM"));
         int previousYear = previousMonthDate.getYear();
+        
+        List<String> months = List.of("current", "previous");
+        List<Object[]> results = carbonFootprintRepository.getTotalFootprintForValidUsers(
+                currentMonth, currentYear, previousMonth, previousYear);
 
-        return carbonFootprintRepository.getTotalFootprintForCurrentAndPreviousMonth(
-                Arrays.asList(currentMonth, previousMonth),
-                Arrays.asList(currentYear, previousYear)
-        );
+        return IntStream.range(0, results.size())
+                .boxed()
+                .collect(Collectors.toMap(
+                        i -> months.get(i),
+                        i -> Double.parseDouble(String.format("%.2f", (Double) results.get(i)[1]))
+                ));
     }
     
     public void deleteOldFootprints(int retentionDurationMonths) {

@@ -80,7 +80,7 @@ export class AnalyticsComponent implements OnInit {
       },
       error: (error) => console.error('Error loading rewards and footprint:', error)
     });
-
+    // console.log("Here");
     this.adminService.getTotalFootprintThisAndLastMonth().subscribe({
       next: (data: any) => {
         if (!data || Object.keys(data).length === 0) {
@@ -89,13 +89,8 @@ export class AnalyticsComponent implements OnInit {
           return;
         }
 
-        if (!Array.isArray(data)) {
-          console.error('Expected array but received:', typeof data);
-          return;
-        }
-
-        this.thisMonthFootprint = data[0]?.totalFootprint || 0;
-        this.lastMonthFootprint = data[1]?.totalFootprint || 0;
+        this.thisMonthFootprint = data.current;
+        this.lastMonthFootprint = data.previous;
       },
       error: (error) => console.error('Error loading footprint comparison:', error)
     });

@@ -71,7 +71,7 @@ public class AuthService {
 	        .collect(Collectors.toList());
 	}
 	
-	public String saveUser(UserCreationDTO credential) throws DuplicateUserCreationException {
+	public String saveUser(UserCreationDTO credential, UserRole role) throws DuplicateUserCreationException {
 		if(userRepository.findByEmail(credential.getEmail()).isPresent()) {
 			throw new DuplicateUserCreationException("User account already present with email " + credential.getEmail());
 		}
@@ -81,17 +81,20 @@ public class AuthService {
         		credential.getEmail(),
         		credential.getPassword(),
         		credential.getCity());
-        user.setRole(UserRole.USER);
+        user.setRole(role);
         user = userRepository.save(user);
         
-        UserDataCreation userDataCreation = new UserDataCreation(
-        		user.getUserId(),
-        		user.getName(),
-        		user.getEmail(),
-        		user.getCity(),
-        		user.getCreationDate());
-        if(!userDataClient.addUser(userDataCreation).getStatusCode().equals(HttpStatus.OK)) {
-        	throw new RuntimeException("Error creating User data");
+        if(role.equals(UserRole.USER)) {
+        	UserDataCreation userDataCreation = new UserDataCreation(
+            		user.getUserId(),
+            		user.getName(),
+            		user.getEmail(),
+            		user.getCity(),
+            		user.getCreationDate());
+            if(!userDataClient.addUser(userDataCreation).getStatusCode().equals(HttpStatus.OK)) {
+            	userRepository.deleteById(user.getUserId());
+            	throw new RuntimeException("Error creating User data");
+            }
         }
         LoginActivity activity = new LoginActivity();
         activity.setUser(user);
@@ -186,7 +189,7 @@ public class AuthService {
     			user.getName(),
     			user.getEmail(),
     			user.getCity(),
-    			user.getCreationDate());
+    			user.getCreationDate().toLocalDate());
     	
     	return adminAfterLogin;
     }

@@ -1,6 +1,7 @@
 package com.security.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,7 +44,7 @@ public class User {
     private UserRole role;
 
     @CreationTimestamp
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
     
     private boolean isLoggedIn;
     private Long loggedInSession;

@@ -18,7 +18,7 @@ public interface UserServiceInterface {
 	List<String> getAllNonAdminUserId();
 		
 	void addUser(UserDataCreationDTO userDto);
-	void deleteUserAccount(String userId);
+	void deleteUserAccount(String userId, String email);
 	
 	void updateTotalRewardPoints(Map<String, Double> userTotalRewardPoints);
 	UserAfterLogin getUserAfterLogin(String userId);

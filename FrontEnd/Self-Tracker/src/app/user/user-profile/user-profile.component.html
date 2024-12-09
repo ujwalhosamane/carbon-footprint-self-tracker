@@ -50,62 +50,94 @@
         </div>
       </div>
 
-      <div class="mt-16">
-        <h2 class="text-3xl font-bold text-gray-900 mb-8 border-b-4 border-blue-900 pb-2 inline-block">Update Password</h2>
-        <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()" class="max-w-lg mx-auto space-y-6 bg-gray-50 p-8 rounded-xl shadow-lg relative">
-          <div *ngIf="loading" class="absolute inset-0 bg-white bg-opacity-75 z-10 flex items-center justify-center rounded-xl">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
-          </div>
-          <div class="space-y-2">
-            <label class="block text-sm font-semibold text-gray-700">Current Password</label>
-            <input type="password" formControlName="currentPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-300">
-            <p *ngIf="passwordForm.get('currentPassword')?.errors?.['required'] && passwordForm.get('currentPassword')?.touched" class="text-red-500 text-sm mt-1">
-              Current password is required
-            </p>
-          </div>
-          <div class="space-y-2">
-            <label class="block text-sm font-semibold text-gray-700">New Password</label>
-            <input type="password" formControlName="newPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-300">
-            <p *ngIf="passwordForm.get('newPassword')?.errors?.['required'] && passwordForm.get('newPassword')?.touched" class="text-red-500 text-sm mt-1">
-              New password is required
-            </p>
-            <p *ngIf="passwordForm.get('newPassword')?.errors?.['minlength'] && passwordForm.get('newPassword')?.touched" class="text-red-500 text-sm mt-1">
-              Password must be at least 6 characters long
-            </p>
-          </div>
-          <div class="space-y-2">
-            <label class="block text-sm font-semibold text-gray-700">Confirm New Password</label>
-            <input type="password" formControlName="confirmPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-colors duration-300">
-            <p *ngIf="passwordForm.get('confirmPassword')?.errors?.['required'] && passwordForm.get('confirmPassword')?.touched" class="text-red-500 text-sm mt-1">
-              Password confirmation is required
-            </p>
-            <p *ngIf="passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched" class="text-red-500 text-sm mt-1">
-              Passwords do not match
-            </p>
-          </div>
+      <!-- Security Settings Buttons -->
+      <div class="mt-16 flex justify-center space-x-6">
+        <button (click)="showPasswordForm = true" class="py-3 px-6 bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-lg shadow-lg hover:from-blue-800 hover:to-indigo-700 transition-all duration-300">
+          Update Password
+        </button>
+        <button (click)="openDeleteConfirmation()" class="py-3 px-6 bg-gradient-to-r from-red-600 to-red-800 text-white rounded-lg shadow-lg hover:from-red-500 hover:to-red-700 transition-all duration-300">
+          Delete Account
+        </button>
+      </div>
 
-          <div *ngIf="successMessage" class="fixed right-4 top-20 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast-animation">
-            <div class="flex items-center space-x-2">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              <span>{{ successMessage }}</span>
+      <!-- Password Update Modal -->
+      <div *ngIf="showPasswordForm" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-lg w-full mx-4">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">Update Password</h2>
+          <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()" class="space-y-6">
+            <div *ngIf="loading" class="absolute inset-0 bg-white bg-opacity-75 z-10 flex items-center justify-center rounded-xl">
+              <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">Current Password</label>
+              <input type="password" formControlName="currentPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <p *ngIf="passwordForm.get('currentPassword')?.errors?.['required'] && passwordForm.get('currentPassword')?.touched" class="text-red-500 text-sm">Current password is required</p>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">New Password</label>
+              <input type="password" formControlName="newPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <p *ngIf="passwordForm.get('newPassword')?.errors?.['required'] && passwordForm.get('newPassword')?.touched" class="text-red-500 text-sm">New password is required</p>
+              <p *ngIf="passwordForm.get('newPassword')?.errors?.['minlength'] && passwordForm.get('newPassword')?.touched" class="text-red-500 text-sm">Password must be at least 6 characters</p>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-gray-700">Confirm New Password</label>
+              <input type="password" formControlName="confirmPassword" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <p *ngIf="passwordForm.get('confirmPassword')?.errors?.['required'] && passwordForm.get('confirmPassword')?.touched" class="text-red-500 text-sm">Password confirmation is required</p>
+              <p *ngIf="passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched" class="text-red-500 text-sm">Passwords do not match</p>
+            </div>
+            <div class="flex space-x-4">
+              <button type="submit" [disabled]="!passwordForm.valid" class="flex-1 py-2 px-4 bg-gradient-to-r from-blue-900 to-indigo-800 text-white rounded-lg shadow-lg hover:from-blue-800 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                Update Password
+              </button>
+              <button type="button" (click)="showPasswordForm = false" class="flex-1 py-2 px-4 border border-gray-300 text-gray-700 rounded-lg shadow-lg hover:bg-gray-50">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Delete Account Modal -->
+      <div *ngIf="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">Confirm Account Deletion</h3>
+          <p class="text-gray-600 mb-6">Please enter your email address to confirm account deletion. This action cannot be undone.</p>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Email Address</label>
+              <input type="email" [(ngModel)]="confirmEmail" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+            </div>
+            
+            <div class="flex space-x-4">
+              <button [disabled]="confirmEmail !== user.email" (click)="confirmDelete()" class="flex-1 py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                Delete Account
+              </button>
+              <button (click)="closeDeleteModal()" class="flex-1 py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Cancel
+              </button>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div *ngIf="errorMessage" class="fixed right-4 top-20 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast-animation">
-            <div class="flex items-center space-x-2">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-              <span>{{ errorMessage }}</span>
-            </div>
-          </div>
+      <!-- Toast Messages -->
+      <div *ngIf="successMessage" class="fixed right-4 top-20 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast-animation">
+        <div class="flex items-center space-x-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <span>{{ successMessage }}</span>
+        </div>
+      </div>
 
-          <button type="submit" [disabled]="!passwordForm.valid" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-gradient-to-r from-blue-900 to-indigo-800 hover:from-blue-800 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-            Update Password
-          </button>
-        </form>
+      <div *ngIf="errorMessage" class="fixed right-4 top-20 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 toast-animation">
+        <div class="flex items-center space-x-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          <span>{{ errorMessage }}</span>
+        </div>
       </div>
     </div>
   </div>

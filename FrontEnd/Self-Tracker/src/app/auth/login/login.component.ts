@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
             this.showToast(false, "Successfully logged in!");
             setTimeout(() => {
               this.isSubmitting = false;
-              this.router.navigate(['/admin/dashboard']);
+              this.router.navigate(['/admin/home']);
             }, 1500);
           }
         },

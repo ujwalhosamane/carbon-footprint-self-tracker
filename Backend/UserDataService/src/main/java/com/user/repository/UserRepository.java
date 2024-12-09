@@ -18,6 +18,7 @@ import com.user.model.UserData;
 
 import feign.Param;
 
+@Transactional
 public interface UserRepository extends JpaRepository<UserData, String> {
 	Optional<UserData> findByUserId(String userId);
 	// For Predefined Goal
@@ -68,7 +69,7 @@ public interface UserRepository extends JpaRepository<UserData, String> {
     		+ "WHERE u.userId = :userId")
     void updateTotlaRewardPoints(String userId, Double totalRewardPoints);
 	
-	void deleteByUserId(String userId);
+	void deleteByUserIdAndEmail(String userId, String email);
 	
 	@Query("SELECT COUNT(u) FROM UserData u WHERE YEAR(u.creationDate) = :year AND MONTH(u.creationDate) = :month")
     long countByCreationMonth(@Param("year") int year, @Param("month") int month);

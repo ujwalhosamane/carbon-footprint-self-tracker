@@ -100,12 +100,26 @@ public interface CarbonFootprintRepository extends JpaRepository<CarbonFootprint
 		       "ORDER BY c.updatedDate DESC, c.creationDate DESC")
 	List<Tuple> findLatestActivityByUserId(@Param("userId") String userId);
 	
-	 @Query("SELECT CONCAT(c.footprintMonth, '-', c.footprintYear) AS monthYear, " +
-	            "SUM(c.transportation + c.electricity + c.lpg + c.shipping + c.airConditioner) AS totalFootprint " +
-	            "FROM CarbonFootprint c " +
-	            "WHERE c.footprintMonth IN :months AND c.footprintYear IN :years " +
-	            "GROUP BY c.footprintMonth, c.footprintYear")
-	 Map<String, Double> getTotalFootprintForCurrentAndPreviousMonth(List<String> months, List<Integer> years);
+	@Query("SELECT CONCAT(c.footprintMonth, '-', c.footprintYear) AS monthYear, " +
+		       "AVG(c.transportation + c.electricity + c.lpg + c.shipping + c.airConditioner) AS totalFootprint " +
+		       "FROM CarbonFootprint c " +
+		       "WHERE c.userId IN (" +
+		       "   SELECT cf.userId " +
+		       "   FROM CarbonFootprint cf " +
+		       "   WHERE (cf.footprintMonth = :currentMonth AND cf.footprintYear = :currentYear) " +
+		       "      OR (cf.footprintMonth = :previousMonth AND cf.footprintYear = :previousYear) " +
+		       "   GROUP BY cf.userId " +
+		       "   HAVING COUNT(DISTINCT CONCAT(cf.footprintMonth, '-', cf.footprintYear)) = 2" +
+		       ") " +
+		       "AND ((c.footprintMonth = :currentMonth AND c.footprintYear = :currentYear) " +
+		       "     OR (c.footprintMonth = :previousMonth AND c.footprintYear = :previousYear)) " +
+		       "GROUP BY c.footprintMonth, c.footprintYear")
+		List<Object[]> getTotalFootprintForValidUsers(
+		        @Param("currentMonth") String currentMonth,
+		        @Param("currentYear") int currentYear,
+		        @Param("previousMonth") String previousMonth,
+		        @Param("previousYear") int previousYear);
+
 	 
 	 
 	 @Modifying

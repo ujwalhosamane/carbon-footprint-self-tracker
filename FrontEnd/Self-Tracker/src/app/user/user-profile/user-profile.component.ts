@@ -3,6 +3,7 @@ import { UserService } from '../user.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
@@ -38,10 +39,14 @@ export class UserProfileComponent implements OnInit {
   successMessage: string = '';
   toastState: 'visible' | 'hidden' = 'hidden';
   loading: boolean = false;
+  showDeleteModal: boolean = false;
+  showPasswordForm: boolean = false;
+  confirmEmail: string = '';
 
   constructor(
     private userService: UserService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.passwordForm = this.fb.group({
       currentPassword: ['', [Validators.required]],
@@ -114,6 +119,7 @@ export class UserProfileComponent implements OnInit {
           if (response && response.passwordUpdated) {
             this.showSuccessMessage('Password updated successfully');
             this.passwordForm.reset();
+            this.showPasswordForm = false;
           }
           this.loading = false;
         },
@@ -135,6 +141,45 @@ export class UserProfileComponent implements OnInit {
       } else {
         this.showErrorMessage('Please fill in all required fields');
       }
+    }
+  }
+
+  openDeleteConfirmation() {
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+    this.confirmEmail = '';
+  }
+
+  confirmDelete() {
+    if (this.confirmEmail === this.user.email) {
+      this.loading = true;
+      this.userService.deleteUserAccount(this.confirmEmail).subscribe({
+        next: () => {
+          this.showSuccessMessage('Account deleted successfully');
+          // Handle post-deletion logic (e.g., redirect to login)
+          this.loading = false;
+          this.closeDeleteModal();
+          // Redirect to login page or home page after successful deletion
+          localStorage.removeItem('__auth');
+          window.location.href = '/auth/home';
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 400) {
+            this.showErrorMessage('Invalid email address');
+          } else if (error.status === 406) {
+            this.showErrorMessage('Invalid or expired session. Please login again.');
+          } else {
+            this.showErrorMessage('An error occurred while deleting account');
+          }
+          console.error('Error deleting account:', error);
+          this.loading = false;
+        }
+      });
+    } else {
+      this.showErrorMessage('Email address does not match');
     }
   }
 }

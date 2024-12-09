@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.user.client.CarbonFootprintClient;
@@ -71,11 +72,12 @@ public class UserController {
 	
 	@DeleteMapping("/delete")
 	public ResponseEntity<Void> deleteUser(
-			@RequestHeader("Authorization") String authorizationHeader) {
+			@RequestHeader("Authorization") String authorizationHeader,
+			@RequestParam("email") String email) {
 		String token = authorizationHeader.substring(7); 
         String userId = jwtUtil.extractUserId(token);
         
-		userService.deleteUserAccount(userId);
+		userService.deleteUserAccount(userId, email);
 		// Deleting all the goals related to the user (userId)
 		goalClient.deleteByUserId(userId);
 		footprintClient.deleteFootprintByUserId(userId);

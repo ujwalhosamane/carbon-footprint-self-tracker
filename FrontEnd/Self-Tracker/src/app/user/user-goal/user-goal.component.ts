@@ -14,11 +14,11 @@ export class UserGoalComponent implements OnInit {
   currentYear: number;
   loading: boolean = true;
   carbonFootprint: any = {
-    transportation: 0,
-    electricity: 0,
-    lpg: 0,
-    shipping: 0,
-    airConditioner: 0
+    transportation: 0.00,
+    electricity: 0.00,
+    lpg: 0.00,
+    shipping: 0.00,
+    airConditioner: 0.00
   };
 
   goals: Goal[] = [];
@@ -71,18 +71,18 @@ export class UserGoalComponent implements OnInit {
         next: (responses) => {
           this.carbonFootprint = responses.reduce((acc, curr) => {
             return {
-              transportation: acc.transportation + (curr.transportation || 0),
-              electricity: acc.electricity + (curr.electricity || 0),
-              lpg: acc.lpg + (curr.lpg || 0),
-              shipping: acc.shipping + (curr.shipping || 0),
-              airConditioner: acc.airConditioner + (curr.airConditioner || 0)
+              transportation: Number((acc.transportation + (curr.transportation || 0)).toFixed(2)),
+              electricity: Number((acc.electricity + (curr.electricity || 0)).toFixed(2)),
+              lpg: Number((acc.lpg + (curr.lpg || 0)).toFixed(2)),
+              shipping: Number((acc.shipping + (curr.shipping || 0)).toFixed(2)),
+              airConditioner: Number((acc.airConditioner + (curr.airConditioner || 0)).toFixed(2))
             };
           }, {
-            transportation: 0,
-            electricity: 0,
-            lpg: 0,
-            shipping: 0,
-            airConditioner: 0
+            transportation: 0.00,
+            electricity: 0.00,
+            lpg: 0.00,
+            shipping: 0.00,
+            airConditioner: 0.00
           });
         },
         error: (error) => {

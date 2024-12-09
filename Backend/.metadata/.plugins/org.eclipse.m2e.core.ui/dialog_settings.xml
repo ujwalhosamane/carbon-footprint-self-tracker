@@ -1,28 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<section name="org.eclipse.m2e.core.pom.overview">
-	</section>
-	<section name="org.eclipse.m2e.core.pom.dependencies">
-	</section>
-	<section name="org.eclipse.m2e.core.ui.internal.dialogs.MavenRepositorySearchDialog">
-		<item key="width" value="480"/>
-		<item key="height" value="531"/>
-		<item key="x" value="471"/>
-		<item key="y" value="26"/>
-	</section>
 	<section name="MavenProjectImportWizardPage">
 		<list key="rootDirectory">
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\UserDataService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\SuggestionService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\QuartzSchedulerService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\IdentityService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\GoalService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\GlobalInsightService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\EurekaRegistryService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\CarbonFootprintService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\AdminService"/>
-			<item value="C:\Users\Administrator\Desktop\Carbon-Footprint\Backend\ApiGatewayService"/>
+			<item value="C:\Users\Administrator\Desktop\carbon-footprint-self-tracker\Backend"/>
 		</list>
 		<list key="projectNameTemplate">
 			<item value="[artifactId]"/>
@@ -32,5 +12,9 @@
 			<item value="[groupId].[artifactId]-[version]"/>
 			<item value="[name]"/>
 		</list>
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+	</section>
+	<section name="org.eclipse.m2e.core.pom.dependencies">
 	</section>
 </section>

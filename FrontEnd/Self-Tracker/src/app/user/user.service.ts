@@ -136,4 +136,12 @@ export class UserService {
       }
     );
   }
+
+  //delete user account with email
+  deleteUserAccount(email:string):Observable<any>{
+    return this.http.delete(environment.baseUrl + `/auth/delete`, {
+      params: { email },
+      headers:this.headers
+    });
+  }
 }

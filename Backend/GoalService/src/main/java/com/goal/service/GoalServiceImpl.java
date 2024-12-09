@@ -134,7 +134,7 @@ public class GoalServiceImpl implements GoalServiceInterface {
 		PredefinedGoal predefinedGoal = 
 				predefinedGoalRepo.findByPredefinedGoalId(predefinedGoalId)
 				.orElseThrow(() -> new PredefinedGoalNotFoundException("Predefined Goal not found"));
-		
+		System.out.println(userId);
 		for(String user: userId) {
 			Goal userGoal = new Goal();
 			userGoal.setCurrentScore(Double.valueOf(0));

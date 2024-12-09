@@ -1,6 +1,6 @@
 package com.security.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -29,5 +29,5 @@ public class LoginActivity {
     private User user;
 
     @CreationTimestamp
-    private LocalDate activityDate;
+    private LocalDateTime activityDate;
 }

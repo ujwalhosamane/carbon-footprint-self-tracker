@@ -24,6 +24,7 @@ import com.security.client.UserDataClient;
 import com.security.dto.AuthRequest;
 import com.security.dto.UpdatePassword;
 import com.security.dto.UserCreationDTO;
+import com.security.entity.UserRole;
 import com.security.exception.DuplicateUserCreationException;
 import com.security.exception.UserNotFoundException;
 import com.security.service.AuthService;
@@ -45,7 +46,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> register(@RequestBody UserCreationDTO userCreationDTO) 
             throws DuplicateUserCreationException {      
-        authService.saveUser(userCreationDTO);
+        authService.saveUser(userCreationDTO, UserRole.USER);
         
         Map<String, String> response = new HashMap<>();
         response.put("message", "User registered successfully!");
@@ -74,13 +75,15 @@ public class UserController {
     }
     
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteUserAccount(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<Void> deleteUserAccount(
+    		@RequestHeader("Authorization") String authorizationHeader,
+    		@RequestParam("email") String email) {
     	String token = authorizationHeader.substring(7); // "Bearer " is 7 characters
         String userId = authService.extractUserId(token);
         String role = authService.extractRole(token);
         
         authService.deleteByUserId(userId, role);
-        userDataClient.deleteUser(userId);
+        userDataClient.deleteUser(authorizationHeader, email);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
     

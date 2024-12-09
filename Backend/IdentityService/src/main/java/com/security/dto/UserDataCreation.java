@@ -1,6 +1,6 @@
 package com.security.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +14,5 @@ public class UserDataCreation {
 	private String name;
 	private String email;
 	private String city;
-	private LocalDate creationDate;
+	private LocalDateTime creationDate;
 }

@@ -21,7 +21,7 @@ public class ClientService implements ClientServiceInterface {
 		UserData user = userRepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
 		
-		return user.getCreationDate();
+		return user.getCreationDate().toLocalDate();
 	}
 	
 

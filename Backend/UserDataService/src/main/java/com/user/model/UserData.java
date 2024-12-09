@@ -1,6 +1,7 @@
 package com.user.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +30,7 @@ public class UserData {
 	private String city;
     
 	@NotNull(message = "Creation Date cannot be null")
-	private LocalDate creationDate;
+	private LocalDateTime creationDate;
 	private Double totalFootprint;
 	private Double sixMonthRewardPoints;
 	private Double totalRewardPoints;
@@ -38,7 +39,7 @@ public class UserData {
 			@NotNull(message = "Name cannot be null") String name,
 			@NotNull(message = "Mail cannot be null") String email,
 			@NotNull(message = "City cannot be null") String city,
-			@NotNull(message = "Creation Date cannot be null") LocalDate creationDate) {
+			@NotNull(message = "Creation Date cannot be null") LocalDateTime creationDate) {
 		super();
 		this.userId = userId;
 		this.name = name;

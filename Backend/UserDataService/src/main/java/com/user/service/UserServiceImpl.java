@@ -72,9 +72,9 @@ public class UserServiceImpl implements UserServiceInterface {
 	}
 
 	@Override
-	public void deleteUserAccount(String userId) {
+	public void deleteUserAccount(String userId, String email) {
 		try {
-			userRepository.deleteByUserId(userId);
+			userRepository.deleteByUserIdAndEmail(userId, email);
 		} catch (Exception e) {
 			throw new UserNotFoundException("Unable to delete user");
 		}
@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserServiceInterface {
 				userData.getName(),
 				userData.getEmail(),
 				userData.getCity(),
-				userData.getCreationDate(),
+				userData.getCreationDate().toLocalDate(),
 				userData.getTotalFootprint(),
 				userData.getSixMonthRewardPoints(),
 				userData.getTotalRewardPoints());

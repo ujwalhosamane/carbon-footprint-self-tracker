@@ -40,6 +40,7 @@ public class GoalController {
 		
 		PredefinedGoal predefinedGoal = response.getBody();
 		List<String> userIds = userClient.getAllNonAdmin().getBody();
+		System.out.println(userIds);
 		goalClient.addGoal(userIds, predefinedGoal.getPredefinedGoalId());
 		
 		LocalDate currentDate = LocalDate.now();

@@ -43,7 +43,7 @@ public class GeminiClient {
 	}
 
 	private String getApiKey() {
-	  return "AIzaSyBW00hqi3jIaAK5rbfbDxitcCTF4JYGicI"; 
+	  return "AIzaSyA5pkD2vQ0zHA_Q-Ybx0OmgqBeO2RvzddQ"; 
 	}
 	
 	public String extractText(String response) throws Exception {

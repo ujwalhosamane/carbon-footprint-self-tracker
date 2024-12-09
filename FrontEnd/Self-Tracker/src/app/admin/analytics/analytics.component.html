@@ -62,7 +62,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600 uppercase tracking-wider">Carbon Reduction</p>
-            <p class="text-3xl font-bold text-gray-900 my-2">{{thisMonthFootprint || 0}} kg</p>
+            <p class="text-3xl font-bold text-gray-900 my-2">{{(thisMonthFootprint - lastMonthFootprint).toFixed(2) || 0}} kg</p>
             <p class="text-sm font-medium" [ngClass]="{
               'text-red-600': calculatePercentageChange(thisMonthFootprint, lastMonthFootprint) < 0,
               'text-green-600': calculatePercentageChange(thisMonthFootprint, lastMonthFootprint) > 0,
